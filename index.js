@@ -59,9 +59,146 @@ app.use(session({
 //     return false;
 // }
 
+
+
 app.get('/', (req,res) => { //good
     res.render("index");
 });
+
+//add this later on signup ejs
+app.post('/displayQuestions', async(erq,res) => {
+	var questions = [
+		"What is the name of your hometown?",
+		"What did you want to be growing up?",
+		"What is your first car?",
+		"What was your first pet's name?",
+		"Who is your favourite author?"
+	];
+
+	for(var i = 0; i < questions.length; i++){
+
+	}
+});
+
+async function isEmailValid(email){
+	const result = await userCollection.find({email: email}).project({email: 1, _id: 1, username: 1}).toArray();
+
+	if(result.length != 1) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+app.post('/forgetPassword', async(req, res) => {
+	var email = req.body.email;
+
+    var questions = [
+        "What is the name of your hometown?",
+        "What did you want to be growing up?",
+        "What is your first car?",
+        "What was your first pet's name?",
+        "Who is your favourite author?"
+    ];
+
+	if(isEmailValid(email)){
+		const result = await userCollection.find({email: email}).project({question: 1}).toArray();
+
+		var userQuestion = questions[result[0].question];
+		//where they answer the question
+		//use ejs to get the question they want
+		res.render('/placeHolderForWhereTheyAnswerQuestion', {question: userQuestion});
+	}
+	
+});
+
+app.post('/placeHolderForWhereTHeyAnswerQuestion', async(req,res) => {
+	var answer = req.body.answer;
+
+	const result = await userCollection.find({email: email}).project({email: 1, username: 1, answer: 1}).toArray();
+
+	if(await bcrypt.compare(answer, result[0].answer)) {
+		//where they will change password
+		res.render('/correctAnswer');
+		return;
+	} else {
+		res.render('/incorrectAnswer');
+		return;
+	}
+});
+
+app.post('/submitUser', async(req, res) => { //good
+    var username = req.body.username;
+    var email = req.body.email;
+    var password = req.body.password;
+	//forget password stuff
+	var securityQuestion = req.body.question;
+	var securityAnswer = req.body.answer;
+
+    const schema = Joi.object(
+		{
+			username: Joi.string().alphanum().max(20).required(),
+            email: Joi.string().email().required(),
+			password: Joi.string().max(20).required()
+		});
+
+	const validationResult = schema.validate({username, email, password});
+	if (validationResult.error != null) {
+       var message = validationResult.error.details[0].message;
+       res.render("invalid-signup", {message: message});
+	   return;
+   }
+
+   var hashedPassword = await bcrypt.hash(password, saltRounds);
+   var hashedAnswer = await bcrypt.hash(securityAnswer, saltRounds);
+
+   await userCollection.insertOne({username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: securityQuestion});
+   console.log("inserted user");
+
+
+   req.session.authenticated = true;
+   req.session.username = req.body.username;
+   res.redirect("/members");
+
+   return;
+});
+
+app.post('/loggingin', async (req,res) => { //done
+    var username = req.body.username;
+    var password = req.body.password;
+
+	const schema = Joi.string().max(20).required();
+	const validationResult = schema.validate(username);
+	if (validationResult.error != null) {
+	   console.log(validationResult.error);
+	   res.redirect("/login");
+	   return;
+	}
+
+	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1}).toArray();
+
+	if (result.length != 1) { //if user doesnt exist
+        res.render("incorrect-login");
+		return;
+	}
+
+	if (await bcrypt.compare(password, result[0].password)) {
+		console.log("correct password");
+		req.session.authenticated = true;
+		req.session.email = result[0].email;
+        req.session.name = result[0].name;
+		req.session.cookie.maxAge = expireTime;
+
+		res.redirect('/members');
+		return;
+	}
+	else {
+        res.render("incorrect-login");
+        return;
+	}
+});
+
+
 
 app.use(express.static(__dirname + "/public"));
 
