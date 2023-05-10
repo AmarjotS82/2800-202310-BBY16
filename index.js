@@ -139,8 +139,28 @@ app.get('/', (req, res) => { //good
 	res.render("index");
 });
 
-app.use(express.static(__dirname + "/public"));
+app.get('/signup', (req, res) => {
+	res.render('signup');
+});
 
+app.get('/login', (req, res) => {
+	res.render('login');
+});
+
+//this is where the 
+app.get('/changePassword', (req, res) => {
+	res.render('changePassword');
+});
+
+// @backend this is where the doc goes after the user hit the submit button in signup page
+//doc needs to get saved in db and redirect the user accordingly(either main or give them the error message)
+app.post('/submitUser', async (req, res) => {
+});
+
+//@backend this is where login documents coming in
+app.post('/logingin', async (req, res) => {});
+
+app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req, res) => {
 	res.status(404);
