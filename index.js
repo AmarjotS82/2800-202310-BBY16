@@ -73,25 +73,20 @@ app.get('/invalid-signup', (req,res) => {
 	res.render('invalid-signup');
 });
 
-//add this later on signup ejs
-app.post('/displayQuestions', async(erq,res) => {
-	var questions = [
-		"What is the name of your hometown?",
-		"What did you want to be growing up?",
-		"What is your first car?",
-		"What was your first pet's name?",
-		"Who is your favourite author?"
-	];
-
-	for(var i = 0; i < questions.length; i++){
-
-	}
-});
-
-async function isEmailValid(email){
+async function doesEmailExist(email){
 	const result = await userCollection.find({email: email}).project({email: 1, _id: 1, username: 1}).toArray();
 
-	if(result.length != 1) {
+	if(result.length == 0) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+async function doesUsernameExist(username){
+	const result = await userCollection.find({username: username}).project({email: 1, _id: 1, username: 1}).toArray();
+
+	if(result.length == 0) {
 		return false;
 	} else {
 		return true;
@@ -102,37 +97,62 @@ app.post('/forgetPassword', async(req, res) => {
 	var email = req.body.email;
 
     var questions = [
-        "What is the name of your hometown?",
+        "What is the name of your hometown?",	
         "What did you want to be growing up?",
         "What is your first car?",
         "What was your first pet's name?",
         "Who is your favourite author?"
     ];
 
-	if(isEmailValid(email)){
-		const result = await userCollection.find({email: email}).project({question: 1}).toArray();
+	if(await doesEmailExist(email)){
+		const result = await userCollection.find({email: email}).project({email: 1, question: 1}).toArray();
 
 		var userQuestion = questions[result[0].question];
 		//where they answer the question
-		//use ejs to get the question they want
-		res.render('/placeHolderForWhereTheyAnswerQuestion', {question: userQuestion});
+		//use ejs to get the question they have
+		res.render('answer-questions', {question: userQuestion, email: result[0].email});
+	} else {
+		res.send("INVALID EMAIL");
 	}
-	
 });
 
-app.post('/placeHolderForWhereTHeyAnswerQuestion', async(req,res) => {
+app.get('/answer-questions', (req,res) => {
+	res.render('answer-questions');
+});
+
+app.post('/submitAnswer/:id', async(req,res) => {
 	var answer = req.body.answer;
+	var email = req.params.id;
 
 	const result = await userCollection.find({email: email}).project({email: 1, username: 1, answer: 1}).toArray();
 
 	if(await bcrypt.compare(answer, result[0].answer)) {
 		//where they will change password
-		res.render('/correctAnswer');
+		res.render('correctAnswer', {username: result[0].username, email: email});
 		return;
 	} else {
-		res.render('/incorrectAnswer');
+		res.render('incorrectAnswer');
 		return;
 	}
+});
+
+app.post('/newpassword/:id', async(req,res) => {
+	var password = req.body.password;
+	var email = req.params.id;
+	const schema = Joi.string().max(20).required();
+
+	const validationResult = schema.validate(password);
+	if(validationResult.error != null) {
+		res.send("INVALID PASSWORD");
+		return;
+	}
+
+	var hashedPassword = await bcrypt.hash(password, saltRounds);
+
+	await userCollection.updateOne({email: email}, {$set: {password: hashedPassword}});
+
+	res.render('login');
+
 });
 
 app.post('/submitUser', async(req, res) => { //good
@@ -140,34 +160,55 @@ app.post('/submitUser', async(req, res) => { //good
     var email = req.body.email;
     var password = req.body.password;
 	//forget password stuff
-	var securityQuestion = req.body.question;
-	var securityAnswer = req.body.answer;
+	var question = req.body.question;
+	var answer = req.body.answer;
 
     const schema = Joi.object(
 		{
 			username: Joi.string().alphanum().max(20).required(),
             email: Joi.string().email().required(),
 			password: Joi.string().max(20).required(),
-			question: Joi.number().integer().required(),
+			answer: Joi.string().max(20).required(),
 		});
 
-	const validationResult = schema.validate({username, email, password});
+	//this confirms everything is valid
+	const validationResult = schema.validate({username, email, password, answer});
 	if (validationResult.error != null) {
        var message = validationResult.error.details[0].message;
        res.render("invalid-signup", {message: message});
 	   return;
    }
 
-   var hashedPassword = await bcrypt.hash(password, saltRounds);
-   var hashedAnswer = await bcrypt.hash(securityAnswer, saltRounds);
+   if(question == 0){
+	var message = "You must select a question.";
+	res.render("invalid-signup", {message: message});
 
-   await userCollection.insertOne({username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: securityQuestion});
+	return;
+   }
+
+   if(await doesEmailExist(email)) {
+	var message = "This email already exist!";
+	res.render("invalid-signup", {message: message});
+	return;
+   }
+
+   if(await doesUsernameExist(username)) {
+	var message = "This username already exist!";
+	res.render("invalid-signup", {message: message});
+	return;
+   }
+
+
+   var hashedPassword = await bcrypt.hash(password, saltRounds);
+   var hashedAnswer = await bcrypt.hash(answer, saltRounds);
+
+   await userCollection.insertOne({username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question});
    console.log("inserted user");
 
 
    req.session.authenticated = true;
    req.session.username = req.body.username;
-   res.redirect("/members");
+   res.render("members");
 
    return;
 });
@@ -198,7 +239,7 @@ app.post('/loggingin', async (req,res) => { //done
         req.session.name = result[0].name;
 		req.session.cookie.maxAge = expireTime;
 
-		res.redirect('/members');
+		res.render('members');
 		return;
 	}
 	else {
@@ -207,10 +248,18 @@ app.post('/loggingin', async (req,res) => { //done
 	}
 });
 
-
-
 app.use(express.static(__dirname + "/public"));
 
+app.get('/login', (req, res) => {
+	res.render('login');
+});
+
+//this is where the 
+app.get('/changePassword', (req, res) => {
+	res.render('changePassword');
+});
+
+app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req,res) => {
     res.status(404);

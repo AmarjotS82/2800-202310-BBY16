@@ -1,0 +1,9 @@
+<%- include("templates/header") %> 
+
+<%= question%>
+<form action='/submitAnswer/<%= email %>' method='post'>
+
+    <input name="answer" type="text" placeholder="Security Answer">
+
+    <button>Submit</button>
+</form>

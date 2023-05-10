@@ -1,0 +1,9 @@
+Your username is <%= username %>
+
+<form action='/newpassword/<%= email %>' method='post'>
+
+    <label for="new-password">Enter new password:</label>
+    <input type="password" id="new-password" name="password">
+    <button type="submit" id="submit-new-password">Submit</button>
+
+</form>
