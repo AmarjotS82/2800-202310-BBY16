@@ -32,6 +32,8 @@ var {database} = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
+const testCollection = database.db(mongodb_database).collection('ingredients');
+
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({extended: false}));
@@ -66,11 +68,83 @@ app.get('/', (req,res) => { //good
 app.use(express.static(__dirname + "/public"));
 
 
-app.get("*", (req,res) => {
-    res.status(404);
-    res.render("404");
-});
+
 
 app.listen(port, () => {
     console.log("Listening on port " + port);
+});
+
+//new stuff added
+
+app.get('/login',(req,res) => {
+    res.render("login");
+    
+})
+
+app.post('/loggingIn', async (req,res) => {
+    var personal_Id = req.body.personal_Id;
+    var email
+    var password = req.body.pwd;
+
+    const schema = Joi.object(
+        {
+            password: Joi.string().max(20).required(),
+            email: Joi.string().email().max(20).required()
+        });
+
+    const validationResult = schema.validate({ password,personal_Id});
+
+	if (validationResult.error != null) {
+	   console.log(validationResult.error);
+	   res.redirect("/login");
+	   return;
+	}
+
+    const result = await userCollection.find({id: personal_Id}).project({email: 1, password: 1,user_type: 1}).toArray();
+    
+    console.log("L: " + result.length);
+    if (result.length != 1) {
+		console.log("id not found");
+		res.render("submitLogin");
+		return;
+	}
+	if (await bcrypt.compare(password, result[0].password)) {
+		console.log("correct password");
+        console.log(result[0].user_type);
+		req.session.authenticated = true;
+		req.session.id = result[0].id;
+		req.session.cookie.maxAge = timeUntilExpires;
+        req.session.user_type = result[0].user_type;
+		res.redirect('/members');
+		return;
+	}
+	else {
+		console.log("incorrect password");
+		res.render("submitLogin");
+		return;
+	}
+});
+
+app.get('/logout',(req,res) => {
+    req.session.authenticated = false;
+    req.session.destroy();
+    res.redirect('/');
+    
+});
+
+app.get('/nutrition', async (req,res) => {
+	var index = 0;
+	while(index<100){
+		const list = await testCollection.find({index: index}).project({}).toArray();
+		index++;
+		console.log(list);
+	}
+	
+	//console.log(list);
+	res.render("nutrition");
+})
+
+app.get("*", (req,res) => {
+    res.status(404);
+    res.render("404");
 });
