@@ -1,6 +1,8 @@
 <%- include("templates/header") %> 
 
-<p>Let's get your account set up</p>
+<h3>Let's get your account set up</h3>
+
+<div class="signup_wrapper">
 <form action='/submitUser' method='post'>
     <div class="input-group mb-3">
         <label class="input-group-text" for="inputGroupSelect01">select one</label>
@@ -14,11 +16,13 @@
         </select>
         <input name="security" type="text" placeholder="Security Answer">
       </div>
+
     <input name='email' type='text' placeholder='email' >
     <input name='name' type='text' placeholder='name' >
     <input name='username' type='text' placeholder='username' >
     <input name='password' type='password' placeholder='password'>
     <button>Submit</button>
 </form>
+</div>
 
 
