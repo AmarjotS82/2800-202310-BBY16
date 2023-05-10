@@ -65,6 +65,14 @@ app.get('/', (req,res) => { //good
     res.render("index");
 });
 
+app.get('/signup', (req,res) => {
+	res.render('signup');
+});
+
+app.get('/invalid-signup', (req,res) => {
+	res.render('invalid-signup');
+});
+
 //add this later on signup ejs
 app.post('/displayQuestions', async(erq,res) => {
 	var questions = [
@@ -139,7 +147,8 @@ app.post('/submitUser', async(req, res) => { //good
 		{
 			username: Joi.string().alphanum().max(20).required(),
             email: Joi.string().email().required(),
-			password: Joi.string().max(20).required()
+			password: Joi.string().max(20).required(),
+			question: Joi.number().integer().required(),
 		});
 
 	const validationResult = schema.validate({username, email, password});
