@@ -154,11 +154,7 @@ app.get('/logout',(req,res) => {
 
 app.get('/nutrition', async (req,res) => {
 	var index = 0;
-	while(index<100){
-		const list = await testCollection.find({index: index}).project({}).toArray();
-		index++;
-		console.log(list);
-	}
+	
 	
 	//console.log(list);
 	res.render("nutrition");
