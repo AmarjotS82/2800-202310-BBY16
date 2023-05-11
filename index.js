@@ -414,12 +414,19 @@ app.get("/lists", async  (req,res) => {
 	//Make sure capital F for food otherwise doesn't work
 	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
 	//Checking if it works
-	for(var i = 0; i < ingredientList.length; i++){
-		console.log("L: " + ingredientList[i].Food);
-	}
+	//for(var i = 0; i < ingredientList.length; i++){
+	//	console.log("L: " + ingredientList[i].Food);
+	//}
 	//Render the lists.ejs file that has the html for this apge
 	res.render("lists",{list: ingredientList});
 });
+
+app.post('/updateLocalIngredient/', (req, res) => {
+	const foodName = req.body.foodName;
+	ingredients.push(foodName);
+	console.log("Added" + foodName);
+	console.log(ingredients);
+  });
 
 app.get("*", (req, res) => {
 	res.status(404);
