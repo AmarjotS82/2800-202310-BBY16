@@ -21,6 +21,8 @@ const readline = require('readline');
 
 const port = process.env.PORT || 3020;
 
+
+
 const mongodb_host = process.env.MONGODB_HOST;
 const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
@@ -83,7 +85,7 @@ var { database } = include('databaseConnection');
 const userCollection = database.db(mongodb_database).collection('users');
 
 
-const testCollection = database.db(mongodb_database).collection('ingredients');
+const testCollection = database.db(mongodb_database).collection('ingredient');
 
 //---------------For generating recipe on console input-----------------
 
@@ -340,12 +342,6 @@ app.get('/changePassword', (req, res) => {
 app.use(express.static(__dirname + "/public"));
 
 
-
-
-app.listen(port, () => {
-    console.log("Listening on port " + port);
-});
-
 //new stuff added
 
 app.get('/login',(req,res) => {
@@ -411,12 +407,26 @@ app.get('/nutrition', async (req,res) => {
 	//console.log(list);
 	res.render("nutrition");
 })
+
+//route for list of ingredients page
+app.get("/lists", async  (req,res) => {
+	//Find all id and names(Food field) of all contents in collection
+	//Make sure capital F for food otherwise doesn't work
+	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
+	//Checking if it works
+	for(var i = 0; i < ingredientList.length; i++){
+		console.log("L: " + ingredientList[i].Food);
+	}
+	//Render the lists.ejs file that has the html for this apge
+	res.render("lists",{list: ingredientList});
+});
+
 app.get("*", (req, res) => {
 	res.status(404);
 	res.render("404");
 });
 
 app.listen(port, () => {
-	console.log("Listening on port " + port);
+	console.log("\nListening on port " + port);
 
 });
