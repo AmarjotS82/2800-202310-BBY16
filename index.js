@@ -1,7 +1,5 @@
 require("./utils.js");
 
-require("./profile.js");
-
 const express = require('express');
 
 const session = require('express-session');
@@ -22,8 +20,6 @@ const readline = require('readline');
 
 const port = process.env.PORT || 3020;
 
-
-
 const mongodb_host = process.env.MONGODB_HOST;
 const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
@@ -39,6 +35,14 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
+
+const questions = [
+	"What is the name of your hometown?",	
+	"What did you want to be growing up?",
+	"What is your first car?",
+	"What was your first pet's name?",
+	"Who is your favourite author?"
+];
 
 const generateRecipe = async () => {
 	const prompt = constructPrompt(ingredients, dietaryPreferences);
@@ -186,13 +190,6 @@ async function doesUsernameExist(username){
 app.post('/forgetPassword', async(req, res) => {
 	var email = req.body.email;
 
-    var questions = [
-        "What is the name of your hometown?",	
-        "What did you want to be growing up?",
-        "What is your first car?",
-        "What was your first pet's name?",
-        "Who is your favourite author?"
-    ];
 
 	if(await doesEmailExist(email)){
 		const result = await userCollection.find({email: email}).project({email: 1, question: 1}).toArray();
@@ -322,7 +319,7 @@ app.post('/loggingin', async (req,res) => { //done
 	   return;
 	}
 
-	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1}).toArray();
+	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1}).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
         res.render("incorrect-login");
@@ -333,7 +330,9 @@ app.post('/loggingin', async (req,res) => { //done
 		console.log("correct password");
 		req.session.authenticated = true;
 		req.session.email = result[0].email;
-        req.session.name = result[0].name;
+		console.log(req.session.email);
+        req.session.username = result[0].username;
+		console.log(req.session.username);
 		req.session.cookie.maxAge = expireTime;
 
 		res.render('members');
@@ -366,50 +365,6 @@ app.get('/login',(req,res) => {
     
 })
 
-app.post('/loggingIn', async (req,res) => {
-    var personal_Id = req.body.personal_Id;
-    var password = req.body.pwd;
-
-    const schema = Joi.object(
-        {
-            password: Joi.string().max(20).required(),
-            personal_Id: Joi.string().email().max(20).required()
-        });
-
-    const validationResult = schema.validate({ password,personal_Id});
-
-	if (validationResult.error != null) {
-	   console.log(validationResult.error);
-	   res.redirect("/login");
-	   return;
-	}
-
-    const result = await userCollection.find({id: personal_Id}).project({email: 1, password: 1,user_type: 1}).toArray();
-    
-    console.log("L: " + result.length);
-    if (result.length != 1) {
-		console.log("id not found");
-		res.render("submitLogin");
-		return;
-	}
-	if (await bcrypt.compare(password, result[0].password)) {
-		console.log("correct password");
-        console.log(result[0].user_type);
-		req.session.authenticated = true;
-		req.session.id = result[0].id;
-		req.session.cookie.maxAge = timeUntilExpires;
-        req.session.user_type = result[0].user_type;
-		res.redirect('/members');
-		return;
-	}
-	else {
-		console.log("incorrect password");
-		res.render("submitLogin");
-		return;
-	}
-});
-
-
 app.get('/loggedin/members', (req,res) => {
 	res.render('members');
 })
@@ -439,7 +394,15 @@ app.get("/lists", async  (req,res) => {
 		console.log("L: " + ingredientList[i].Food);
 	}
 	//Render the lists.ejs file that has the html for this apge
-	res.render("lists",{list: ingredientList});
+	res.render("lists", {list: ingredientList});
+});
+
+app.get("/loggedin/profile", async (req,res) => {
+	var username = req.session.username;
+
+	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1, question: 1}).toArray();
+
+	res.render('profile', {username: result[0].username, email: result[0].email, password: result[0].password, question: questions[result[0].question]});
 });
 
 app.get("*", (req, res) => {
@@ -449,5 +412,4 @@ app.get("*", (req, res) => {
 
 app.listen(port, () => {
 	console.log("\nListening on port " + port);
-
 });
