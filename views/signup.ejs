@@ -1,28 +1,33 @@
-<%- include("templates/header") %> 
-
-<h3>Let's get your account set up</h3>
+<%- include("templates/header") %>
+<link rel="stylesheet" href="/css/signup.css" />
 
 <div class="signup_wrapper">
-<form action='/submitUser' method='post'>
+  <h3 style="">Let's get your account set up</h3>
+  <form action="/submitUser" method="post">
     <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">select one</label>
-        <select class="form-select" id="inputGroupSelect01">
-          <option selected>Choose...</option>
-          <option value="1">What is the name of your hometown?</option>
-          <option value="2">What is your first car?</option>
-          <option value="3">What was your first pet's name?</option>
-          <option value="4">What did you want to be growing up?</option>
-          <option value="5">Who is your favourite author?</option>
-        </select>
-        <input name="security" type="text" placeholder="Security Answer">
-      </div>
+      <label class="input-group-text" for="inputGroupSelect01"
+        style="font-size: 1pt; padding-top: 15px;">please select a security question</label
+      >
+      <select style="font-size: 18px;" class="form-select" id="inputGroupSelect01">
+        <option selected>Choose...</option>
+        <option  value="1">What is the name of your hometown?</option>
+        <option value="2">What is your first car?</option>
+        <option value="3">What was your first pet's name?</option>
+        <option value="4">What did you want to be growing up?</option>
+        <option value="5">Who is your favorite author?</option>
+      </select>
+      <input  class="security"  name="security" type="text" placeholder="Security Answer" />
+    </div>
 
-    <input name='email' type='text' placeholder='email' >
-    <input name='name' type='text' placeholder='name' >
-    <input name='username' type='text' placeholder='username' >
-    <input name='password' type='password' placeholder='password'>
-    <button>Submit</button>
-</form>
+    <div >
+      <input class="email" name="email" type="text" placeholder="email" />
+    </div>
+    <div >
+      <input class="username" name="username" type="text" placeholder="username" />
+    </div>
+    <div >
+      <input class="password" name="password" type="password" placeholder="password" />
+    </div>
+    <button>let's get started</button>
+  </form>
 </div>
-
-
