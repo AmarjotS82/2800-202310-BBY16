@@ -1,5 +1,6 @@
 require("./utils.js");
 
+require("./profile.js");
 
 const express = require('express');
 
@@ -134,12 +135,21 @@ app.use(session({
 ));
 
 /** Use later for valid session */
-// function isValidSession(req) {
-//     if (req.session.authenticated) {
-//         return true;
-//     }
-//     return false;
-// }
+function isValidSession(req) {
+    if (req.session.authenticated) {
+        return true;
+    }
+    return false;
+}
+
+function sessionValidation(req,res,next) {
+    if (isValidSession(req)) {
+        next();
+    }
+    else {
+        res.redirect('/login');
+    }
+}
 
 app.get('/', (req, res) => { //good
 	res.render("index");
@@ -232,7 +242,6 @@ app.post('/newpassword/:id', async(req,res) => {
 	await userCollection.updateOne({email: email}, {$set: {password: hashedPassword}});
 
 	res.render('login');
-
 });
 
 app.post('/submitUser', async(req, res) => { //good
@@ -293,6 +302,14 @@ app.post('/submitUser', async(req, res) => { //good
    return;
 });
 
+app.use('/loggedin', sessionValidation);
+app.get('/loggedin', (req,res) => {
+    if (!req.session.authenticated) {
+        res.redirect('/login');
+    }
+    res.render("loggedin");
+});
+
 app.post('/loggingin', async (req,res) => { //done
     var username = req.body.username;
     var password = req.body.password;
@@ -351,13 +368,12 @@ app.get('/login',(req,res) => {
 
 app.post('/loggingIn', async (req,res) => {
     var personal_Id = req.body.personal_Id;
-    var email
     var password = req.body.pwd;
 
     const schema = Joi.object(
         {
             password: Joi.string().max(20).required(),
-            email: Joi.string().email().max(20).required()
+            personal_Id: Joi.string().email().max(20).required()
         });
 
     const validationResult = schema.validate({ password,personal_Id});
@@ -392,6 +408,11 @@ app.post('/loggingIn', async (req,res) => {
 		return;
 	}
 });
+
+
+app.get('/loggedin/members', (req,res) => {
+	res.render('members');
+})
 
 app.get('/logout',(req,res) => {
     req.session.authenticated = false;
