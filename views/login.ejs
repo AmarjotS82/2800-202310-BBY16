@@ -1,14 +1,25 @@
-<%- include("templates/header") %> 
+<%- include("templates/header") %>
 <link rel="stylesheet" href="/css/login.css" />
-
-<div class="login_wrapper"> <h3>Welcome back! Let's get you logged in and on your way...</h3>
-<form action='/logingin' method='post'>
-   <div><input class="login_email" name='email' type='text' placeholder='email'></div> 
- <div ><input class="login_password" name='password' type='password' placeholder='password' ></div> 
- <a href="/changePassword"> Forget your password?</a>
-  <div class="login_button"> <button>login</button></div> 
-
-   
-
-</form>
+<div class="login_wrapper">
+  <h3>Welcome back! Let's get you logged in and on your way...</h3>
+  <form action="/logingin" method="post">
+    <div>
+      <input
+        class="login_email"
+        name="username"
+        type="text"
+        placeholder="username"
+      />
+    </div>
+    <div>
+      <input
+        class="login_password"
+        name="password"
+        type="password"
+        placeholder="password"
+      />
+    </div>
+    <a href="/changePassword"> Forget your password?</a>
+    <div class="login_button"><button>login</button></div>
+  </form>
 </div>

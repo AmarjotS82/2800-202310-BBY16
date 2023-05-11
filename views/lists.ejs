@@ -1,0 +1,17 @@
+<h1>List</h1>
+<!-- list of ingredients-->
+<ul>     
+    !--iterate over length of array--!
+    <% for(let i = 0; i < list.length ; i++) { %>
+        <li> 
+            <!--div for content in list-->
+            <div class=" row mb-3 text-center">
+                <div class="col-md-3 themed-grid-col p-2">
+                    <!--name of ingredient at index i-->
+                    <%= list[i].Food%> 
+                </div>
+            </div>
+            
+        </li>
+    <% } %> 
+</ul>
