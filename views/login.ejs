@@ -1,11 +1,14 @@
 <%- include("templates/header") %> 
-<div> Please Login: 
-<form action='/logingin' method='post'>
-    <input name='email' type='text' placeholder='email'>
-    <input name='password' type='password' placeholder='password' >
-    <button>login</button>
+<link rel="stylesheet" href="/css/login.css" />
 
-    <a href="/changePassword"> Forget your password?</a>
+<div class="login_wrapper"> <h3>Welcome back! Let's get you logged in and on your way...</h3>
+<form action='/logingin' method='post'>
+   <div><input class="login_email" name='email' type='text' placeholder='email'></div> 
+ <div ><input class="login_password" name='password' type='password' placeholder='password' ></div> 
+ <a href="/changePassword"> Forget your password?</a>
+  <div class="login_button"> <button>login</button></div> 
+
+   
 
 </form>
 </div>
