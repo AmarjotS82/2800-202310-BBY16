@@ -78,7 +78,7 @@ function constructPrompt(ingredients, dietaryPreferences) {
 }
 
 // Example usage
-const ingredients = ["tofu", "broccoli", "soy sauce", "rice"];
+const ingredients = [];
 const dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
@@ -335,7 +335,7 @@ app.post('/loggingin', async (req,res) => { //done
 		console.log(req.session.username);
 		req.session.cookie.maxAge = expireTime;
 
-		res.redirect('/members');
+		res.redirect('/loggedin/members');
 		//return;
 	}
 	else {
@@ -400,6 +400,23 @@ app.get("/loggedin/profile", async (req,res) => {
 	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1, question: 1}).toArray();
 
 	res.render('profile', {username: result[0].username, email: result[0].email, password: result[0].password, question: questions[result[0].question]});
+});
+
+app.post('/updateLocalIngredient/', (req, res) => {
+	const foodName = req.body.foodName;
+	const index = ingredients.indexOf(foodName);
+  
+	if (index !== -1) {
+	  // If foodName is already in the ingredients array, remove it
+	  ingredients.splice(index, 1);
+	  console.log("Removed " + foodName);
+	} else {
+	  // If foodName is not in the ingredients array, add it
+	  ingredients.push(foodName);
+	  console.log("Added " + foodName);
+	}
+  
+	console.log(ingredients);
 });
 
 app.get("*", (req, res) => {
