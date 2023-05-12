@@ -1,9 +1,15 @@
-Your username is <%= username %>
+<%- include("templates/header") %>
+  <link rel="stylesheet" href="/css/changePassword.css">
 
-<form action='/newpassword/<%= email %>' method='post'>
 
-    <label for="new-password">Enter new password:</label>
-    <input type="password" id="new-password" name="password">
-    <button type="submit" id="submit-new-password">Submit</button>
+  <div class="changePass_wrapper">
+    <form action='/newpassword/<%= email %>' method='post'>
 
-</form>
+      <div class="username"> Your username is <%= username %></div>
+      
+      <div class="label"> <spam>Enter new password: </spam></div>
+      <input type="password" id="new-password" name="password">
+      <div class="newPassButton"><button type="submit" id="submit-new-password">Submit</button></div>
+
+    </form>
+  </div>

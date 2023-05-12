@@ -1,9 +1,10 @@
 <%- include("templates/header") %> 
+<link rel="stylesheet" href="/css/changePassword.css">
 
-<%= question%>
-<form action='/submitAnswer/<%= email %>' method='post'>
 
-    <input name="answer" type="text" placeholder="Security Answer">
+<form class="security-question" action='/submitAnswer/<%= email %>' method='post'>
+    <h1 class="question"><%= question%></h1>
+    <input class="Security-answer"name="answer" type="text" placeholder="Security Answer">
 
-    <button>Submit</button>
+    <button class="submit-question">Next, Almost there!</button>
 </form>
