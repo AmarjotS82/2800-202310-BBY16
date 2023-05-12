@@ -2,7 +2,7 @@
 
 body{
     background-color: black;
-    margin: 0 !important;
+    margin-left: 0 !important;
 }
 .login_signup_wrapper{
     margin: 6em;
@@ -61,3 +61,6 @@ body{
 }
 
 
+.ms-0 {
+  margin-left: 0 !important;
+}

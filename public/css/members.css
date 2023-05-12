@@ -2,12 +2,9 @@
 
 /* body{
     margin: 0 !important;
-}
-.logo{
-    height: 100px;
-    width: 100px;
-}
-.members-wrapper{
+/* }
+
+/* .members-wrapper{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
@@ -17,7 +14,7 @@
     grid-column: 1/4;
     grid-row: 1/2;
     background-color: aquamarine;
-}
+} */
 
 /* this is the calorie counter columns */
 /*
@@ -52,15 +49,18 @@ background-color: blue;
 body{
     background-color: black;
 }
+.logo{
+    height: 100px;
+    width: 100px;
+} 
 
 h2{
-    color: aliceblue;
-    
+    color: aliceblue;  
 }
-
   #nutritionCard{
     background-color: rgba(204, 131, 131, 0.548);
 }
+
 #nutritionCard .btn{
 
     background-color: rgb(249, 219, 219);
@@ -69,12 +69,6 @@ h2{
     
 }
 
-#signOut{
-    background-color: rgb(249, 219, 219);
-    font-size: 13pt;
-    border-color: black;
-    color: black;
-}
 
   
 
