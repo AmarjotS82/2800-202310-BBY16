@@ -1,6 +1,5 @@
 require("./utils.js");
 
-
 const express = require('express');
 
 const session = require('express-session');
@@ -21,8 +20,6 @@ const readline = require('readline');
 
 const port = process.env.PORT || 3020;
 
-
-
 const mongodb_host = process.env.MONGODB_HOST;
 const mongodb_user = process.env.MONGODB_USER;
 const mongodb_password = process.env.MONGODB_PASSWORD;
@@ -38,6 +35,14 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
+
+const questions = [
+	"What is the name of your hometown?",	
+	"What did you want to be growing up?",
+	"What is your first car?",
+	"What was your first pet's name?",
+	"Who is your favourite author?"
+];
 
 const generateRecipe = async () => {
 	const prompt = constructPrompt(ingredients, dietaryPreferences);
@@ -136,12 +141,21 @@ app.use(session({
 ));
 
 /** Use later for valid session */
-// function isValidSession(req) {
-//     if (req.session.authenticated) {
-//         return true;
-//     }
-//     return false;
-// }
+function isValidSession(req) {
+    if (req.session.authenticated) {
+        return true;
+    }
+    return false;
+}
+
+function sessionValidation(req,res,next) {
+    if (isValidSession(req)) {
+        next();
+    }
+    else {
+        res.redirect('/login');
+    }
+}
 
 app.get('/', (req, res) => { //good
 	res.render("index");
@@ -178,13 +192,6 @@ async function doesUsernameExist(username){
 app.post('/forgetPassword', async(req, res) => {
 	var email = req.body.email;
 
-    var questions = [
-        "What is the name of your hometown?",	
-        "What did you want to be growing up?",
-        "What is your first car?",
-        "What was your first pet's name?",
-        "Who is your favourite author?"
-    ];
 
 	if(await doesEmailExist(email)){
 		const result = await userCollection.find({email: email}).project({email: 1, question: 1}).toArray();
@@ -234,7 +241,6 @@ app.post('/newpassword/:id', async(req,res) => {
 	await userCollection.updateOne({email: email}, {$set: {password: hashedPassword}});
 
 	res.render('login');
-
 });
 
 app.post('/submitUser', async(req, res) => { //good
@@ -295,6 +301,14 @@ app.post('/submitUser', async(req, res) => { //good
    return;
 });
 
+app.use('/loggedin', sessionValidation);
+app.get('/loggedin', (req,res) => {
+    if (!req.session.authenticated) {
+        res.redirect('/login');
+    }
+    res.render("loggedin");
+});
+
 app.post('/loggingin', async (req,res) => { //done
     var username = req.body.username;
     var password = req.body.password;
@@ -307,7 +321,7 @@ app.post('/loggingin', async (req,res) => { //done
 	   return;
 	}
 
-	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1}).toArray();
+	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1}).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
         res.render("incorrect-login");
@@ -318,17 +332,20 @@ app.post('/loggingin', async (req,res) => { //done
 		console.log("correct password");
 		req.session.authenticated = true;
 		req.session.email = result[0].email;
-        req.session.name = result[0].name;
+		console.log(req.session.email);
+        req.session.username = result[0].username;
+		console.log(req.session.username);
 		req.session.cookie.maxAge = expireTime;
 
-		res.render('members');
-		return;
+		res.redirect('/members');
+		//return;
 	}
 	else {
         res.render("incorrect-login");
         return;
 	}
 });
+
 
 app.use(express.static(__dirname + "/public"));
 
@@ -351,65 +368,22 @@ app.get('/login',(req,res) => {
     
 })
 
-app.post('/loggingIn', async (req,res) => {
-    var personal_Id = req.body.personal_Id;
-    var email
-    var password = req.body.pwd;
 
-    const schema = Joi.object(
-        {
-            password: Joi.string().max(20).required(),
-            email: Joi.string().email().max(20).required()
-        });
+app.get('/loggedin/members', (req,res) => {
+	res.render('members');
+})
 
-    const validationResult = schema.validate({ password,personal_Id});
 
-	if (validationResult.error != null) {
-	   console.log(validationResult.error);
-	   res.redirect("/login");
-	   return;
-	}
-
-    const result = await userCollection.find({id: personal_Id}).project({email: 1, password: 1,user_type: 1}).toArray();
-    
-    console.log("L: " + result.length);
-    if (result.length != 1) {
-		console.log("id not found");
-		res.render("submitLogin");
-		return;
-	}
-	if (await bcrypt.compare(password, result[0].password)) {
-		console.log("correct password");
-        console.log(result[0].user_type);
-		req.session.authenticated = true;
-		req.session.id = result[0].id;
-		req.session.cookie.maxAge = timeUntilExpires;
-        req.session.user_type = result[0].user_type;
-		res.redirect('/members');
-		return;
-	}
-	else {
-		console.log("incorrect password");
-		res.render("submitLogin");
-		return;
-	}
-});
-
-app.get('/logout',(req,res) => {
-    req.session.authenticated = false;
-    req.session.destroy();
-    res.redirect('/');
-    
-});
 
 app.get('/nutrition',async  (req,res) => {
 	
 	//Store in session and have it resest daily 
 	//so it persists and doesnt get resset every time you load a page
-	//req.session.calories
+	var email = req.session.email
 	
-	var lastTime = new Date().getDay();
+	var lastTime = new Date().getMinutes();
 	console.log(lastTime);
+
 	await userCollection.updateOne({email: email}, {$set: {LastDateUsed: lastTime}});
 	
 	//console.log("c2: " + calories);
@@ -421,7 +395,7 @@ app.post('/nutritionInfo', (req,res) => {
 
 	var calories = req.body.calories;
 	var caffeine = req.body.caffeine;
-	
+	console.log("cf " + caffeine);
 	var calCount = 0;
 	
 
@@ -463,10 +437,18 @@ app.get("/lists", async  (req,res) => {
 	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
 	//Checking if it works
 	for(var i = 0; i < ingredientList.length; i++){
-		console.log("L: " + ingredientList[i].Food);
+		// console.log("L: " + ingredientList[i].Food);
 	}
 	//Render the lists.ejs file that has the html for this apge
-	res.render("lists",{list: ingredientList});
+	res.render("lists", {list: ingredientList});
+});
+
+app.get("/loggedin/profile", async (req,res) => {
+	var username = req.session.username;
+
+	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1, question: 1}).toArray();
+
+	res.render('profile', {username: result[0].username, email: result[0].email, password: result[0].password, question: questions[result[0].question]});
 });
 
 app.get("*", (req, res) => {
@@ -475,7 +457,5 @@ app.get("*", (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log("Listening on port " + port);
+	console.log("\nListening on port " + port);
 });
-
-

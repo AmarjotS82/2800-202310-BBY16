@@ -1,20 +1,56 @@
-<%- include("templates/header") %> 
-<p>Let's get your account set up</p>
-<form action='/submitUser' method='post'>
+<%- include("templates/header") %>
+<link rel="stylesheet" href="/css/signup.css" />
+
+<div class="signup_wrapper">
+  <h3>Let's get your account set up <i class="bi bi-star"></i></h3>
+  <form action="/submitUser" method="post">
     <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">select one</label>
-        <select class="form-select required" id="inputGroupSelect01" name="question">
-          <option selected value="0">Choose...</option>
-          <option value="1">What is the name of your hometown?</option>
-          <option value="2">What is your first car?</option>
-          <option value="3">What was your first pet's name?</option>
-          <option value="4">What did you want to be growing up?</option>
-          <option value="5">Who is your favourite author?</option>
-        </select>
-        <input name="answer" type="text" placeholder="Security Answer">
-      </div>
-    <input name='email' type='text' placeholder='email' >
-    <input name='username' type='text' placeholder='username' >
-    <input name='password' type='password' placeholder='password'>
-    <button>Submit</button>
-</form>
+      <label
+        class="input-group-text"
+        for="inputGroupSelect01"
+        style="font-size: 1pt; padding-top: 15px"
+        >please select a security question</label
+      >
+      <select
+        style="font-size: 18px"
+        class="form-select required"
+        id="inputGroupSelect01"
+        name="question"
+      >
+        <option selected value="0">Choose...</option>
+        <option value="1">What is the name of your hometown?</option>
+        <option value="2">What is your first car?</option>
+        <option value="3">What was your first pet's name?</option>
+        <option value="4">What did you want to be growing up?</option>
+        <option value="5">Who is your favorite author?</option>
+      </select>
+      <input
+        class="security"
+        name="answer"
+        type="text"
+        placeholder="Security Answer"
+      />
+    </div>
+
+    <div>
+      <input class="email" name="email" type="text" placeholder="email" />
+    </div>
+    <div>
+      <input
+        class="username"
+        name="username"
+        type="text"
+        placeholder="username"
+      />
+    </div>
+    <div>
+      <input
+        class="password"
+        name="password"
+        type="password"
+        placeholder="password"
+      />
+    </div>
+    <button>let's get</button>
+  </form>
+</div>
