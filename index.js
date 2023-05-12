@@ -538,7 +538,7 @@ app.get("/lists", async (req, res) => {
 	res.render("lists", { list: ingredientList });
 });
 
-app.get("/members/profile", async (req, res) => {
+app.get("/loggedin/members/profile", async (req, res) => {
 	var username = req.session.username;
 
 	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 }).toArray();
