@@ -1,10 +1,16 @@
 /* Style the navbar */
 #navbar {
+  margin: 0;
+  padding: 0;
+}
+
+#navbar {
     overflow: hidden;
-    background-color: #444343;
+    background-color: #1a1919;
     position: fixed;
     bottom: 0;
     width: 100vh;
+    border-radius: 10px;
   }
   
   /* Navbar links */
@@ -28,4 +34,5 @@
     font-size: 3em;
     padding-left: 20px;
   }
+
   

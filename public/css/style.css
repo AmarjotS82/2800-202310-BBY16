@@ -37,12 +37,14 @@
 .index-img{
     grid-area: img;
     margin: 30px;
+   
 }
 
 .login_div{
    grid-area: login;
    margin: 70px;
    margin-top: 150px;
+
 }
 .signup_div{
   grid-area: signup;

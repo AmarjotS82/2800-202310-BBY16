@@ -1,11 +1,20 @@
+<%- include("templates/header") %>
+    <%- include("templates/navbar") %>
+        <link rel="stylesheet" href="/css/members.css" />
 
-<%- include("templates/header") %> 
-<%- include("templates/navbar") %>
+        <div class="members-wrapper">
+            <div class="header">
+                <h1><img class="logo" src="/img/logo-no-background.png" alt="logo-no-background"><b>PantryPal</b></h1>
+            </div>
 
-this is members page works
+            <div class="counter">
+                <div class="calorie">calorie counter</div>
+                <div class="caffeine">caffeine counter</div>
+            </div>
 
-
-<%- include("templates/footer") %>
-
-<form action='/logout' method='DELETE'><button class="btn btn-primary">Sign Out</button></form>
-
+            <div class="recipe">recipe</div>
+            <form action="/logout" method="DELETE">
+                <button class="btn btn-primary">Sign Out</button>
+            </form>
+        </div>
+        <%- include("templates/footer") %>
