@@ -376,7 +376,6 @@ app.get('/members', (req,res) => {
 })
 
 
-
 app.get('/nutrition', async (req,res) => {
 	var index = 0;
 	
@@ -406,6 +405,14 @@ app.get("/members/profile", async (req,res) => {
 	res.render('profile', {username: result[0].username, email: result[0].email, password: result[0].password, question: questions[result[0].question]});
 });
 
+// ***************logout section**************************
+app.post('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+});
+// ------------------------------------------------------
+
+// ***********404 for all page****************
 app.get("*", (req, res) => {
 	res.status(404);
 	res.render("404");
