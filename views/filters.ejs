@@ -1,0 +1,14 @@
+<%- include("templates/header") %>
+    <div>
+        <% for (let i=0; i < ingredients.length; i++) { %>
+            <div class="d-flex justify-content-center">
+                <button id="ingredient<%= i %>" type="button" class="btn btn-primary m-5">
+                    <%= ingredients[i] %>
+                </button>
+            </div>
+            <% } %>
+    </div>
+
+
+
+    <%- include("templates/footer") %>

@@ -381,6 +381,10 @@ app.get('/nutrition', async (req,res) => {
 	res.render("nutrition");
 })
 
+app.get('/filters',(req, res)  => {
+	res.render("filters", { ingredients });
+});
+
 //route for list of ingredients page
 app.get("/lists", async  (req,res) => {
 	//Find all id and names(Food field) of all contents in collection
