@@ -337,7 +337,7 @@ app.post('/loggingin', async (req,res) => { //done
 		console.log(req.session.username);
 		req.session.cookie.maxAge = expireTime;
 
-		res.redirect('/members');
+		res.redirect('/loggedin/members');
 		//return;
 	}
 	else {
@@ -375,57 +375,116 @@ app.get('/loggedin/members', (req,res) => {
 
 
 
-app.get('/nutrition',async  (req,res) => {
+app.get('/loggedin/nutrition',async  (req,res) => {
 	
 	//Store in session and have it resest daily 
 	//so it persists and doesnt get resset every time you load a page
 	var email = req.session.email
 	
-	var lastTime = new Date().getMinutes();
-	console.log(lastTime);
+	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
+	var lastTime = storedTime[0].LastDateUsed;
+	var currTime = new Date().getMinutes();
 
-	await userCollection.updateOne({email: email}, {$set: {LastDateUsed: lastTime}});
+	console.log(lastTime);
+	
+	if(currTime - lastTime > 1) {
+		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
+		localStorage.setItem("Calories",0);
+		localStorage.setItem("Caffeine",0);
+		localStorage.setItem("calGoal",0)
+		localStorage.setItem("cafGoal",0)
+	}else if(currTime < lastTime){
+		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
+		localStorage.setItem("Calories",0);
+		localStorage.setItem("Caffeine",0);
+		localStorage.setItem("calGoal",0)
+		localStorage.setItem("cafGoal",0)
+	}
+	
 	
 	//console.log("c2: " + calories);
-	//console.log("cf2: " + caf);
-	res.render("nutrition",{Calories :  localStorage.getItem("Calories"), Caffeine : localStorage.getItem("Caffeine")});
+	console.log("cf2: " + localStorage.getItem("Caffeine"));
+	res.render("nutrition",{Calories :  localStorage.getItem("Calories"), 
+	Caffeine : localStorage.getItem("Caffeine"), 
+	calGoal :  localStorage.getItem("calGoal"), cafGoal :  localStorage.getItem("cafGoal"), });
 });
 
 app.post('/nutritionInfo', (req,res) => {
 
 	var calories = req.body.calories;
 	var caffeine = req.body.caffeine;
-	console.log("cf " + caffeine);
+	var calorieGoal = req.body.calGoal;
+	var caffeineGoal = req.body.cafGoal;
+	console.log("cf " + caffeineGoal);
+	console.log("cl " + calorieGoal);
 	var calCount = 0;
 	
+	if(calories == ""){
+		calories = 0;
+	}else if(caffeine == ""){
+		caffeine = 0;
+	} 
 
+	const schema = Joi.number().integer();
+
+	
 	if( calories != null){
+		const validationResult = schema.validate(calorieGoal);
+		if (validationResult.error != null) {
+			console.log(validationResult.error);
+			res.redirect("/loggedin/nutrition");
+			return;
+		 }
 		calCount+=parseInt(calories);
 		if(localStorage.getItem("Calories") != null){
 			calCount+=parseInt(localStorage.getItem("Calories"));
-		}
+		} 
 	}else{
-		calCount+=parseInt(localStorage.getItem("Calories"));;
+		calCount+=parseInt(localStorage.getItem("Calories"));
 	}
 	// Store
 	localStorage.setItem("Calories", calCount);
 
+	if( calorieGoal != null){
+		const validationResult = schema.validate(calorieGoal);
+		if (validationResult.error != null) {
+			console.log(validationResult.error);
+			res.redirect("/loggedin/nutrition");
+			return;
+		 }
+		localStorage.setItem("calGoal", calorieGoal);
+	}
 
 	let cafCount = 0;
 
+	
 	if( caffeine != null){
 		cafCount+=parseInt(caffeine);
-		console.log("caf: " + cafCount);
-		if(localStorage.getItem("Caffeine") != null){
+		if(localStorage.getItem("Calories") != null){
 			cafCount+=parseInt(localStorage.getItem("Caffeine"));
-		}
+		} 
 	}else{
 		cafCount+=parseInt(localStorage.getItem("Caffeine"));
 	}
+	
 	// Store
 	localStorage.setItem("Caffeine", cafCount);
+	
+	if( caffeineGoal != null){
+		const validationResult = schema.validate(caffeineGoal);
+	if (validationResult.error != null) {
+		console.log(validationResult.error);
+		res.redirect("/loggedin/nutrition");
+		return;
+	 }
 
-	res.redirect("/nutrition?calories=" + calories +"&caffeine=" + caffeine);
+		localStorage.setItem("cafGoal", caffeineGoal);
+	}
+	
+	// Store
+	
+
+	res.redirect("/loggedin/nutrition");
 	
 	
 });
