@@ -1,9 +1,14 @@
-Your username is <%= username %>
 
+<link rel="stylesheet" href="/css/changePassword.css">
+
+
+<div class="changePass_wrapper">
 <form action='/newpassword/<%= email %>' method='post'>
 
-    <label for="new-password">Enter new password:</label>
+   <div class="username"> <h1>Your username is <%= username %></h1></div>
+    <label class="label" for="new-password" style="color: black;">Enter new password:</label>
     <input type="password" id="new-password" name="password">
-    <button type="submit" id="submit-new-password">Submit</button>
+  <div class="newPassButton"><button  type="submit" id="submit-new-password">Submit</button></div>
 
 </form>
+</div>

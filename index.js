@@ -199,7 +199,8 @@ app.post('/forgetPassword', async(req, res) => {
 		//use ejs to get the question they have
 		res.render('answer-questions', {question: userQuestion, email: result[0].email});
 	} else {
-		res.send("INVALID EMAIL");
+		alert("INVALID EMAIL");
+    res.redirect("/forgetPassword");
 	}
 });
 
@@ -366,8 +367,11 @@ app.get('/login',(req,res) => {
     
 })
 
-
-app.get('/loggedin/members', (req,res) => {
+app.use('/members', sessionValidation)
+app.get('/members', (req,res) => {
+	if (!req.session.authenticated) {
+        res.redirect('/login');
+    }
 	res.render('members');
 })
 
@@ -394,7 +398,7 @@ app.get("/lists", async  (req,res) => {
 	res.render("lists", {list: ingredientList});
 });
 
-app.get("/loggedin/profile", async (req,res) => {
+app.get("/members/profile", async (req,res) => {
 	var username = req.session.username;
 
 	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1, question: 1}).toArray();
