@@ -22,6 +22,19 @@ function searchIngredients() {
         }
     }
 }
+
+// Get all the buttons with the class 'custom-button'
+const buttons = document.querySelectorAll('.custom-button');
+
+// Add a click event listener to each button
+buttons.forEach(button => {
+  button.addEventListener('click', function() {
+    // Toggle the 'btn-dark' and 'btn-light' classes on the clicked button
+    this.classList.toggle('btn-secondary');
+    this.classList.toggle('btn-light');
+  });
+});
+
 var searchInput = document.getElementById("search-input");
 searchInput.addEventListener("input", searchIngredients);
 
