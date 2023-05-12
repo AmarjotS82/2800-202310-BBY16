@@ -386,19 +386,15 @@ app.get('/filters',(req, res)  => {
 	res.render("filters", { ingredients });
 });
 
-app.post('/removeIngredients', (req, res) => {
-
-});
-
 //route for list of ingredients page
 app.get("/lists", async  (req,res) => {
 	//Find all id and names(Food field) of all contents in collection
 	//Make sure capital F for food otherwise doesn't work
 	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
-	//Checking if it works
 	//for(var i = 0; i < ingredientList.length; i++){
 	//	console.log("L: " + ingredientList[i].Food);
 	//}
+	
 	//Render the lists.ejs file that has the html for this apge
 	res.render("lists", {list: ingredientList});
 });
