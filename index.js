@@ -78,7 +78,7 @@ function constructPrompt(ingredients, dietaryPreferences) {
 }
 
 // Example usage
-const ingredients = ["tofu", "broccoli", "soy sauce", "rice"];
+const ingredients = [];
 const dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
@@ -192,17 +192,26 @@ async function doesUsernameExist(username){
 app.post('/forgetPassword', async(req, res) => {
 	var email = req.body.email;
 
+	const schema = Joi.string().email().required();
+
+	const validationResult = schema.validate(email);
+	if(validationResult.error != null) {
+		res.render('changePassword', {message: "Invalid Email"});
+		return;
+	}
 
 	if(await doesEmailExist(email)){
+
 		const result = await userCollection.find({email: email}).project({email: 1, question: 1}).toArray();
 
 		var userQuestion = questions[result[0].question];
 		//where they answer the question
 		//use ejs to get the question they have
 		res.render('answer-questions', {question: userQuestion, email: result[0].email});
-	} else {
-		res.send("INVALID EMAIL");
+		return;
 	}
+
+
 });
 
 app.get('/answer-questions', (req,res) => {
@@ -314,7 +323,7 @@ app.post('/loggingin', async (req,res) => { //done
     var password = req.body.password;
 
 	const schema = Joi.string().max(20).required();
-	const validationResult = schema.validate(username);
+	const validationResult = schema.validate(username, password);
 	if (validationResult.error != null) {
 	   console.log(validationResult.error);
 	   res.redirect("/login");
@@ -324,7 +333,7 @@ app.post('/loggingin', async (req,res) => { //done
 	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1}).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
-        res.render("incorrect-login");
+        res.redirect("/login");
 		return;
 	}
 
@@ -341,7 +350,7 @@ app.post('/loggingin', async (req,res) => { //done
 		//return;
 	}
 	else {
-        res.render("incorrect-login");
+        res.redirect("/login");
         return;
 	}
 });
@@ -355,7 +364,7 @@ app.get('/login', (req, res) => {
 
 //this is where the 
 app.get('/changePassword', (req, res) => {
-	res.render('changePassword');
+	res.render('changePassword', {message: ""});
 });
 
 app.use(express.static(__dirname + "/public"));
@@ -505,9 +514,26 @@ app.get("/lists", async  (req,res) => {
 app.get("/loggedin/profile", async (req,res) => {
 	var username = req.session.username;
 
-	const result = await userCollection.find({username: username}).project({password: 1, _id: 1, username: 1, email: 1, question: 1}).toArray();
+	const result = await userCollection.find({username: username}).project({username: 1, email: 1, question: 1}).toArray();
 
-	res.render('profile', {username: result[0].username, email: result[0].email, password: result[0].password, question: questions[result[0].question]});
+	res.render('profile', {username: result[0].username, email: result[0].email, question: questions[result[0].question]});
+});
+
+app.post('/updateLocalIngredient/', (req, res) => {
+	const foodName = req.body.foodName;
+	const index = ingredients.indexOf(foodName);
+  
+	if (index !== -1) {
+	  // If foodName is already in the ingredients array, remove it
+	  ingredients.splice(index, 1);
+	  console.log("Removed " + foodName);
+	} else {
+	  // If foodName is not in the ingredients array, add it
+	  ingredients.push(foodName);
+	  console.log("Added " + foodName);
+	}
+  
+	console.log(ingredients);
 });
 
 app.get("*", (req, res) => {
