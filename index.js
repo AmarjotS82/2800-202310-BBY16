@@ -72,9 +72,10 @@ function constructPrompt(ingredients, dietaryPreferences) {
 	return prompt;
 }
 
+
 // Example usage
-const ingredients = ["tofu", "broccoli", "soy sauce", "rice"];
-const dietaryPreferences = "vegan";
+var ingredients = [];
+var dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
 
@@ -406,7 +407,15 @@ app.get('/nutrition', async (req,res) => {
 	
 	//console.log(list);
 	res.render("nutrition");
-})
+});
+
+app.get('/filters',(req, res)  => {
+	res.render("filters", { ingredients });
+});
+
+app.post('/removeIngredients', (req, res) => {
+
+});
 
 //route for list of ingredients page
 app.get("/lists", async  (req,res) => {
@@ -426,6 +435,7 @@ app.post('/updateLocalIngredient/', (req, res) => {
 	ingredients.push(foodName);
 	console.log("Added" + foodName);
 	console.log(ingredients);
+	
   });
 
 app.get("*", (req, res) => {
