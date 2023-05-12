@@ -314,7 +314,7 @@ app.post('/submitUser', async (req, res) => { //good
 
 	req.session.authenticated = true;
 	req.session.username = req.body.username;
-	res.render("members");
+	res.redirect("/loggedin/members");
 
 	return;
 });
