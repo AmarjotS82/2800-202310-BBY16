@@ -1,7 +1,8 @@
 /*** index.ejs ****/
 
-*{
+body{
     background-color: black;
+    margin: 0 !important;
 }
 .login_signup_wrapper{
     margin: 6em;
@@ -10,7 +11,7 @@
     padding: 1em;
     height: 60px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr ;
     grid-template-rows: 1fr 1fr 1fr ;   
     grid-template-areas: 
     "img"
@@ -24,7 +25,7 @@
   text-align: center;
   background-color: rgb(127, 67, 67);
   color: rgb(240, 209, 207);
-  padding: 18px;
+  /* padding: 18px; */
   padding-left: 200px;
   padding-right: 200px;
   font-size: 100px;
@@ -42,10 +43,18 @@
 
 .login_div{
    grid-area: login;
-   margin: 70px;
+   margin: 50px;
    margin-top: 150px;
-
+   display: flex;
+   align-items: center;
+   justify-content: center;
 }
+.signup_div{
+  display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
 .signup_div{
   grid-area: signup;
   margin: 70px;
