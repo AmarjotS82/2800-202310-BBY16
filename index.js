@@ -388,7 +388,7 @@ app.get("/lists", async  (req,res) => {
 	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
 	//Checking if it works
 	for(var i = 0; i < ingredientList.length; i++){
-		console.log("L: " + ingredientList[i].Food);
+		// console.log("L: " + ingredientList[i].Food);
 	}
 	//Render the lists.ejs file that has the html for this apge
 	res.render("lists", {list: ingredientList});
