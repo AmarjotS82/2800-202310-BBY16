@@ -1,8 +1,9 @@
 <%- include("templates/header") %>
     <style>
         .custom-button {
-            width: 300px;
+            width: 200px;
         }
+      
     </style>
 
 <div class="d-flex justify-content-center align-items-center flex-column py-5">
@@ -10,7 +11,7 @@
     <input type="text" id="search-input" class="text-center" placeholder="Search ingredients...">
   </div>
     
-    <ul class="list-group list-unstyled align-items-center">
+    <ul class="list-group list-unstyled align-items-center flex-column py-5">
 
         <% for(let i=0; i < list.length ; i++) { %>
             <li>
