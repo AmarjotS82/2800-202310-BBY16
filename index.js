@@ -118,8 +118,10 @@ rl.question('Enter 8 into console to generate recipe: ', (answer) => {
 
 //-------------------------------------------------------------------------
 
+//Crates a localstroage to sue for te counters 
 var LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('./scratch')
+//A folder that holds the data
+localStorage = new LocalStorage('./scratch');
 
 app.set('view engine', 'ejs');
 
@@ -391,10 +393,14 @@ app.get('/loggedin/nutrition',async  (req,res) => {
 	var email = req.session.email
 	
 	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
+	console.log("Stored:" + storedTime[0].LastDateUsed);
 	var lastTime = storedTime[0].LastDateUsed;
 	var currTime = new Date().getMinutes();
 
 	console.log(lastTime);
+	if(storedTime[0].LastDateUsed == null){
+		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
+	}
 	
 	if(currTime - lastTime > 1) {
 		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
