@@ -113,6 +113,8 @@ rl.question('Enter 8 into console to generate recipe: ', (answer) => {
 
 //-------------------------------------------------------------------------
 
+var LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch')
 
 app.set('view engine', 'ejs');
 
@@ -400,13 +402,59 @@ app.get('/logout',(req,res) => {
     
 });
 
-app.get('/nutrition', async (req,res) => {
-	var index = 0;
+app.get('/nutrition',async  (req,res) => {
+	
+	//Store in session and have it resest daily 
+	//so it persists and doesnt get resset every time you load a page
+	//req.session.calories
+	
+	var lastTime = new Date().getDay();
+	console.log(lastTime);
+	await userCollection.updateOne({email: email}, {$set: {LastDateUsed: lastTime}});
+	
+	//console.log("c2: " + calories);
+	//console.log("cf2: " + caf);
+	res.render("nutrition",{Calories :  localStorage.getItem("Calories"), Caffeine : localStorage.getItem("Caffeine")});
+});
+
+app.post('/nutritionInfo', (req,res) => {
+
+	var calories = req.body.calories;
+	var caffeine = req.body.caffeine;
+	
+	var calCount = 0;
+	
+
+	if( calories != null){
+		calCount+=parseInt(calories);
+		if(localStorage.getItem("Calories") != null){
+			calCount+=parseInt(localStorage.getItem("Calories"));
+		}
+	}else{
+		calCount+=parseInt(localStorage.getItem("Calories"));;
+	}
+	// Store
+	localStorage.setItem("Calories", calCount);
+
+
+	let cafCount = 0;
+
+	if( caffeine != null){
+		cafCount+=parseInt(caffeine);
+		console.log("caf: " + cafCount);
+		if(localStorage.getItem("Caffeine") != null){
+			cafCount+=parseInt(localStorage.getItem("Caffeine"));
+		}
+	}else{
+		cafCount+=parseInt(localStorage.getItem("Caffeine"));
+	}
+	// Store
+	localStorage.setItem("Caffeine", cafCount);
+
+	res.redirect("/nutrition?calories=" + calories +"&caffeine=" + caffeine);
 	
 	
-	//console.log(list);
-	res.render("nutrition");
-})
+});
 
 //route for list of ingredients page
 app.get("/lists", async  (req,res) => {
@@ -427,6 +475,7 @@ app.get("*", (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log("\nListening on port " + port);
-
+	console.log("Listening on port " + port);
 });
+
+

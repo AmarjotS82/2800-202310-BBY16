@@ -8,6 +8,7 @@
     "express-session": "^1.17.3",
     "joi": "^17.9.2",
     "node": "^19.8.1",
+    "node-localstorage": "^2.2.1",
     "openai": "^3.2.1"
   }
 }

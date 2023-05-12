@@ -1,3 +1,14 @@
-#test{
-    background-color: aqua;
-}
+#nutritionCard {
+    flex-wrap: wrap;
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #c92c2c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: black;
+  }
