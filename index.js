@@ -45,7 +45,7 @@ const questions = [
 ];
 
 const generateRecipe = async () => {
-	const prompt = constructPrompt(ingredients, dietaryPreferences);
+	const prompt = constructPrompt(ingredients);
 
 	const response = await openai.createChatCompletion({
 		model: "gpt-3.5-turbo",
@@ -56,9 +56,11 @@ const generateRecipe = async () => {
 
 	console.log(prompt);
 	console.log(response["data"]["choices"][0]["message"]["content"]);
+	recipe = response["data"]["choices"][0]["message"]["content"];
+	return recipe;
 };
 
-function constructPrompt(ingredients, dietaryPreferences) {
+function constructPrompt(ingredients) {
 	// Construct the prompt based on the ingredients and dietary preferences
 	let prompt = "Generate a recipe using ";
 
@@ -67,19 +69,19 @@ function constructPrompt(ingredients, dietaryPreferences) {
 	prompt += ingredientList;
 
 	// Add dietary preferences to the prompt if provided
-	if (dietaryPreferences) {
-		prompt += ", considering these dietary preferences: ";
-		prompt += dietaryPreferences;
-	}
+	//if (dietaryPreferences) {
+	//	prompt += ", considering these dietary preferences: ";
+	//	prompt += dietaryPreferences;
+	//}
 
-	prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
+	//prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
 
 	return prompt;
 }
 
 // Example usage
 const ingredients = [];
-const dietaryPreferences = "vegan";
+//const dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
 
@@ -369,7 +371,6 @@ app.get('/changePassword', (req, res) => {
 
 app.use(express.static(__dirname + "/public"));
 
-
 //new stuff added
 
 app.get('/login',(req,res) => {
@@ -379,7 +380,8 @@ app.get('/login',(req,res) => {
 
 
 app.get('/loggedin/members', (req,res) => {
-	res.render('members');
+	recipe = req.body.recipe;
+	res.render('members', {recipe});
 })
 
 
@@ -416,6 +418,12 @@ app.get('/loggedin/nutrition',async  (req,res) => {
 	res.render("nutrition",{Calories :  localStorage.getItem("Calories"), 
 	Caffeine : localStorage.getItem("Caffeine"), 
 	calGoal :  localStorage.getItem("calGoal"), cafGoal :  localStorage.getItem("cafGoal"), });
+});
+
+app.post('/generateRecipe', async (req,res) => {
+
+	recipe = await generateRecipe();
+	res.render('members', {recipe: recipe});
 });
 
 app.post('/nutritionInfo', (req,res) => {
