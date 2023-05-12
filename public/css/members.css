@@ -1,0 +1,74 @@
+
+
+/* body{
+    margin: 0 !important;
+/* }
+
+/* .members-wrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+
+}
+.header{
+    grid-column: 1/4;
+    grid-row: 1/2;
+    background-color: aquamarine;
+} */
+
+/* this is the calorie counter columns */
+/*
+.counter{
+    grid-column: 1/4;
+    grid-row: 2/3;
+    background-color: rgb(173, 112, 37);
+}
+.counter{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-row: 1fr 1fr;
+}
+.calorie{
+grid-column: 1/2;
+grid-row: 1/2;
+background-color: blue;
+}
+
+.caffeine{
+    grid-column: 2/3;
+    grid-row: 1/2;
+    background-color: brown;
+}
+
+.recipe{
+    grid-column: 1/4;
+    grid-row: 3/5;
+    /* height: 100vh; */
+
+
+body{
+    background-color: black;
+}
+.logo{
+    height: 100px;
+    width: 100px;
+} 
+
+h2{
+    color: aliceblue;  
+}
+  #nutritionCard{
+    background-color: rgba(204, 131, 131, 0.548);
+}
+
+#nutritionCard .btn{
+
+    background-color: rgb(249, 219, 219);
+    font-size: 13pt;
+    border-color: black;
+    
+}
+
+
+  
+

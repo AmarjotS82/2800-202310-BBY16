@@ -1,0 +1,15 @@
+<%- include("templates/header") %>
+  <link rel="stylesheet" href="/css/changePassword.css">
+
+
+  <div class="changePass_wrapper">
+    <form action='/newpassword/<%= email %>' method='post'>
+
+      <div class="username"> Your username is <%= username %></div>
+      
+      <div class="label"> <spam>Enter new password: </spam></div>
+      <input type="password" id="new-password" name="password">
+      <div class="newPassButton"><button type="submit" id="submit-new-password">Submit</button></div>
+
+    </form>
+  </div>
