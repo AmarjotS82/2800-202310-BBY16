@@ -1,0 +1,29 @@
+<%- include("templates/header") %>
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <div class="login_signup_wrapper">
+    <div class="index-img">
+      <img class="logo" src="/img/logo-no-background.png" alt="logo-pic" />
+    </div>
+    
+      <div class="login_div"> <button class="btn btn-primary login" type="button"
+          onclick="redirectToLogin();">Login</button>
+        </div>
+      <div class="signup_div"><button class="btn btn-primary signup" type="button" 
+        onclick="redirectToSignup()">Signup</button>
+    </div>
+  </div>
+
+  <!-- script to redirect the button to different page once user clicked in -->
+  <script>
+    function redirectToLogin() {
+      window.location.replace("/login");
+    }
+
+    function redirectToSignup() {
+      window.location.replace("/signup");
+    }
+
+  </script>
+
+  <%- include("templates/footer") %>

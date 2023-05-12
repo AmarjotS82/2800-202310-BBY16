@@ -1,0 +1,20 @@
+<%- include("templates/header") %>
+    <div>
+        <% for (let i=0; i < ingredients.length; i++) { %>
+            <div class="d-flex justify-content-center">
+                <button id="ingredient<%= i %>" type="button" class="btn btn-primary m-5">
+                    <%= ingredients[i] %>
+                </button>
+            </div>
+            <% } %>
+    </div>
+
+    <a href="/lists">
+        <button type="button" class="btn btn-primary btn-lg">Add Ingredients</button>
+    </a>
+
+    <form action="/generateRecipe" method="post">
+        <button type="submit" class="btn btn-primary btn-lg">Generate Recipe</button>
+    </form>
+
+    <%- include("templates/footer") %>

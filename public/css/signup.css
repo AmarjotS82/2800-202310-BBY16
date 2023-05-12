@@ -1,0 +1,64 @@
+/******************/
+/*** signup.ejs ****/
+/******************/
+
+body{
+    background-color: black;
+    margin-top: 25%;
+}
+h3{
+    color: aliceblue;
+    font-size: 30pt;
+    
+}
+.signup_wrapper{
+    background-color: rgba(204, 131, 131, 0.548);
+    display: grid;
+    border-radius: 20px;
+    height: 100%;
+    padding: 20px;
+    margin:1.5em; 
+}
+.security{
+    
+    border-radius: 7px;
+    height: 40px;
+    margin: 10px;
+    border-color: aliceblue;
+    padding-left: 8px;
+}
+.email{
+    border-radius: 7px;
+    height: 40px;
+    margin: 10px;
+    border-color: aliceblue;
+    padding-left: 8px;
+}
+.username{
+    border-radius: 7px;
+    height: 40px;
+    margin: 10px;
+    border-color: aliceblue;
+    padding-left: 8px;
+}
+.password{
+    border-radius: 7px;
+    height: 40px;
+    margin: 10px;
+    border-color: aliceblue;
+    padding-left: 8px;
+}
+
+button{
+    padding: 15px;
+    width: 200px;
+    padding-left: 15px;
+    padding-right: 20px;
+    border-radius: 10px;
+    margin-left: 50px;
+    margin-top: 20px;
+    background-color: rgb(249, 219, 219);
+    font-size: 13pt;
+}
+
+

@@ -1,0 +1,23 @@
+body{
+    background-color: black;
+}
+
+.signout-button{
+    padding: 15px;
+    width: 200px;
+    padding-left: 15px;
+    padding-right: 20px;
+    border-radius: 10px;
+    margin-left: 50px;
+    margin-top: 20px;
+    background-color: rgb(249, 219, 219);
+    font-size: 13pt;
+    font-weight: bold;
+}
+.profile_wrapper{
+    background-color: rgba(204, 131, 131, 0.548);
+    border-radius: 20px;
+    height: 100%;
+    padding: 20px;
+    margin:1.5em; 
+}
