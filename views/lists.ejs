@@ -1,22 +1,30 @@
-<%- include("templates/header") %> 
+<%- include("templates/header") %>
+    <style>
+        .custom-button {
+            width: 200px;
+        }
+      
+    </style>
 
-<h1>List</h1>
-<!-- list of ingredients-->
-<input type="text" id="search-input" placeholder="Search ingredients...">
-<ul >     
-    !--iterate over length of array--!
-    <% for(let i = 0; i < list.length ; i++) { %>
-        <li > 
-            <!--div for content in list-->
-            <div class=" row mb-3 text-center">
-                <div class="col-md-3 themed-grid-col p-2" id="ingredient-List" data-ingredient="<%= list.Food %>">
-                    <!--name of ingredient at index i-->
-                    <%= list[i].Food%> 
+<div class="d-flex justify-content-center align-items-center flex-column py-5">
+    <h1 class="text-center">List</h1>
+    <input type="text" id="search-input" class="text-center" placeholder="Search ingredients...">
+  </div>
+    
+    <ul class="list-group list-unstyled align-items-center flex-column py-5">
+
+        <% for(let i=0; i < list.length ; i++) { %>
+            <li>
+                <!--div for content in list-->
+                <div>
+                    <form method="POST" action="/updateLocalIngredient">
+                        <button type="submit" id="ingredient-List" class="btn btn-light custom-button" name="foodName"
+                            value="<%= list[i].Food %>" data-ingredient="<%= list.Food %>">
+                            <%= list[i].Food %>
+                        </button>
+                    </form>
                 </div>
-            </div>
-            
-        </li>
-    <% } %> 
-</ul>
-
-<script src="/js/lists.js"></script>
+            </li>
+            <% } %>
+    </ul>
+    <script src="/js/lists.js"></script>

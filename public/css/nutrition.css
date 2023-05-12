@@ -1,3 +1,28 @@
-#test{
-    background-color: aqua;
+
+
+
+
+body{
+  background-color: black;
+  
 }
+h3{
+  color: aliceblue;
+  
+}
+#nutritionCard{
+  background-color: rgba(204, 131, 131, 0.548);
+}
+
+#nutritionCard .btn{
+
+  background-color: rgb(249, 219, 219);
+  font-size: 13pt;
+  border-color: black;
+  
+}
+
+#test, #test2{
+  background-color: rgba(204, 131, 131, 0.548);
+}
+
