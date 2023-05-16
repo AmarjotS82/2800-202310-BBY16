@@ -6,6 +6,11 @@ const session = require('express-session');
 
 const MongoStore = require('connect-mongo');
 
+//Crates a localstroage to sue for te counters 
+var LocalStorage = require('node-localstorage').LocalStorage;
+//A folder that holds the data
+localStorage = new LocalStorage('./scratch');
+
 require('dotenv').config();
 
 const bcrypt = require('bcrypt');
@@ -45,7 +50,7 @@ const questions = [
 ];
 
 const generateRecipe = async () => {
-	const prompt = constructPrompt(ingredients);
+	const prompt = constructPrompt();
 
 	const response = await openai.createChatCompletion({
 		model: "gpt-3.5-turbo",
@@ -60,12 +65,12 @@ const generateRecipe = async () => {
 	return recipe;
 };
 
-function constructPrompt(ingredients) {
+function constructPrompt() {
 	// Construct the prompt based on the ingredients and dietary preferences
 	let prompt = "Generate a recipe using ";
 
 	// Add the list of ingredients to the prompt
-	const ingredientList = ingredients.join(", ");
+	const ingredientList = getIngredients().join(", ");
 	prompt += ingredientList;
 
 	// Add dietary preferences to the prompt if provided
@@ -73,14 +78,14 @@ function constructPrompt(ingredients) {
 	//	prompt += ", considering these dietary preferences: ";
 	//	prompt += dietaryPreferences;
 	//}
-
+	prompt += ""
 	//prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
 
 	return prompt;
 }
 
 // Example usage
-const ingredients = [];
+localStorage.setItem('ingredients', '[]');
 //const dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
@@ -120,10 +125,7 @@ rl.question('Enter 8 into console to generate recipe: ', (answer) => {
 
 //-------------------------------------------------------------------------
 
-//Crates a localstroage to sue for te counters 
-var LocalStorage = require('node-localstorage').LocalStorage;
-//A folder that holds the data
-localStorage = new LocalStorage('./scratch');
+
 
 app.set('view engine', 'ejs');
 
@@ -143,6 +145,12 @@ app.use(session({
 	resave: true
 }
 ));
+
+function getIngredients() {
+	const storedIngredients = localStorage.getItem('ingredients');
+	return JSON.parse(storedIngredients) || [];
+}
+
 
 /** Use later for valid session */
 function isValidSession(req) {
@@ -379,11 +387,6 @@ app.use(express.static(__dirname + "/public"));
 
 //new stuff added
 
-app.get('/login', (req, res) => {
-	res.render("login");
-
-})
-
 
 app.get('/loggedin/members', (req,res) => {
 	recipe = req.body.recipe;
@@ -520,7 +523,7 @@ app.post('/nutritionInfo', async (req,res) => {
 });
 
 app.get('/filters',(req, res)  => {
-	res.render("filters", { ingredients });
+	res.render("filters", { ingredients: getIngredients() });
 });
 
 //route for list of ingredients page
@@ -546,20 +549,31 @@ app.get("/loggedin/members/profile", async (req, res) => {
 
 app.post('/updateLocalIngredient/', (req, res) => {
 	const foodName = req.body.foodName;
+	
+	const ingredients = getIngredients();
 	const index = ingredients.indexOf(foodName);
 
 	if (index !== -1) {
 		// If foodName is already in the ingredients array, remove it
 		ingredients.splice(index, 1);
+		localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		console.log("Removed " + foodName);
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
+		localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		console.log("Added " + foodName);
 	}
 
 	console.log(ingredients);
 });
+
+// *************** searchRecipe section**************************
+app.get('/loggedin/searchRecipe', (req, res)=> {
+	res.render('searchRecipe');
+})
+// ------------------------------------------------------
+
 
 // ***************logout section**************************
 app.post('/logout', (req, res) => {
