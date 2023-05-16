@@ -2,6 +2,7 @@
 
 <link rel="stylesheet" href="/css/nutrition.css">
 
+<!-- Card to be dispalyed on the screen -->
     <div class="d-flex justify-content-center align-items-center calorieBox" style="height: 50vh;">
       <div id="nutritionCard" class=" card w-100 m-5">
         <div class="card-body text-center">
@@ -13,20 +14,9 @@
         </div>
       </div>  
     </div>
+    <!-- Card code ends -->
 
-    <!-- <div class="d-flex justify-content-center align-items-center caffeineBox" style="height: 50vh;">
-      <div id="nutritionCard" class=" card w-100 m-5">
-        <div class="card-body text-center">
-        <h3>Caffeine</h3> 
-        
-        <button type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test">
-          More
-        </button>
-        </div>
-      </div>  
-    </div> -->
-
-    
+    <!-- Modal that appears wheen the suer clicks more -->
     <div id="test2" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -41,11 +31,8 @@
             <p>Total Intake: <%= Calories %> </p>
 
             <p>Goal: <%= calGoal %></p>
-
-             
           </div>
           <div class="modal-footer">
-          
               <form action="/nutritionInfo" method="post">
                 <input name="calories" type="text" placeholder="Amount">
                 <button type="submit" class="btn btn-primary">Add</button>
@@ -58,37 +45,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div id="test" class="modal fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Caffeine</h5>
-            <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">X</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Total Intake: <%#  Caffeine %> </p>
-            <p>Goal: <%#  cafGoal %></p>
-          </div>
-          <div class="modal-footer">
-              <form action="/nutritionInfo" method="post">
-                <input name="caffeine" type="text" placeholder="Amount">
-                <button type="submit" class="btn btn-primary">Add</button>
-              </form>
-              <form action="/nutritionInfo" method="post">
-                <input name="cafGoal" type="text" placeholder="Goal">
-                <button type="submit" class="btn btn-warning">Goal</button>
-              </form>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
-  
-    
-
-  
+ <!-- Modal code ends -->
     <%- include("templates/navbar") %>
     <%- include("templates/footer") %> 
