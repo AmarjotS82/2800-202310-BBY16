@@ -558,9 +558,12 @@ app.post('/updateLocalIngredient/', (req, res) => {
 	console.log(ingredients);
 });
 
+// *************** searchRecipe section**************************
 app.get('/loggedin/searchRecipe', (req, res)=> {
 	res.render('searchRecipe');
 })
+// ------------------------------------------------------
+
 
 // ***************logout section**************************
 app.post('/logout', (req, res) => {
