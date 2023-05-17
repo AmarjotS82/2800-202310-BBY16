@@ -10,6 +10,8 @@ require('dotenv').config();
 
 const bcrypt = require('bcrypt');
 
+var mongo = require('mongodb');
+
 const Joi = require("joi");
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -55,7 +57,7 @@ const generateRecipe = async () => {
 	});
 
 	console.log(prompt);
-	console.log(response["data"]["choices"][0]["message"]["content"]);
+	// console.log(response["data"]["choices"][0]["message"]["content"]);
 	recipe = response["data"]["choices"][0]["message"]["content"];
 	return recipe;
 };
@@ -91,6 +93,7 @@ var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
+const recipeCollection = database.db(mongodb_database).collection('saved_recipes');
 
 const testCollection = database.db(mongodb_database).collection('ingredient');
 
@@ -117,6 +120,7 @@ rl.question('Enter 8 into console to generate recipe: ', (answer) => {
 
 	rl.close();
 });
+
 
 //-------------------------------------------------------------------------
 
@@ -396,6 +400,7 @@ app.post('/generateRecipe', async (req,res) =>{
 })
 
 
+
 app.get('/loggedin/nutrition', async (req, res) => {
 
 	//Store in session and have it resest daily 
@@ -561,6 +566,71 @@ app.post('/updateLocalIngredient/', (req, res) => {
 
 	console.log(ingredients);
 });
+
+
+//----------------------- For saving recipes ----------------------
+
+async function saveRecipe( recipe, username) {
+	recipeName = recipe.substring(0, recipe.indexOf("Ingredients:")).trim();
+	recipeDetails = recipe.substring(recipe.indexOf("Ingredients:"), recipe.length);
+	console.log(recipeName);
+	console.log(username);
+
+	await recipeCollection.insertOne({username: username, recipeName: recipeName, recipe: recipeDetails});
+}
+
+app.post('/saveRecipe', async (req,res) => {
+	if(typeof recipe !== 'undefined') {
+		saveRecipe(recipe, req.session.username);
+		res.redirect('/loggedin/recipes');
+	} else {
+		console.log("Must create recipe!");
+		return;
+	}
+})
+
+//------------------------------------------------------------------
+
+//----------------------- For unsaving recipes ----------------------
+
+app.post('/unsaveRecipe/:id', async (req,res) => {
+	let recipe_id = req.params.id;
+
+	await recipeCollection.deleteOne({_id: new mongo.ObjectId(recipe_id)});
+	// const result = await recipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
+
+
+
+	// console.log(result[0].recipeName)
+
+	res.redirect("/loggedin/recipes");
+})
+
+//------------------------------------------------------------------
+
+//----------------------- For displaying recipes ----------------------
+
+app.get('/loggedin/recipes', async (req, res) => {
+	const result = await recipeCollection.find({username: req.session.username }).toArray();
+
+	res.render('recipes', {result: result})
+})
+
+
+//------------------------------------------------------------------
+
+
+//----------------------- For recipe modal ----------------------
+
+app.get('/recipe/:id', async (req,res ) => {
+	const recipe_id = req.params.id;
+	const result = await recipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
+
+	res.send(result);
+})
+
+
+//------------------------------------------------------------------
 
 // ***************logout section**************************
 app.post('/logout', (req, res) => {
