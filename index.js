@@ -93,7 +93,7 @@ var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
-const recipeCollection = database.db(mongodb_database).collection('saved_recipes');
+const savedRecipeCollection = database.db(mongodb_database).collection('saved_recipes');
 
 const testCollection = database.db(mongodb_database).collection('ingredient');
 
@@ -576,7 +576,7 @@ async function saveRecipe( recipe, username) {
 	console.log(recipeName);
 	console.log(username);
 
-	await recipeCollection.insertOne({username: username, recipeName: recipeName, recipe: recipeDetails});
+	await savedRecipeCollection.insertOne({username: username, recipeName: recipeName, recipe: recipeDetails});
 }
 
 app.post('/saveRecipe', async (req,res) => {
@@ -596,8 +596,8 @@ app.post('/saveRecipe', async (req,res) => {
 app.post('/unsaveRecipe/:id', async (req,res) => {
 	let recipe_id = req.params.id;
 
-	await recipeCollection.deleteOne({_id: new mongo.ObjectId(recipe_id)});
-	// const result = await recipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
+	await savedRecipeCollection.deleteOne({_id: new mongo.ObjectId(recipe_id)});
+	// const result = await savedRecipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
 
 
 
@@ -611,7 +611,7 @@ app.post('/unsaveRecipe/:id', async (req,res) => {
 //----------------------- For displaying recipes ----------------------
 
 app.get('/loggedin/recipes', async (req, res) => {
-	const result = await recipeCollection.find({username: req.session.username }).toArray();
+	const result = await savedRecipeCollection.find({username: req.session.username }).toArray();
 
 	res.render('recipes', {result: result})
 })
@@ -624,7 +624,7 @@ app.get('/loggedin/recipes', async (req, res) => {
 
 app.get('/recipe/:id', async (req,res ) => {
 	const recipe_id = req.params.id;
-	const result = await recipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
+	const result = await savedRecipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
 
 	res.send(result);
 })
