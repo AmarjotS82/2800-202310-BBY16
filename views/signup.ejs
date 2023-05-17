@@ -2,37 +2,39 @@
 <link rel="stylesheet" href="/css/signup.css" />
 
 <div class="signup_wrapper">
-  <h3>Let's get your account set up </i></h3>
+  <h3>Let's set up your account </i></h3>
   <form action="/submitUser" method="post">
     <div class="input-group mb-3">
       <label
         class="input-group-text"
         for="inputGroupSelect01"
-        style="font-size: 1pt; padding-top: 15px"
-        >please select a security question</label
+        style="font-size: 5pt; background-color: rgb(249, 234, 215); "
+        ></label
       >
       <select
-        style="font-size: 12px"
+        style="font-size: 15px; background-color: rgb(249, 234, 215);"
         class="form-select required"
         id="inputGroupSelect01"
         name="question"
       >
-        <option selected value="0">Choose...</option>
+        <option selected value="0">Select a security question</option>
         <option value="1">What is the name of your hometown?</option>
         <option value="2">What is your first car?</option>
         <option value="3">What was your first pet's name?</option>
         <option value="4">What did you want to be growing up?</option>
         <option value="5">Who is your favorite author?</option>
       </select>
+    </div>
       <div>
       <input
         class="security px-2 py-2"
         name="answer"
         type="text"
         placeholder="Security Answer"
+        
       />
     </div>
-    </div>
+    
 
     <div>
       <input class="email" name="email" type="text" placeholder="email" />
@@ -53,6 +55,6 @@
         placeholder="password"
       />
     </div>
-    <button>let's get</button>
+    <button>Get started</button>
   </form>
 </div>

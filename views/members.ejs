@@ -23,27 +23,47 @@ rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/S
 crossorigin="anonymous"/>
 <link rel="stylesheet" href="/css/members.css">
 <h2>Welcome!</h2> 
-<div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
-    <div id="nutritionCard" class=" card w-100 m-5">
-      <div class="card-body text-center">
-
-      <h3>My calories</h3> 
-
-        <a type="button" class="btn w-50" href="/loggedin/nutrition">
-            Get Started
-        </a>             
-      </div>     
-    </div>  
-  </div>
-  <a href="/lists">
-    <button type="button" class="btn btn-primary btn-lg">Add Ingredients</button>
-</a>
-
 
     <div id="recipe-container">
             <h2>Generated Recipe:</h2>
             <p style="color:aliceblue"><%- recipe %></p>
-          </div>
+    </div>
+    <a href="/lists">
+      <button type="button" class="btn btn-primary btn-lg">Add Ingredients</button>
+  </a>
+  
+    <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+      <div id="nutritionCard" class=" card w-100 m-5">
+        <div class="card-body text-center">
+  
+        <h3>My calories</h3> 
+        <!-- Ring on home page -->
+        <!-- <%# if(calGoal>0 && Calories>0) { %>
+        <svg
+        class="progress-ring d-flex"
+        width="120"
+        height="120">
+        <%# let percent = ( Calories/ calGoal ) * 100 %>
+       <circle
+       id="homeRing"
+         class="progress-ring__circle"
+         stroke="white"
+         stroke-width="8"
+         fill="transparent"
+         r="52"
+         cx="60"
+         cy="60" 
+         aria-valuenow="<%# percent %>"/>
+        
+     </svg>
+     <%# } %> -->
+          <a type="button" class="btn w-50" href="/loggedin/nutrition">
+              Get Started
+          </a>             
+        </div>     
+      </div>  
+    </div>
+    
 
   <%- include("templates/navbar") %>
 <%- include("templates/footer") %>

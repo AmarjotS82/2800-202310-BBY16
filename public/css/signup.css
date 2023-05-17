@@ -3,62 +3,57 @@
 /******************/
 
 body{
-    background-color: black;
+    background-color: #B4846C;
     margin-top: 25%;
+    font-family:'Times New Roman', Times, serif;
 }
+
 h3{
-    color: aliceblue;
-    font-size: 30pt;
-    
+    color: #564225;
+    font-size: 20pt;
+    font-family:'Times New Roman', Times, serif;
+    font-weight: 500;
+    margin-bottom: 20px;
 }
+
 .signup_wrapper{
-    background-color: rgba(204, 131, 131, 0.548);
-    display: grid;
+    background-color: #e5b299;
     border-radius: 20px;
     height: 100%;
     padding: 20px;
     margin:1.5em; 
 }
 .security{
-    
     border-radius: 7px;
     height: 40px;
     margin: 10px;
-    border-color: aliceblue;
-    padding-left: 8px;
+    background-color:rgb(249, 234, 215);
+    border-style: none;
 }
-.email{
+
+.password, .username, .email{
     border-radius: 7px;
     height: 40px;
     margin: 10px;
-    border-color: aliceblue;
+    background-color:rgb(249, 234, 215);
     padding-left: 8px;
-}
-.username{
-    border-radius: 7px;
-    height: 40px;
-    margin: 10px;
-    border-color: aliceblue;
-    padding-left: 8px;
-}
-.password{
-    border-radius: 7px;
-    height: 40px;
-    margin: 10px;
-    border-color: aliceblue;
-    padding-left: 8px;
+    border-style: none;
 }
 
 button{
-    padding: 15px;
+    padding: 13px;
     width: 200px;
     padding-left: 15px;
     padding-right: 20px;
     border-radius: 10px;
     margin-left: 50px;
-    margin-top: 20px;
-    background-color: rgb(249, 219, 219);
-    font-size: 13pt;
+    margin-top: 17px;
+    background-color: #7d5a50;
+    border-style: hidden;
+    color: #dcd0bf;
+    font-size: 18pt;
+    font-family:'Times New Roman', Times, serif;
+    
 }
 
 
