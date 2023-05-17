@@ -78,7 +78,8 @@ function constructPrompt() {
 	//	prompt += ", considering these dietary preferences: ";
 	//	prompt += dietaryPreferences;
 	//}
-	prompt += ""
+	prompt += "Please format the recipe to be displayed in a HTML div element. "
+	prompt += "Please do not include any images. "
 	//prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
 
 	return prompt;
@@ -86,6 +87,7 @@ function constructPrompt() {
 
 // Example usage
 localStorage.setItem('ingredients', '[]');
+localStorage.setItem('recipe', '[]');
 //const dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
@@ -389,15 +391,21 @@ app.use(express.static(__dirname + "/public"));
 
 
 app.get('/loggedin/members', (req,res) => {
-	recipe = req.body.recipe;
+	const recipe = JSON.parse(localStorage.getItem('recipe'));
+
 	res.render('members', {recipe: recipe});
 })
 
-app.post('/generateRecipe', async (req,res) =>{
-	recipe = await generateRecipe();
-	res.render('members', {recipe: recipe});
-})
-
+app.post('/generateRecipe', async (req, res) => {
+	try {
+	  const recipe = await generateRecipe();
+	  localStorage.setItem('recipe', JSON.stringify(recipe));
+	  res.redirect('/loggedin/members');
+	} catch (error) {
+	  // Handle any errors that occur during recipe generation
+	  res.status(500).send('Error generating recipe.');
+	}
+  });
 
 app.get('/loggedin/nutrition', async (req, res) => {
 
@@ -516,8 +524,6 @@ app.post('/nutritionInfo', (req,res) => {
 	}
 
 	// Store
-
-
 	res.redirect("/loggedin/nutrition");
 
 

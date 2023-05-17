@@ -1,4 +1,5 @@
 <%- include("templates/header") %>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
    
         <link rel="stylesheet" href="/css/members.css" />
 
@@ -41,7 +42,7 @@ crossorigin="anonymous"/>
 
     <div id="recipe-container">
             <h2>Generated Recipe:</h2>
-            <p style="color:aliceblue"><%= recipe %></p>
+            <p style="color:aliceblue"><%- recipe %></p>
           </div>
 
   <%- include("templates/navbar") %>
