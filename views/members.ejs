@@ -1,4 +1,5 @@
 <%- include("templates/header") %>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
    
         <link rel="stylesheet" href="/css/members.css" />
 
@@ -25,11 +26,14 @@ crossorigin="anonymous"/>
 
     <div id="recipe-container">
             <h2>Generated Recipe:</h2>
-            <p style="color:aliceblue"><%= recipe %></p>
+            <p style="color:aliceblue"><%- recipe %></p>
     </div>
     <a href="/lists">
       <button type="button" class="btn btn-primary btn-lg">Add Ingredients</button>
   </a>
+  <form action="/saveRecipe" method="post">
+    <button class="btn btn-primary">Save</button>
+  </form>
   
     <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
       <div id="nutritionCard" class=" card w-100 m-5">

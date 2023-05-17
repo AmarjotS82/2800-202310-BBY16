@@ -15,6 +15,8 @@ require('dotenv').config();
 
 const bcrypt = require('bcrypt');
 
+var mongo = require('mongodb');
+
 const Joi = require("joi");
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -78,7 +80,8 @@ function constructPrompt() {
 	//	prompt += ", considering these dietary preferences: ";
 	//	prompt += dietaryPreferences;
 	//}
-	prompt += ""
+	prompt += "Please format the recipe to be displayed in a HTML div element. "
+	prompt += "Please do not include any images. "
 	//prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
 
 	return prompt;
@@ -86,6 +89,7 @@ function constructPrompt() {
 
 // Example usage
 localStorage.setItem('ingredients', '[]');
+localStorage.setItem('recipe', '[]');
 //const dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
@@ -96,6 +100,7 @@ var { database } = include('databaseConnection');
 
 const userCollection = database.db(mongodb_database).collection('users');
 
+const savedRecipeCollection = database.db(mongodb_database).collection('saved_recipes');
 
 const testCollection = database.db(mongodb_database).collection('ingredient');
 
@@ -124,6 +129,7 @@ rl.question('Enter 8 into console to generate recipe: ', (answer) => {
 
 	rl.close();
 });
+
 
 //-------------------------------------------------------------------------
 
@@ -390,17 +396,24 @@ app.use(express.static(__dirname + "/public"));
 //new stuff added
 
 
-app.get('/loggedin/members', async (req,res) => {
-	recipe = req.body.recipe;
+app.get('/loggedin/members', (req,res) => {
+	const recipe = JSON.parse(localStorage.getItem('recipe'));
+
 	res.render('members', {recipe: recipe});
 })
 
-app.post('/generateRecipe', async (req,res) =>{
-	recipe = await generateRecipe();
-	res.render('members', {recipe: recipe});
-})
+app.post('/generateRecipe', async (req, res) => {
+	try {
+	  const recipe = await generateRecipe();
+	  localStorage.setItem('recipe', JSON.stringify(recipe));
+	  res.redirect('/loggedin/members');
+	} catch (error) {
+	  // Handle any errors that occur during recipe generation
+	  res.status(500).send('Error generating recipe.');
+	}
+  });
 
-//********************** Calorie Counter Page */
+
 app.get('/loggedin/nutrition', async (req, res) => {
 
 	//email to identify the user adn get only their information
@@ -518,7 +531,34 @@ app.post('/nutritionInfo', async (req,res) => {
 		//Set value inputted into the database overwrites old value
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: calorieGoal}});
 	}
-	//redirect to nutrition page
+
+	let cafCount = 0;
+
+
+	if (caffeine != null) {
+		cafCount += parseInt(caffeine);
+		if (localStorage.getItem("Calories") != null) {
+			cafCount += parseInt(localStorage.getItem("Caffeine"));
+		}
+	} else {
+		cafCount += parseInt(localStorage.getItem("Caffeine"));
+	}
+
+	// Store
+	localStorage.setItem("Caffeine", cafCount);
+
+	if (caffeineGoal != null) {
+		const validationResult = schema.validate(caffeineGoal);
+		if (validationResult.error != null) {
+			console.log(validationResult.error);
+			res.redirect("/loggedin/nutrition");
+			return;
+		}
+
+		localStorage.setItem("cafGoal", caffeineGoal);
+	}
+
+	// Store
 	res.redirect("/loggedin/nutrition");
 
 
@@ -569,6 +609,71 @@ app.post('/updateLocalIngredient/', (req, res) => {
 
 	console.log(ingredients);
 });
+
+
+//----------------------- For saving recipes ----------------------
+
+async function saveRecipe( recipe, username) {
+	recipeName = recipe.substring(12, recipe.indexOf("/") - 1).trim();
+	recipeDetails = recipe.substring(recipe.indexOf("Ingredients:"), recipe.length);
+	console.log(recipeName);
+	console.log(username);
+
+	await savedRecipeCollection.insertOne({username: username, recipeName: recipeName, recipe: recipeDetails});
+}
+
+app.post('/saveRecipe', async (req,res) => {
+	if(typeof recipe !== 'undefined') {
+		saveRecipe(recipe, req.session.username);
+		res.redirect('/loggedin/recipes');
+	} else {
+		console.log("Must create recipe!");
+		return;
+	}
+})
+
+//------------------------------------------------------------------
+
+//----------------------- For unsaving recipes ----------------------
+
+app.post('/unsaveRecipe/:id', async (req,res) => {
+	let recipe_id = req.params.id;
+
+	await savedRecipeCollection.deleteOne({_id: new mongo.ObjectId(recipe_id)});
+	// const result = await savedRecipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
+
+
+
+	// console.log(result[0].recipeName)
+
+	res.redirect("/loggedin/recipes");
+})
+
+//------------------------------------------------------------------
+
+//----------------------- For displaying recipes ----------------------
+
+app.get('/loggedin/recipes', async (req, res) => {
+	const result = await savedRecipeCollection.find({username: req.session.username }).toArray();
+
+	res.render('recipes', {result: result})
+})
+
+
+//------------------------------------------------------------------
+
+
+//----------------------- For recipe modal ----------------------
+
+app.get('/recipe/:id', async (req,res ) => {
+	const recipe_id = req.params.id;
+	const result = await savedRecipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
+
+	res.send(result);
+})
+
+
+//------------------------------------------------------------------
 
 // *************** searchRecipe section**************************
 app.get('/loggedin/searchRecipe', async (req, res)=> {

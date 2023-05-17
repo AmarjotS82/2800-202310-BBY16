@@ -1,0 +1,13 @@
+<li class="list-group-item d-flex justify-content-between align-items-center">
+    <div class="card test" style="width: 20rem;">
+        <div class="card-body">
+          <h5 class="card-title"><%= recipe.recipeName %></h5>
+            <button type="button" class="btn btn-primary modal-btn" object-id="<%= recipe._id %>" id="modal-btn" >
+              More
+            </button>
+            <form action="/unsaveRecipe/<%= recipe._id %>" method="post">
+              <button class="btn btn-primary">Unsave</button>
+            </form>
+        </div>
+      </div> 
+</li>
