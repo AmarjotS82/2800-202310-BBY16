@@ -1,4 +1,5 @@
 <%- include("templates/header") %>
+<link rel="stylesheet" href="/css/filters.css">
     <div>
         <% for (let i=0; i < ingredients.length; i++) { %>
             <div class="d-flex justify-content-center">
@@ -15,6 +16,13 @@
 
     <form action="/generateRecipe" method="post">
         <button type="submit" class="btn btn-primary btn-lg">Generate Recipe</button>
+    </form>
+
+    <form>
+        <button id="keto" type="submit" class="btn btn-primary btn-lg">Keto/Low-carbs</button>
+        <button id="glutenfree" type="submit" class="btn btn-primary btn-lg">Gluten free</button>
+        <button id="vegan" type="submit" class="btn btn-primary btn-lg">vegan</button>
+        <button id="dairyfree" type="submit" class="btn btn-primary btn-lg">Dairy-free</button>
     </form>
 
     <%- include("templates/footer") %>

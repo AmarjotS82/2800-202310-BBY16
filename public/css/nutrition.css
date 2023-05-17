@@ -22,7 +22,33 @@ h3{
   
 }
 
-#test, #test2{
+#test2{
   background-color: rgba(204, 131, 131, 0.548);
+}
+
+/* Progrss Ring */
+
+.progress-ring__circle {
+  
+
+  animation: spin 10s  linear;
+  transition: 5s;
+  transform: rotate(265deg);
+  transform-origin: 50% 50%;
+  stroke-dashoffset: 347;
+
+}
+
+.pT{
+  display: d-flex;
+  align-items: center;
+  justify-content: center;
+  
+ 
+  
+}
+svg{
+  margin-left: 35%;
+  margin-bottom: 5%;
 }
 
