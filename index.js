@@ -568,21 +568,26 @@ app.post('/updateLocalIngredient/', (req, res) => {
 	console.log(ingredients);
 });
 
-// *************** searchRecipe section**************************
+// *************** searchRecipe section******************
 app.get('/loggedin/searchRecipe', (req, res)=> {
 	res.render('searchRecipe');
 })
 // ------------------------------------------------------
 
+// *************** Grocery List *******************
+app.get('/todo', (req, res)=> {
+	res.render('todo');
+})
+//-------------------------------------------------
 
-// ***************logout section**************************
+// ***************logout section*************************
 app.post('/logout', (req, res) => {
 	req.session.destroy();
 	res.redirect('/');
 });
-// ------------------------------------------------------
+// -----------------------------------------------------
 
-// ***********404 for all page****************
+// ***********404 for all page*************************
 app.get("*", (req, res) => {
 	res.status(404);
 	res.render("404");
