@@ -572,8 +572,8 @@ app.post('/updateLocalIngredient/', (req, res) => {
 
 // *************** searchRecipe section**************************
 app.get('/loggedin/searchRecipe', async (req, res)=> {
-	let recipes = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
-	res.render('searchRecipe',{ recipe: recipes[0].Image_Name});
+	let recipesList = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
+	res.render('searchRecipe',{ recipe: recipesList});
 })
 // ------------------------------------------------------
 

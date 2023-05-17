@@ -1,8 +1,18 @@
 <%- include("templates/header") %>
 
 <h1 style="color: aliceblue;"> Find a Recipe</h1>
+<% for(let i =0; i < recipe.length; i++ ) { %>
+<div class="card" style="width: 18rem;">
+    <img src="/img/recipes/<%= recipe[i].Image_Name %>.jpg" class="card-img-top" alt="<%= recipe[i].Image_Name %>">
+    <div class="card-body">
+      <h5 class="card-title"><%= recipe[i].Title %></h5>
+      
+      <a href="#" class="btn btn-primary">Details</a>
+    </div>
+</div>
 
-<p  style="color: aliceblue;"><%= recipe %></p>
+<% } %>
+
 
 <%- include("templates/navbar") %>
 <%- include("templates/footer") %>
