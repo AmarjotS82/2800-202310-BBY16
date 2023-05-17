@@ -6,6 +6,11 @@ const session = require('express-session');
 
 const MongoStore = require('connect-mongo');
 
+//Crates a localstroage to sue for te counters 
+var LocalStorage = require('node-localstorage').LocalStorage;
+//A folder that holds the data
+localStorage = new LocalStorage('./scratch');
+
 require('dotenv').config();
 
 const bcrypt = require('bcrypt');
@@ -45,7 +50,7 @@ const questions = [
 ];
 
 const generateRecipe = async () => {
-	const prompt = constructPrompt(ingredients);
+	const prompt = constructPrompt();
 
 	const response = await openai.createChatCompletion({
 		model: "gpt-3.5-turbo",
@@ -60,12 +65,12 @@ const generateRecipe = async () => {
 	return recipe;
 };
 
-function constructPrompt(ingredients) {
+function constructPrompt() {
 	// Construct the prompt based on the ingredients and dietary preferences
 	let prompt = "Generate a recipe using ";
 
 	// Add the list of ingredients to the prompt
-	const ingredientList = ingredients.join(", ");
+	const ingredientList = getIngredients().join(", ");
 	prompt += ingredientList;
 
 	// Add dietary preferences to the prompt if provided
@@ -73,14 +78,14 @@ function constructPrompt(ingredients) {
 	//	prompt += ", considering these dietary preferences: ";
 	//	prompt += dietaryPreferences;
 	//}
-
+	prompt += ""
 	//prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
 
 	return prompt;
 }
 
 // Example usage
-const ingredients = [];
+localStorage.setItem('ingredients', '[]');
 //const dietaryPreferences = "vegan";
 
 const saltRounds = 12; //use for encryption
@@ -120,10 +125,7 @@ rl.question('Enter 8 into console to generate recipe: ', (answer) => {
 
 //-------------------------------------------------------------------------
 
-//Crates a localstroage to sue for te counters 
-var LocalStorage = require('node-localstorage').LocalStorage;
-//A folder that holds the data
-localStorage = new LocalStorage('./scratch');
+
 
 app.set('view engine', 'ejs');
 
@@ -143,6 +145,12 @@ app.use(session({
 	resave: true
 }
 ));
+
+function getIngredients() {
+	const storedIngredients = localStorage.getItem('ingredients');
+	return JSON.parse(storedIngredients) || [];
+}
+
 
 /** Use later for valid session */
 function isValidSession(req) {
@@ -390,133 +398,132 @@ app.post('/generateRecipe', async (req,res) =>{
 	res.render('members', {recipe: recipe});
 })
 
-
+//********************** Calorie Counter Page */
 app.get('/loggedin/nutrition', async (req, res) => {
 
-	//Store in session and have it resest daily 
-	//so it persists and doesnt get resset every time you load a page
+	//email to identify the user adn get only their information
 	var email = req.session.email
 
-	
+	//Stores the last time the user accesed the page by using email to find the specific user and turns it into an array
 	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
-	console.log("Stored:" + storedTime[0].LastDateUsed);
+	
+	//gets the valur in the databse from the array crated above
 	var lastTime = storedTime[0].LastDateUsed;
-	var currTime = new Date().getMinutes();
 
-	console.log(lastTime);
+	//Gets the current date by creating a new date object and getting the day
+	// * Currently getting minutes for testing purposes
+	var currTime = new Date().getMinutes();
+	
+	//console.log(lastTime);
+
+	//Checks to see if the value in the array is null which happens the very first time the user accesses the page since they have no previous visits
 
 	if(storedTime[0].LastDateUsed == null){
+		//sets the last visit date to current date to be used next visit
 		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
+
+		//Sets the calories and goals to zero since the user hasn't input anytihng yet
+		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
+		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
 	}
-	
+	//Check if the user is logging in on a new day and reset values so they can keep track daily
+	// * Currently every 2 mins for testing purposes
 	if(currTime - lastTime > 1) {
+		//sets the last visit date to current date to be used next visit by finding difference between last vist and current date
 		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
-		localStorage.setItem("Calories",0);
-		localStorage.setItem("Caffeine",0);
-		localStorage.setItem("calGoal",0)
-		localStorage.setItem("cafGoal",0)
+		//Resets the calories and goals to zero so user can add daily
+		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
+		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
 	}else if(currTime < lastTime){
+		//This is to deal with days when the differnece of last vist and current date is less than 1
+		// Example: May 29 and then June 4 the first if statement wouldn't catch this case and not update values/date 
+		
+		//sets the last visit date to current date to be used next visit
 		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
-		localStorage.setItem("Calories",0);
-		localStorage.setItem("Caffeine",0);
-		localStorage.setItem("calGoal",0)
-		localStorage.setItem("cafGoal",0)
+
+		//Resets the calories and goals to zero so user can add daily
+		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
+		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
 
 	}
 
+	//Stores the number of calories the user has input by using email to find the specific user and turns it into an array
+	let calorieCount = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
 
-
-	//console.log("c2: " + calories);
-	console.log("cf2: " + localStorage.getItem("Caffeine"));
+	//Stores the calorie goal the user has input by using email to find the specific user and turns it into an array
+	let storedcalorieGoal = await userCollection.find({email : email}).project({CalorieGoal: 1 }).toArray();
+	
+	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
 	res.render("nutrition", {
-		Calories: localStorage.getItem("Calories"),
-		Caffeine: localStorage.getItem("Caffeine"),
-		calGoal: localStorage.getItem("calGoal"), cafGoal: localStorage.getItem("cafGoal"),
+		//Calorie intake gotten from calorieCount array above 
+		// .Calories - the specific column name in the databse that the value is located in
+		Calories: calorieCount[0].Calories,
+
+		//Calorie goal gotten from calorieCount array above
+		//Calorie intake gotten from calorieCount array above  
+		// .CalorieGoal - the specific column name in the databse that the value is located in
+		calGoal: storedcalorieGoal[0].CalorieGoal,
 	});
 });
+//********************** Calorie Counter Page Ends*/
 
-app.post('/nutritionInfo', (req,res) => {
-
+//method to put values in the database
+app.post('/nutritionInfo', async (req,res) => {
+	//email to idnetify user
+	var email = req.session.email;
+	//calorie maount value inputted by user
 	var calories = req.body.calories;
-	var caffeine = req.body.caffeine;
-	var calorieGoal = req.body.calGoal;
-	var caffeineGoal = req.body.cafGoal;
-	console.log("cf " + caffeineGoal);
-	console.log("cl " + calorieGoal);
-	var calCount = 0;
+	//calorie Goal value inputted by user
+	 var calorieGoal = req.body.calGoal;
 
+	 //If user gives blank input calories is zero so no change to previous value
 	if (calories == "") {
 		calories = 0;
-	} else if (caffeine == "") {
-		caffeine = 0;
 	}
 
+	//Crate schema to validate input is a number and integer
 	const schema = Joi.number().integer();
-
-
+	
+	//Can only fill one feild at a time so other field becomes undefined this makes it so the undefined doesn't get added
 	if (calories != null) {
-		const validationResult = schema.validate(calorieGoal);
+		//validate input using schema crated above
+		const validationResult = schema.validate(calories);
+		//If there is an error message redirect to same page
 		if (validationResult.error != null) {
 			console.log(validationResult.error);
 			res.redirect("/loggedin/nutrition");
 			return;
 		}
-		calCount += parseInt(calories);
-		if (localStorage.getItem("Calories") != null) {
-			calCount += parseInt(localStorage.getItem("Calories"));
-		}
-	} else {
-		calCount += parseInt(localStorage.getItem("Calories"));
+		//Find exisiting value so that user can add on to the amount 
+		let calCount2 = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
+		//Add new amount to existing amount
+		calCount2[0].Calories += parseInt(calories);
+		//Update database with new value
+		await userCollection.updateOne({email: email}, {$set: {Calories: calCount2[0].Calories}});
+	
 	}
-	// Store
-	localStorage.setItem("Calories", calCount);
 
+	//Can only fill one feild at a time so other field becomes undefined this makes it so the undefined doesn't get added
 	if (calorieGoal != null) {
+		//validate input using schema crated above
 		const validationResult = schema.validate(calorieGoal);
+		//If there is an error message redirect to same page
 		if (validationResult.error != null) {
 			console.log(validationResult.error);
 			res.redirect("/loggedin/nutrition");
 			return;
 		}
-		localStorage.setItem("calGoal", calorieGoal);
+		//Set value inputted into the database overwrites old value
+		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: calorieGoal}});
 	}
-
-	let cafCount = 0;
-
-
-	if (caffeine != null) {
-		cafCount += parseInt(caffeine);
-		if (localStorage.getItem("Calories") != null) {
-			cafCount += parseInt(localStorage.getItem("Caffeine"));
-		}
-	} else {
-		cafCount += parseInt(localStorage.getItem("Caffeine"));
-	}
-
-	// Store
-	localStorage.setItem("Caffeine", cafCount);
-
-	if (caffeineGoal != null) {
-		const validationResult = schema.validate(caffeineGoal);
-		if (validationResult.error != null) {
-			console.log(validationResult.error);
-			res.redirect("/loggedin/nutrition");
-			return;
-		}
-
-		localStorage.setItem("cafGoal", caffeineGoal);
-	}
-
-	// Store
-
-
+	//redirect to nutrition page
 	res.redirect("/loggedin/nutrition");
 
 
 });
 
 app.get('/filters',(req, res)  => {
-	res.render("filters", { ingredients });
+	res.render("filters", { ingredients: getIngredients() });
 });
 
 //route for list of ingredients page
@@ -542,15 +549,19 @@ app.get("/loggedin/members/profile", async (req, res) => {
 
 app.post('/updateLocalIngredient/', (req, res) => {
 	const foodName = req.body.foodName;
+	
+	const ingredients = getIngredients();
 	const index = ingredients.indexOf(foodName);
 
 	if (index !== -1) {
 		// If foodName is already in the ingredients array, remove it
 		ingredients.splice(index, 1);
+		localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		console.log("Removed " + foodName);
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
+		localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		console.log("Added " + foodName);
 	}
 
