@@ -62,7 +62,7 @@ const generateRecipe = async () => {
 	});
 
 	console.log(prompt);
-	// console.log(response["data"]["choices"][0]["message"]["content"]);
+	console.log(response["data"]["choices"][0]["message"]["content"]);
 	recipe = response["data"]["choices"][0]["message"]["content"];
 	return recipe;
 };
@@ -614,7 +614,7 @@ app.post('/updateLocalIngredient/', (req, res) => {
 //----------------------- For saving recipes ----------------------
 
 async function saveRecipe( recipe, username) {
-	recipeName = recipe.substring(10, recipe.indexOf("/") - 1).trim();
+	recipeName = recipe.substring(12, recipe.indexOf("/") - 1).trim();
 	recipeDetails = recipe.substring(recipe.indexOf("Ingredients:"), recipe.length);
 	console.log(recipeName);
 	console.log(username);
