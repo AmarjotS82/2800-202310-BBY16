@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
 
-<link rel="stylesheet" href="/css/nutrition.css">
+
 
 <!-- Card to be dispalyed on the screen -->
     <div class="d-flex justify-content-center align-items-center calorieBox" style="height: 50vh;">
@@ -8,7 +8,7 @@
         <div class="card-body text-center">
         <h3>Calories</h3> 
         
-        <button type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test2">
+        <button id="more" type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test2" >
           More
         </button>
         </div>
@@ -27,7 +27,33 @@
             </button>
           </div>
           <div class="modal-body">
+            <% if(calGoal>0 && Calories>0) { %>
+            <svg
+            class="progress-ring d-flex"
+            width="120"
+            height="120">
+            <% let percent = ( Calories/ calGoal ) * 100 %>
+           <circle
+           id="progressRing"
+             class="progress-ring__circle"
+             stroke="black"
+             stroke-width="8"
+             fill="transparent"
+             r="52"
+             cx="60"
+             cy="60" 
+             aria-valuenow="<%= percent %>"/>
             
+         </svg>
+
+
+         <div class="pT d-flex">
+          
+            <%# Calories  / %><%# calGoal %>  <%= Math.round(percent) %>%
+          
+          
+        </div>
+        <% } %>
             <p>Total Intake: <%= Calories %> </p>
 
             <p>Goal: <%= calGoal %></p>
@@ -45,6 +71,8 @@
         </div>
       </div>
     </div>
+
+
  <!-- Modal code ends -->
     <%- include("templates/navbar") %>
     <%- include("templates/footer") %> 

@@ -99,6 +99,8 @@ const userCollection = database.db(mongodb_database).collection('users');
 
 const testCollection = database.db(mongodb_database).collection('ingredient');
 
+const recipeCollection = database.db(mongodb_database).collection('recipes');
+
 //---------------For generating recipe on console input-----------------
 
 
@@ -388,7 +390,7 @@ app.use(express.static(__dirname + "/public"));
 //new stuff added
 
 
-app.get('/loggedin/members', (req,res) => {
+app.get('/loggedin/members', async (req,res) => {
 	recipe = req.body.recipe;
 	res.render('members', {recipe: recipe});
 })
@@ -462,7 +464,7 @@ app.get('/loggedin/nutrition', async (req, res) => {
 		//Calorie goal gotten from calorieCount array above
 		//Calorie intake gotten from calorieCount array above  
 		// .CalorieGoal - the specific column name in the databse that the value is located in
-		calGoal: storedcalorieGoal[0].CalorieGoal,
+		calGoal: storedcalorieGoal[0].CalorieGoal
 	});
 });
 //********************** Calorie Counter Page Ends*/
@@ -476,8 +478,8 @@ app.post('/nutritionInfo', async (req,res) => {
 	//calorie Goal value inputted by user
 	 var calorieGoal = req.body.calGoal;
 
-	 //If user gives blank input calories is zero so no change to previous value
-	if (calories == "") {
+	 //If user gives blank input calories is zero so no change to previous value and don't allow negative numbers
+	if (calories == "" || calories < 0) {
 		calories = 0;
 	}
 
@@ -569,8 +571,9 @@ app.post('/updateLocalIngredient/', (req, res) => {
 });
 
 // *************** searchRecipe section**************************
-app.get('/loggedin/searchRecipe', (req, res)=> {
-	res.render('searchRecipe');
+app.get('/loggedin/searchRecipe', async (req, res)=> {
+	let recipes = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
+	res.render('searchRecipe',{ recipe: recipes[0].Image_Name});
 })
 // ------------------------------------------------------
 
