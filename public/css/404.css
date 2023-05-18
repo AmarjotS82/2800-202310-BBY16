@@ -1,0 +1,10 @@
+
+body {
+    background-color: rgba(245, 242, 242, 0.709);
+    background-image: url("/img/404page2.png");
+    background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% auto;
+    background-attachment: fixed;
+  }
