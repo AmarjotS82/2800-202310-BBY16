@@ -1,12 +1,22 @@
 
 
 body{
-    background-color: #000000;
+    background-color: #B4846C;
 }
+
 .logo{
     height: 100px;
     width: 100px;
+    margin: 5px;
 } 
+#recipe-container{
+    background-color: #e5b299;
+    border-radius: 20px;
+    height: 100%;
+    padding: 20px;
+    margin:1.5em; 
+}
+
 
 h2{
     color: aliceblue;  
@@ -20,7 +30,6 @@ h2{
     background-color: rgb(249, 219, 219);
     font-size: 13pt;
     border-color: black;
-    
 }
 
 
