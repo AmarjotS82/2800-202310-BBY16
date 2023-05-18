@@ -40,9 +40,9 @@ form button:hover{
     background: yellow;
 }
 
-.bi-plus-circle{
+.fa-plus-circle {
     margin-top: 0.3rem;
-    font-size: -8px;
+    margin-left: -8px;
 }
 .todo-container{
     display: flex;
@@ -86,12 +86,14 @@ form button:hover{
     border-bottom-right-radius: 1.75rem;
     background: rosybrown;
 }
+
 .todo-item{
     padding: 0rem 0.5rem;
 }
-.bi-plus-circle,
-.bi-trash{
-    pointer-events:none;
+
+.fa-trash, 
+.fa-check-circle {
+    pointer-events: none;
 }
 .completed{
     text-decoration: line-through;
@@ -133,9 +135,4 @@ transition: all 0.3s ease;
 .select::hover::after{
 background: white;
 color: yellow;
-}
-.bi-plus-circle{
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
