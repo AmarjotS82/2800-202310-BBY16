@@ -1,5 +1,7 @@
 <%- include("templates/header") %>
 <link rel="stylesheet" href="/css/filters.css">
+
+<script src="/js/filters.js"></script>
     <div>
         <% for (let i=0; i < ingredients.length; i++) { %>
             <div class="d-flex justify-content-center">
@@ -19,10 +21,14 @@
     </form>
 
     <form class="py-5">
-        <button id="keto" type="submit" class="btn btn-primary btn-lg">Keto/Low-carbs</button>
-        <button id="glutenfree" type="submit" class="btn btn-primary btn-lg">Gluten free</button>
-        <button id="vegan" type="submit" class="btn btn-primary btn-lg">vegan</button>
-        <button id="dairyfree" type="submit" class="btn btn-primary btn-lg">Dairy-free</button>
+        <button data-item="Keto" class="dietary-button btn btn-primary btn-lg">Keto</button>
+        <button data-item="Gluten-free" class="dietary-button btn btn-primary btn-lg">Gluten-free</button>
+        <button data-item="Vegan" class="dietary-button btn btn-primary btn-lg">Vegan</button>
+        <button data-item="Vegetarian" class="dietary-button btn btn-primary btn-lg">Vegetarian</button>
+        <button data-item="Lactose-free" class="dietary-button btn btn-primary btn-lg">Lactose-free</button>
+        <button data-item="Pescatarian" class="dietary-button btn btn-primary btn-lg">Pescatarian</button>
+        <button data-item="Kosher" class="dietary-button btn btn-primary btn-lg">Kosher</button>
+        <button data-item="Low Carb" class="dietary-button btn btn-primary btn-lg">Low Carb</button>
     </form>
 
     <br>

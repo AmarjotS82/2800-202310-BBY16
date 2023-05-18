@@ -74,16 +74,19 @@ function constructPrompt() {
 	let prompt = "Generate a recipe using ";
 
 	// Add the list of ingredients to the prompt
-	const ingredientList = getIngredients().join(", ");
+	const ingredientList = getLocalIngredients().join(", ");
 	prompt += ingredientList;
 
 	// Add dietary preferences to the prompt if provided
-	//if (dietaryPreferences) {
-	//	prompt += ", considering these dietary preferences: ";
-	//	prompt += dietaryPreferences;
-	//}
-	prompt += "Please format the recipe to be displayed in a HTML div element. "
-	prompt += "Please do not include any images. "
+	const preferencesList = getLocalDietaryPreferences().join(", ");
+
+	if(preferencesList.length > 0) {
+	prompt += ", considering these dietary preferences: ";
+	prompt += preferencesList;
+	}
+
+	prompt += ". Please format the recipe to be displayed in a HTML div element."
+	prompt += " Please do not include any images. "
 	//prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
 
 	return prompt;
@@ -156,12 +159,15 @@ app.use(session({
 }
 ));
 
-function getIngredients() {
+function getLocalIngredients() {
 	const storedIngredients = localStorage.getItem('ingredients');
 	return JSON.parse(storedIngredients) || [];
 }
 
-
+function getLocalDietaryPreferences() {
+	const storedPreferences = localStorage.getItem('dietaryPreferences');
+	return JSON.parse(storedPreferences) || [];
+}
 /** Use later for valid session */
 function isValidSession(req) {
 	if (req.session.authenticated) {
@@ -404,6 +410,7 @@ app.get('/loggedin/members', (req,res) => {
 	res.render('members', {recipe: recipe});
 })
 
+
 app.post('/generateRecipe', async (req, res) => {
 	try {
 	  const recipe = await generateRecipe();
@@ -419,6 +426,40 @@ app.post('/clearRecipe', async (req,res) => {
 	localStorage.setItem('recipe', '[]');
 	localStorage.setItem('ingredients', '[]');
 	res.redirect('loggedin/members');
+  });
+
+  // Route handler for adding an item to the local storage
+app.post('/addToList', (req, res) => {
+	const newItem = req.body.item;
+  
+	// Retrieve the existing list from local storage
+	const existingList = JSON.parse(localStorage.getItem('list')) || [];
+  
+	// Add the new item to the list
+	existingList.push(newItem);
+  
+	// Store the updated list in local storage
+	localStorage.setItem('list', JSON.stringify(existingList));
+  
+	// Send back the updated list as the response
+	res.json(existingList);
+  });
+  
+  // Route handler for removing an item from the local storage
+  app.post('/removeFromList', (req, res) => {
+	const itemToRemove = req.body.item;
+  
+	// Retrieve the existing list from local storage
+	const existingList = JSON.parse(localStorage.getItem('list')) || [];
+  
+	// Filter out the item from the list
+	const updatedList = existingList.filter((item) => item !== itemToRemove);
+  
+	// Store the updated list in local storage
+	localStorage.setItem('list', JSON.stringify(updatedList));
+  
+	// Send back the updated list as the response
+	res.json(updatedList);
   });
 
 app.get('/loggedin/nutrition', async (req, res) => {
@@ -572,7 +613,7 @@ app.post('/nutritionInfo', async (req,res) => {
 });
 
 app.get('/filters',(req, res)  => {
-	res.render("filters", { ingredients: getIngredients() });
+	res.render("filters", { ingredients: getLocalIngredients() });
 });
 
 //route for list of ingredients page
@@ -599,7 +640,7 @@ app.get("/loggedin/members/profile", async (req, res) => {
 app.post('/updateLocalIngredient/', (req, res) => {
 	const foodName = req.body.foodName;
 	
-	const ingredients = getIngredients();
+	const ingredients = getLocalIngredients();
 	const index = ingredients.indexOf(foodName);
 
 	if (index !== -1) {
@@ -616,6 +657,26 @@ app.post('/updateLocalIngredient/', (req, res) => {
 
 	console.log(ingredients);
 });
+
+app.get('/updateDietaryPreference/:id', async (req,res ) => {
+	const newPreference = req.params.id;
+	const storedPreferences = getLocalDietaryPreferences();
+	const index = storedPreferences.indexOf(newPreference);
+
+	if (index === -1) {
+		//If preference is not in dietaryPreference in localstorage, add it
+	  storedPreferences.push(newPreference);
+	  console.log("Added " + newPreference);
+	} else {
+		//If preference is in dietaryPreference in localstorage, remove it
+	  storedPreferences.splice(index, 1);
+	  console.log("Removed " + newPreference);
+	}
+
+	localStorage.setItem('dietaryPreferences', JSON.stringify(storedPreferences));
+
+	res.send("a");
+})
 
 
 //----------------------- For saving recipes ----------------------
