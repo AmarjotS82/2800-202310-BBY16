@@ -104,6 +104,7 @@ const savedRecipeCollection = database.db(mongodb_database).collection('saved_re
 
 const testCollection = database.db(mongodb_database).collection('ingredient');
 
+//search recipe collection
 const recipeCollection = database.db(mongodb_database).collection('search_recipes');
 
 //---------------For generating recipe on console input-----------------
