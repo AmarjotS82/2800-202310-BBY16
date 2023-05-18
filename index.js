@@ -616,6 +616,7 @@ app.post('/updateLocalIngredient/', (req, res) => {
 });
 
 
+
 //----------------------- For saving recipes ----------------------
 
 async function saveRecipe( recipe, username) {
@@ -685,17 +686,27 @@ app.get('/loggedin/searchRecipe', async (req, res)=> {
 	let recipes = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
 	res.render('searchRecipe',{ recipe: recipes[0].Image_Name});
 })
+// *************** searchRecipe section******************
+app.get('/loggedin/searchRecipe', (req, res)=> {
+	res.render('searchRecipe');
+
+})
 // ------------------------------------------------------
 
+// *************** Grocery List *******************
+app.get('/todo', (req, res)=> {
+	res.render('todo');
+})
+//-------------------------------------------------
 
-// ***************logout section**************************
+// ***************logout section*************************
 app.post('/logout', (req, res) => {
 	req.session.destroy();
 	res.redirect('/');
 });
-// ------------------------------------------------------
+// -----------------------------------------------------
 
-// ***********404 for all page****************
+// ***********404 for all page*************************
 app.get("*", (req, res) => {
 	res.status(404);
 	res.render("404");
