@@ -104,7 +104,7 @@ const savedRecipeCollection = database.db(mongodb_database).collection('saved_re
 
 const testCollection = database.db(mongodb_database).collection('ingredient');
 
-const recipeCollection = database.db(mongodb_database).collection('recipes');
+const recipeCollection = database.db(mongodb_database).collection('search_recipes');
 
 //---------------For generating recipe on console input-----------------
 
@@ -548,7 +548,7 @@ app.post('/nutritionInfo', async (req,res) => {
 	localStorage.setItem("Caffeine", cafCount);
 
 	if (caffeineGoal != null) {
-		const validationResult = schema.validate(caffeineGoal);
+		const validationResult = schema.validate(caffeineGoal);Store
 		if (validationResult.error != null) {
 			console.log(validationResult.error);
 			res.redirect("/loggedin/nutrition");
