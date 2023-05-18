@@ -23,6 +23,16 @@ h2{
     
 }
 
+.logo:active {
+  font-size: 150px;
+  color: #e00;
+  animation: beat 40s infinite normal;
+  transform-origin: center;
+}
+
+@keyframes beat{
+  to { transform: scale(100); }
+}
 
   
 
