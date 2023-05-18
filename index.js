@@ -6,6 +6,8 @@ const session = require('express-session');
 
 const MongoStore = require('connect-mongo');
 
+const axios = require('axios');
+
 //Crates a localstroage to sue for te counters 
 var LocalStorage = require('node-localstorage').LocalStorage;
 //A folder that holds the data
@@ -90,7 +92,7 @@ function constructPrompt() {
 // Example usage
 localStorage.setItem('ingredients', '[]');
 localStorage.setItem('recipe', '[]');
-//const dietaryPreferences = "vegan";
+localStorage.setItem('dietaryPreferences', '[]');
 
 const saltRounds = 12; //use for encryption
 
@@ -414,8 +416,8 @@ app.post('/generateRecipe', async (req, res) => {
   });
 
 app.post('/clearRecipe', async (req,res) => {
-	localStorage.setItem('recipe', "[]");
-	localStorage.setItem('ingredients', "[]");
+	localStorage.setItem('recipe', '[]');
+	localStorage.setItem('ingredients', '[]');
 	res.redirect('loggedin/members');
   });
 
