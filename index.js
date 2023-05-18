@@ -413,6 +413,11 @@ app.post('/generateRecipe', async (req, res) => {
 	}
   });
 
+app.post('/clearRecipe', async (req,res) => {
+	localStorage.setItem('recipe', "[]");
+	localStorage.setItem('ingredients', "[]");
+	res.redirect('loggedin/members');
+  });
 
 app.get('/loggedin/nutrition', async (req, res) => {
 
