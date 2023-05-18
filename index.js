@@ -556,8 +556,11 @@ app.get("/lists", async (req, res) => {
 	for (var i = 0; i < ingredientList.length; i++) {
 		// console.log("L: " + ingredientList[i].Food);
 	}
+
+	const chosenIngredients = getIngredients();
+
 	//Render the lists.ejs file that has the html for this apge
-	res.render("lists", { list: ingredientList });
+	res.render("lists", { list: ingredientList, ingredients: chosenIngredients });
 });
 
 app.get("/loggedin/members/profile", async (req, res) => {
