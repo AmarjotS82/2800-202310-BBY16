@@ -57,6 +57,7 @@ function deleteCheckbox(e) {
     }
 }
 
+//filtering complete and incomplte list
 function filterTodo(e) {
     const todos = todoList.childNodes;
     todos.forEach(function(todo) {
@@ -81,5 +82,66 @@ function filterTodo(e) {
         }
     });
 }
+
+//saving list into local storage function
+function saveLocalTodos(todo) {
+    let todos;
+    if(localStorage.getItem("todos") === null) {
+    todos =[]
+} else {
+    // Retrieves the stored todos from the local storage 
+    todos = JSON.parse(localStorage.getItem("todos"));
+}
+//Adds the new todo item
+todos.push(todo);
+localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function getLocalTodos() {
+    let todos;
+    if(localStorage.getItem("todos") === null){
+        //if null initilize the array to empty
+        todos = [];
+    }else{
+        //Retrieves the stored todos from the local storage
+        todos = JSON.parse(localStorage.getItem("todos")); 
+    }
+    todos.forEach(function(todo){
+        const todoDiv = document.createElement("div");
+        todoDiv.classList.add("todo");
+        const newTodo = document.createElement("li");
+        newTodo.innerText = todo;
+        newTodod.classList.add("todo-item");
+        todoDiv.appendChild(newTodo);
+
+        const completedButton = document.createElement("button");
+        completedButton.innerHtml = '<i class="bi bi-check-circle"></i>';
+        completedButton.classList.add("complete-button");
+        todoDiv.appendChild(completedButton);
+        //new button for cleaning to do
+        const trashButton = document.createElement("button");
+        trashButton.innerHTML= '<i class="bi bi-trash"></i>';
+        trashButton.classList.add("trash-btn");
+        todoDiv.appendChild(trashButton);
+
+        todoList.appendChild(todoDiv);
+    });
+}
+
+function removeLocalTodos(tod) {
+    let todos;
+    //Checks if the key "todos" in the local storage has a value of null
+    if(localStorage.getItem("todos") === null){
+    todos = []; //initilize empty array
+    }else{
+        todos = JSON.parse(localStorage.getItem("todos")); // Retrieves the stored todos from the local storage by using the key 
+    }
+    const todoIndex = todo.children[0].innerHTML;
+    // Finds the index of the todoIndex value in the todos array, then removes it
+    todos.splice(todos.indexOf(todoIndex), 1);
+    //stores the updated array back to local storage
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
 
 
