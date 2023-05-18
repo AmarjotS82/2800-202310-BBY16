@@ -660,11 +660,7 @@ app.get('/loggedin/searchRecipe', async (req, res)=> {
 	let recipes = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
 	res.render('searchRecipe',{ recipe: recipes});
 })
-// *************** searchRecipe section******************
-app.get('/loggedin/searchRecipe', (req, res)=> {
-	res.render('searchRecipe');
 
-})
 // ------------------------------------------------------
 
 // *************** Grocery List *******************
