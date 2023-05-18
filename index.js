@@ -1,3 +1,4 @@
+//BBY-16
 require("./utils.js");
 
 const express = require('express');
@@ -580,33 +581,6 @@ app.post('/nutritionInfo', async (req,res) => {
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: calorieGoal}});
 	}
 
-	let cafCount = 0;
-
-
-	if (caffeine != null) {
-		cafCount += parseInt(caffeine);
-		if (localStorage.getItem("Calories") != null) {
-			cafCount += parseInt(localStorage.getItem("Caffeine"));
-		}
-	} else {
-		cafCount += parseInt(localStorage.getItem("Caffeine"));
-	}
-
-	// Store
-	localStorage.setItem("Caffeine", cafCount);
-
-	if (caffeineGoal != null) {
-		const validationResult = schema.validate(caffeineGoal);
-		if (validationResult.error != null) {
-			console.log(validationResult.error);
-			res.redirect("/loggedin/nutrition");
-			return;
-		}
-
-		localStorage.setItem("cafGoal", caffeineGoal);
-	}
-
-	// Store
 	res.redirect("/loggedin/nutrition");
 
 
@@ -625,8 +599,11 @@ app.get("/lists", async (req, res) => {
 	for (var i = 0; i < ingredientList.length; i++) {
 		// console.log("L: " + ingredientList[i].Food);
 	}
+
+	const chosenIngredients = getIngredients();
+
 	//Render the lists.ejs file that has the html for this apge
-	res.render("lists", { list: ingredientList });
+	res.render("lists", { list: ingredientList, ingredients: chosenIngredients });
 });
 
 app.get("/loggedin/members/profile", async (req, res) => {
@@ -677,6 +654,7 @@ app.get('/updateDietaryPreference/:id', async (req,res ) => {
 
 	res.send("a");
 })
+
 
 
 //----------------------- For saving recipes ----------------------
@@ -746,19 +724,29 @@ app.get('/recipe/:id', async (req,res ) => {
 // *************** searchRecipe section**************************
 app.get('/loggedin/searchRecipe', async (req, res)=> {
 	let recipes = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
-	res.render('searchRecipe',{ recipe: recipes[0].Image_Name});
+	res.render('searchRecipe',{ recipe: recipes});
+})
+// *************** searchRecipe section******************
+app.get('/loggedin/searchRecipe', (req, res)=> {
+	res.render('searchRecipe');
+
 })
 // ------------------------------------------------------
 
+// *************** Grocery List *******************
+app.get('/todo', (req, res)=> {
+	res.render('todo');
+})
+//-------------------------------------------------
 
-// ***************logout section**************************
+// ***************logout section*************************
 app.post('/logout', (req, res) => {
 	req.session.destroy();
 	res.redirect('/');
 });
-// ------------------------------------------------------
+// -----------------------------------------------------
 
-// ***********404 for all page****************
+// ***********404 for all page*************************
 app.get("*", (req, res) => {
 	res.status(404);
 	res.render("404");
