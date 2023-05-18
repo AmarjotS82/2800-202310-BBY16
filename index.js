@@ -679,6 +679,33 @@ app.get('/recipe/:id', async (req,res ) => {
 // *************** searchRecipe section**************************
 app.get('/loggedin/searchRecipe', async (req, res)=> {
 	let recipesList = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
+	
+	console.log("size: " + recipesList.length)
+	for(let i = 0; i < recipesList.length; i++) {
+	let ingredient = recipesList[i].Ingredients;
+	console.log(ingredient);
+	for(let y = 0; y < ingredient.length; y++){
+		let letter = ingredient.charAt(y) + ingredient.charAt(y + 1);
+		if(letter == '\',') {
+			ingredient= ingredient.replace(letter, "</li>")
+		}  else if(letter == '[\''){
+			ingredient = ingredient.replace(letter, "<li>");
+		}else if(letter == '\']'){
+			ingredient = ingredient.replace(letter, "</li>");
+		}
+			console.log("list: " + ingredient);
+		recipesList[i].Ingredients = ingredient
+		
+	}
+	for(let y = 0; y < ingredient.length; y++){
+		let letter = ingredient.charAt(y);
+		if(letter == '\'') {
+			ingredient= ingredient.replace(letter, "<li>")
+		} 
+		recipesList[i].Ingredients = ingredient	
+	}
+
+	}
 	res.render('searchRecipe',{ recipe: recipesList});
 })
 // ------------------------------------------------------

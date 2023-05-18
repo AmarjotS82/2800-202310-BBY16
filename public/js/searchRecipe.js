@@ -56,3 +56,16 @@ $(document).ready(async function() {
 });
 
 
+// for(let i = 0; i < recipe.length; i++) {
+//   let ingredient = recipe[i];
+//   for(let y = 0; y < ingredient.length; y++){
+//     let letter = ingredient.charAt(y);
+//     if(letter == '\',') {
+//       ingredient.replace(ingredient.charAt(y), "</li>")
+//     } else if(letter == '\'],'){
+
+//     }else {
+//       ingredient.replace('\'', "<li>");
+//     }
+//   }
+// }
