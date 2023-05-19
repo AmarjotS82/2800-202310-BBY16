@@ -4,14 +4,18 @@
 
     <div class="ingredient-wrapper">
       <table>
-        <% for (let i=0; i < ingredients.length; i++) { %>
-            <div class=" justify-content-center list-wrapper">
-                <button id="ingredient<%= i %>" type="button" class="displayed-ingredient ">
-                   <div class="ingredient"> <%= ingredients[i] %> </div>
-                </button>
-            </div>
+        <tr>
+          <th><h5>Selected Ingredients:</h5></th>
+        </tr>
+        <tr>
+          <td>
+            <% for (let i=0; i < ingredients.length; i++) { %>
+                    <button id="ingredient<%= i %>" type="button" class="displayed-ingredient ">
+                      <div class="ingredient"> <%= ingredients[i] %> </div>
+                    </button>
             <% } %>
-
+          </td>
+        </tr>
        </table>
     </div>
 

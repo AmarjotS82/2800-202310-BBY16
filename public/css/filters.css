@@ -319,6 +319,10 @@ button {
   margin:1em; 
 }
 
+.ingredient-wrapper button{
+    margin: 5px;
+}
+
 
 /* ************* displayed ingredient buttons **************** */
 .displayed-ingredient{
