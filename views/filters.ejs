@@ -1,7 +1,7 @@
 <%- include("templates/header") %>
 <link rel="stylesheet" href="/css/filters.css">
 
-<script src="/js/filters.js"></script>
+
     <div>
         <% for (let i=0; i < ingredients.length; i++) { %>
             <div class="d-flex justify-content-center">
@@ -20,18 +20,22 @@
         <button type="submit" class="btn btn-primary btn-lg">Generate Recipe</button>
     </form>
 
-    <form class="py-5">
-        <button data-item="Keto" class="dietary-button btn btn-primary btn-lg">Keto</button>
-        <button data-item="Gluten-free" class="dietary-button btn btn-primary btn-lg">Gluten-free</button>
-        <button data-item="Vegan" class="dietary-button btn btn-primary btn-lg">Vegan</button>
-        <button data-item="Vegetarian" class="dietary-button btn btn-primary btn-lg">Vegetarian</button>
-        <button data-item="Lactose-free" class="dietary-button btn btn-primary btn-lg">Lactose-free</button>
-        <button data-item="Pescatarian" class="dietary-button btn btn-primary btn-lg">Pescatarian</button>
-        <button data-item="Kosher" class="dietary-button btn btn-primary btn-lg">Kosher</button>
-        <button data-item="Low Carb" class="dietary-button btn btn-primary btn-lg">Low Carb</button>
+
+    <form method="POST" action="/updateDietaryPreference" class="py-5">
+        <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button btn btn-light">Keto</button>
+        <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button btn btn-light">Gluten-free</button>
+        <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button btn btn-light">Vegan</button>
+        <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button btn btn-light">Vegetarian</button>
+        <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button btn btn-light">Lactose-free</button>
+        <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button btn btn-light">Pescatarian</button>
+        <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button btn btn-light">Kosher</button>
+        <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button btn btn-light">Low Carb</button>
     </form>
+
+
 
     <br>
     <br>
+    <script src="/js/filters.js"></script>
     <%- include("templates/navbar") %>
     <%- include("templates/footer") %>

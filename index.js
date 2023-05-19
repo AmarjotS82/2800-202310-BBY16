@@ -587,7 +587,7 @@ app.post('/nutritionInfo', async (req,res) => {
 });
 
 app.get('/filters',(req, res)  => {
-	res.render("filters", { ingredients: getLocalIngredients() });
+	res.render("filters", { ingredients: getLocalIngredients() , preferences:getLocalDietaryPreferences()});
 });
 
 //route for list of ingredients page
@@ -600,7 +600,7 @@ app.get("/lists", async (req, res) => {
 		// console.log("L: " + ingredientList[i].Food);
 	}
 
-	const chosenIngredients = getIngredients();
+	const chosenIngredients = getLocalIngredients();
 
 	//Render the lists.ejs file that has the html for this apge
 	res.render("lists", { list: ingredientList, ingredients: chosenIngredients });
@@ -635,8 +635,8 @@ app.post('/updateLocalIngredient/', (req, res) => {
 	console.log(ingredients);
 });
 
-app.get('/updateDietaryPreference/:id', async (req,res ) => {
-	const newPreference = req.params.id;
+app.post('/updateDietaryPreference', async (req,res ) => {
+	const newPreference = req.body.preference;
 	const storedPreferences = getLocalDietaryPreferences();
 	const index = storedPreferences.indexOf(newPreference);
 
@@ -652,7 +652,7 @@ app.get('/updateDietaryPreference/:id', async (req,res ) => {
 
 	localStorage.setItem('dietaryPreferences', JSON.stringify(storedPreferences));
 
-	res.send("a");
+	console.log(storedPreferences);
 })
 
 

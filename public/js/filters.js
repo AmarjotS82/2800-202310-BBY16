@@ -1,11 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var buttons = document.getElementsByClassName('dietary-button');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].addEventListener('click', async function() {
-        var newPreference = this.getAttribute('data-item');
-
-        await fetch('http://localhost:3020/updateDietaryPreference/' + newPreference);
-   
-      });
-    }
+// Get all the buttons with the class 'dietary-button'
+const buttons = document.querySelectorAll('.dietary-button');
+// Add a click event listener to each button
+buttons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Toggle the 'btn-light' and 'btn-secondary' classes on the clicked button
+      this.classList.toggle('btn-light');
+      this.classList.toggle('btn-secondary');
+    });
   });
