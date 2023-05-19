@@ -1,4 +1,5 @@
 <%- include("templates/header") %>
+<link rel="stylesheet" href="/css/lists.css">
     <style>
         .custom-button {
             width: 200px;
@@ -9,7 +10,7 @@
     
 
 <div class="d-flex justify-content-center align-items-center flex-column py-5">
-    <h1 class="text-center">List</h1>
+    <h1 class="text-center">Ingredient List</h1>
     <input type="text" id="search-input" class="text-center" placeholder="Search ingredients...">
   </div>
     
@@ -21,7 +22,7 @@
                     <!--div for content in list-->
                     <div>
                         <form method="POST" action="/updateLocalIngredient">
-                            <button type="submit" id="ingredient-List" class="btn btn-light custom-button" name="foodName"
+                            <button type="submit" id="ingredient-List" class="btn btn-light custom-button m-2" name="foodName"
                                 value="<%= list[i].Food %>" data-ingredient="<%= list[i].Food %>">
                                 <%= list[i].Food %>
                             </button>
@@ -42,7 +43,7 @@
                   <!--div for content in list-->
                   <div>
                     <form method="POST" action="/updateLocalIngredient">
-                      <button type="submit" id="ingredient-List" class="btn <%= ingredientFound ? 'btn-secondary' : 'btn-light' %> custom-button" name="foodName" value="<%= list[y].Food %>" data-ingredient="<%= list[y].Food %>">
+                      <button type="submit" id="ingredient-List" class="btn <%= ingredientFound ? 'btn-secondary m-1' : 'btn-light m-1' %> custom-button" name="foodName" value="<%= list[y].Food %>" data-ingredient="<%= list[y].Food %>">
                         <%= list[y].Food %>
                       </button>
                     </form>
@@ -53,8 +54,8 @@
     </ul>
 
     <div class="text-center">
-        <a href="/filters">
-            <button type="button" class="btn btn-primary btn-lg text-center">Done</button>
+        <a href="/filters" style="text-decoration: none;">
+            <button type="button" id="stickyBtn" class="btn btn-lg done text-center">Done</button>
         </a>
     </div>
 

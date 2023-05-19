@@ -2,40 +2,75 @@
 <link rel="stylesheet" href="/css/filters.css">
 
 
-    <div>
+    <div class="ingredient-wrapper">
+      <table>
         <% for (let i=0; i < ingredients.length; i++) { %>
-            <div class="d-flex justify-content-center">
-                <button id="ingredient<%= i %>" type="button" class="btn btn-primary m-5">
-                    <%= ingredients[i] %>
+            <div class=" justify-content-center list-wrapper">
+                <button id="ingredient<%= i %>" type="button" class="displayed-ingredient ">
+                   <div class="ingredient"> <%= ingredients[i] %> </div>
                 </button>
             </div>
             <% } %>
+
+       </table>
     </div>
 
+    <div class="add-ingredient-div">
+      <h3> </h3>
     <a href="/lists">
-        <button type="button" class="btn btn-primary btn-lg">Add Ingredients</button>
+      <button  type= "button" class="learn-more"> 
+        <span class="circle" aria-hidden="true">
+        <span class="icon arrow"></span>
+        </span>
+        <span class="button-text">Add Ingredients</span>
+      </button>
     </a>
+  </div>
 
-    <form action="/generateRecipe" method="post">
-        <button type="submit" class="btn btn-primary btn-lg">Generate Recipe</button>
-    </form>
-
+   
 
     <form method="POST" action="/updateDietaryPreference" class="py-5">
-        <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button btn btn-light">Keto</button>
-        <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button btn btn-light">Gluten-free</button>
-        <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button btn btn-light">Vegan</button>
-        <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button btn btn-light">Vegetarian</button>
-        <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button btn btn-light">Lactose-free</button>
-        <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button btn btn-light">Pescatarian</button>
-        <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button btn btn-light">Kosher</button>
-        <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button btn btn-light">Low Carb</button>
+      <h5>Add your dietary preference:</h5>
+        <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button" >Keto</button>
+        <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button ">Gluten-free</button>
+        <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button ">Vegan</button>
+        <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button">Vegetarian</button>
+        <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button">Lactose-free</button>
+        <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button">Pescatarian</button>
+        <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button">Kosher</button>
+        <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button">Low Carb</button>
     </form>
+   <div class="get-recipe-btn-Wrapper">
+    <form action="/generateRecipe" method="post">
+        <button type="submit" class="getRecipe-btn">Get Recipe
+          <div class="star-1">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
+          </div>
+          <div class="star-2">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
+          </div>
+          <div class="star-3">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
+          </div>
+          <div class="star-4">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
+          </div>
+          <div class="star-5">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
+          </div>
+          <div class="star-6">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
+          </div>
+        </button>
+    </form>
+  </div>
 
-
+  
 
     <br>
     <br>
     <script src="/js/filters.js"></script>
     <%- include("templates/navbar") %>
     <%- include("templates/footer") %>
+
+   

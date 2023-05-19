@@ -1,0 +1,40 @@
+body{
+    background-color: #B4846C;
+    font-family: 'Times New Roman', Times, serif;
+}
+#search-input{
+    border-radius: 10px;
+    border: hidden;
+    height: 35px;
+    margin-bottom: -40px;
+}
+h1{
+    padding-bottom: 20px;
+}
+.done{  
+    /* margin-top: -50px; */
+    margin-bottom: 10px;
+    padding: 13px;
+    width: 200px;
+    padding-left: 15px;
+    padding-right: 20px;
+    border-radius: 10px;
+    background-color: #7d5a50;
+    border-style: hidden;
+    color: #dcd0bf;
+    font-size: 18pt;
+    font-family:'Times New Roman', Times, serif;
+}
+#stickyBtn{
+   
+position: sticky;
+}
+.text-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+#ingredient-List{
+    border: none;
+}
