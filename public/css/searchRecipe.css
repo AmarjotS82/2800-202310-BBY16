@@ -1,0 +1,48 @@
+body{
+    background-color: #B4846C;
+}
+
+h1{
+    color: rgb(212, 209, 199);
+    font-size: 30px;
+    font-weight: bold;
+    font-family:'Times New Roman', Times, serif;
+    padding-left: 20px;
+}
+
+#details{
+   background-color: #ae5206;
+   color: antiquewhite;
+}
+
+#searchBar{
+    border-radius: 15px;
+    padding: 15px;
+    border: none;
+}
+.searchDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.food-cards{
+    background-color: aliceblue;
+}
+
+.searchDiv {
+    position: relative;
+  }
+
+  #searchBar {
+    padding-right: 30px; /* Adjust the value to make space for the icon /
+  }
+
+  #searchBar::before {
+    content: \F52A;
+    top: 50%;
+    right: 10px; / Adjust the value to position the icon /
+    transform: translateY(-50%);
+    font-family: "Font Awesome"; / Assuming the icon font is loaded /
+    font-size: 16px; / Adjust the size of the icon */
+  }
