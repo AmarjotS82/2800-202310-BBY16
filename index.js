@@ -98,8 +98,11 @@ function constructPrompt() {
 	}
 
 	prompt += ". Format the recipe to be displayed in a HTML div element."
+	prompt += " Put the recipe name in a h2 element."
+	prompt += " Put the ingredient and instruction headings in h3 elements."
 	prompt += " Do not include any images. Do not include any comments in the code."
 	prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
+	prompt += " Do NOT, under any circumstance, put the JSON object between script tags!"
 
 	return prompt;
 }
