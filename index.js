@@ -405,10 +405,12 @@ app.use(express.static(__dirname + "/public"));
 //new stuff added
 
 
-app.get('/loggedin/members', (req,res) => {
+app.get('/loggedin/members', async (req,res) => {
 	const recipe = JSON.parse(localStorage.getItem('recipe'));
+	var username = req.session.username;
+	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
 
-	res.render('members', {recipe: recipe});
+	res.render('members', {recipe: recipe, username: result[0].username });
 })
 
 
@@ -465,13 +467,13 @@ app.post('/addToList', (req, res) => {
 
 app.get('/loggedin/nutrition', async (req, res) => {
 
-	//email to identify the user adn get only their information
+	//email to identify the user and get only their information
 	var email = req.session.email
 
 	//Stores the last time the user accesed the page by using email to find the specific user and turns it into an array
 	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
 	
-	//gets the valur in the databse from the array crated above
+	//gets the value in the database from the array crated above
 	var lastTime = storedTime[0].LastDateUsed;
 
 	//Gets the current date by creating a new date object and getting the day
@@ -730,7 +732,7 @@ app.get('/loggedin/searchRecipe', async (req, res)=> {
 // ------------------------------------------------------
 
 // *************** Grocery List *******************
-app.get('/todo', (req, res)=> {
+app.get('/loggedin/todo', (req, res)=> {
 	res.render('todo');
 })
 //-------------------------------------------------

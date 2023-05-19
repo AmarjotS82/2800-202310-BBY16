@@ -1,32 +1,189 @@
 
 
 body{
-    background-color: #000000;
+    background-color: #B4846C;
 }
+
 .logo{
     height: 100px;
     width: 100px;
+    margin: 10px;
 } 
-
-h2{
-    color: aliceblue;  
+#recipe-container{
+    background-color: #e5b299;
+    border-radius: 20px;
+    height: 100%;
+    padding: 20px;
+    margin:1.5em; 
 }
-  #nutritionCard{
-    background-color: rgba(204, 131, 131, 0.548);
+
+h1{
+    color: rgb(110, 54, 54);  
+    font-size: 30px;
+    font-weight: bold;
+}
+h2{
+    margin-left: 10px;
+}
+
+h5{
+    padding-top: 10px;
 }
 
 #nutritionCard .btn{
-
     background-color: rgb(249, 219, 219);
-    font-size: 13pt;
+    font-size: 10pt;
     border-color: black;
-    
 }
 
 div{
-    color:aliceblue
+    color:rgb(54, 28, 3)
 }
 
 
+
+.icon-container {
+    position: relative;
+  }
+  
+  .bi-heart,
+  .bi-heart-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .bi-heart-fill {
+    display: none;
+  }
   
 
+.icon-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+h5{
+    grid-column:1/3;
+    
+}
+
+.bi-heart,
+.bi-heart-fill {
+    grid-column: 3/4;
+    grid-row: 1/2;
+    margin-left: 80px;
+    /* margin-top: -5px; */
+}
+  
+#nutritionCard{
+    background-color: rgb(171, 102, 82);
+    margin: 10px;
+    border-radius: 20px;
+    width: 170px;
+    height: 150px;
+    float: right;
+}
+
+.calorie-btn{
+    border: hidden;
+    margin: 10px;
+    width: 80px; /* Adjust the width and height as needed */
+    height: 80px;
+    border-radius: 50%;
+}
+
+.bi-fire{
+    text-align: center;
+    padding-right: 10px;
+    color: rgb(128, 31, 31);
+}
+
+/****** generated recipe section ********/
+.generate-recipe{
+    
+        outline: none;
+        color: #6e3708;
+        padding: 1em;
+        padding-left: 2em;
+        padding-right: 3em;
+        border: 2px dashed #DAA06D;
+        border-radius: 15px;
+        background-color: #EADDCA;
+        box-shadow: 0 0 0 4px #EADDCA, 2px 2px 4px 2px rgba(0, 0, 0, 0.5);
+        transition: .1s ease-in-out, .4s color;
+        float: right;
+      /* width:250px */
+
+}
+.generate-recipe:active {
+    transform: translateX(0.1em) translateY(0.1em);
+    box-shadow: 0 0 0 4px #EADDCA, 1.5px 1.5px 2.5px 1.5px rgba(0, 0, 0, 0.5);
+  }
+  /* **************************** */
+
+  
+  /* ******** buttons inside of the generate recipe section */
+  button {
+    width: 140px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background: rgb(33, 11, 11);
+    border: none;
+    border-radius: 5px;
+    /* box-shadow: 1px 1px 3px rgba(0,0,0,0.15); */
+    background: #91421b;
+    border-radius: 15px;    
+   }
+   
+   button, button span {
+    transition: 200ms;
+   }
+   
+   button .text {
+    transform: translateX(35px);
+    color: white;
+    /* font-weight: bold; */
+   }
+   
+   button .icon {
+    position: absolute;
+    border-left: 1px solid #ff7605;
+    transform: translateX(110px);
+    height: 40px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   }
+   
+   button svg {
+    width: 15px;
+    fill: #eee;
+   }
+   
+   button:hover {
+    background: #8c6352;
+   }
+   
+   button:hover .text {
+    color: transparent;
+   }
+   
+   button:hover .icon {
+    width: 150px;
+    border-left: none;
+    transform: translateX(0);
+   }
+   
+   button:focus {
+    outline: none;
+   }
+   
+   button:active .icon svg {
+    transform: scale(0.8);
+   }
+
+ 
