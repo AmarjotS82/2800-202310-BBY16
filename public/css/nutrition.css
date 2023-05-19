@@ -4,7 +4,9 @@
 
 body{
   background-color: black;
-  
+  display: flex;
+      justify-content: center;
+      align-items: center;
 }
 h3{
   color: aliceblue;
@@ -30,13 +32,14 @@ h3{
 
 .progress-ring__circle {
   
-
-  animation: spin 10s  linear;
-  transition: 5s;
+  animation: spin 5s  linear;
+  transition: 3s;
   transform: rotate(265deg);
   transform-origin: 50% 50%;
   stroke-dashoffset: 347;
-
+  border-radius: 5px;
+  border-color: black;
+  
 }
 
 .pT{
@@ -51,4 +54,3 @@ svg{
   margin-left: 35%;
   margin-bottom: 5%;
 }
-
