@@ -171,6 +171,7 @@ select {
     padding-left: 10px;
     border-style: none;
     position: relative;
+  padding-right: 20px;
 }
 .todo-button{
     position: absolute;

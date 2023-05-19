@@ -114,6 +114,7 @@ h5{
     border-radius: 15px;
     float: right;
     padding: 25px;
+    margin-left: 10px;
   }
   
   .star-1 {
@@ -254,16 +255,15 @@ h5{
   /* **************************** */
 
   
-  /* ******** buttons inside of the generate recipe section */
+  /* ******** delete recipe section **************/
   button {
-    width: 140px;
+    width: 145px;
     height: 50px;
     cursor: pointer;
     display: flex;
     align-items: center;
     background: rgb(33, 11, 11);
     border: none;
-    border-radius: 5px;
     /* box-shadow: 1px 1px 3px rgba(0,0,0,0.15); */
     background: #803419;
     border-radius: 15px;    
@@ -317,4 +317,10 @@ h5{
     transform: scale(0.8);
    }
 
- 
+ /* two buttons div inside the generated recipe box */
+ .delete-generate-btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row-reverse;
+ }
