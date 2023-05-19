@@ -655,15 +655,15 @@ app.post('/updateLocalIngredient/', async (req, res) => {
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Removed " + foodName);
+		return;
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Added " + foodName);
+		return;
 	}
-
-	console.log(ingredients);
 });
 
 app.post('/updateDietaryPreference', async (req,res ) => {
