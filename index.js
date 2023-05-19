@@ -102,8 +102,9 @@ async function constructPrompt(username) {
 	prompt += " Put the ingredient and instruction headings in h3 elements."
 	prompt += " Surround the recipe in a div element."
 	prompt += " Do not include any images. Do not include any comments in the code."
-	prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
-	prompt += " Ensure that the key and value pair are both strings."
+	//prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
+	//prompt += " Ensure that the key and value pair are both strings."
+	//prompt += " Do not generate a script tag anywhere. "
 
 	return prompt;
 }
