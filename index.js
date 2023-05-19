@@ -99,9 +99,10 @@ async function constructPrompt(username) {
 	}
 
 	prompt += " Put the recipe name in a h2 element."
-	prompt += " Put the ingredient and instruction headings in h3 elements."
+	prompt += " Put the ingredient and instruction in h3 elements."
 	prompt += " Also, provide the fat, protein, calorie and carbohydrates content after the recipe. "
-	prompt += " Surround the recipe and nutritional info in a div element with an id of recipeDiv."
+	prompt += " Surround the recipe name, the recipe name and nutritional info in a div element."
+	prompt += " Do not give me any HTML head or body tags."
 	prompt += " Do not include any images. Do not include any comments in the code."
 	
 	//prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
