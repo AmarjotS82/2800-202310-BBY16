@@ -1,13 +1,15 @@
 body{
-    background-color: black;
+    background-color: #B4846C;
     margin-top: 25%;
 }
 h3{
-    color: aliceblue;
+    color: #564225;
     font-size: 20pt;
+    font-family:'Times New Roman', Times, serif;
+    font-weight: 500;
 }
 .login_wrapper{
-    background-color: rgba(204, 131, 131, 0.548);
+    background-color: #e5b299;
     display: grid;
     border-radius: 20px;
     height: 100%;
@@ -22,13 +24,27 @@ h3{
     padding-left: 8px;
 }
 button{
-    padding: 15px;
+    padding: 13px;
     width: 200px;
     padding-left: 15px;
     padding-right: 20px;
     border-radius: 10px;
     margin-left: 50px;
-    margin-top: 20px;
-    background-color: rgb(249, 219, 219);
-    font-size: 13pt;
+    margin-top: 17px;
+    background-color: #7d5a50;
+    border-style: hidden;
+    color: #dcd0bf;
+    font-size: 18pt;
+    font-family:'Times New Roman', Times, serif;
+ 
+    
+}
+input{
+    background-color:rgb(249, 234, 215);
+    border-radius: 10px;
+    border-style: none;
+}
+
+a{
+    color: #564225;
 }

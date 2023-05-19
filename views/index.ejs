@@ -6,13 +6,15 @@
       <img class="logo" src="/img/logo-no-background.png" alt="logo-pic" />
     </div>
     
-      <div class="login_div"> <button class="btn btn-primary login" type="button"
+      <div class="login_div"> <button class="btn btn-light login" type="button"
           onclick="redirectToLogin();">Login</button>
         </div>
-      <div class="signup_div"><button class="btn btn-primary signup" type="button" 
+      <div class="signup_div"><button class="btn btn-light signup" type="button" 
         onclick="redirectToSignup()">Signup</button>
     </div>
   </div>
+
+
 
   <!-- script to redirect the button to different page once user clicked in -->
   <script>
@@ -24,6 +26,16 @@
       window.location.replace("/signup");
     }
 
+    let count = 0;
+    $('.index-img').click(function() {
+      count++;
+      if(count == 3){
+        $('.index-img').addClass('animate');
+      } else if (count > 3) {
+        $('.index-img').removeClass('animate');
+        count = 0;
+      }
+    });
   </script>
 
   <%- include("templates/footer") %>

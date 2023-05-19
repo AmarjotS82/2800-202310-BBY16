@@ -1,0 +1,14 @@
+
+<%- include("templates/header") %>
+<link rel="stylesheet" href="/css/savedRecipe.css">
+<h1>Your saved recipes </h1>
+
+<ul id="recipe-list">
+<% let i=0 %>
+<% for(i = 0; i < result.length; i++) { %>
+<%- include('templates/recipe-template', {recipe: result[i]}) %>
+<% } %>
+</ul>
+<script src="/js/recipe.js"></script>
+<%- include("templates/navbar") %>
+<%- include("templates/footer") %>  
