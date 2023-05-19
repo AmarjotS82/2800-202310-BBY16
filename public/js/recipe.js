@@ -37,7 +37,7 @@ $('#modal-btn').each(function() {
     //this is the listener
     $('.modal-btn').click( async function() {
         const id = $(this).attr('object-id')
-        const response = await fetch('http://woquclyvse.eu09.qoddiapp.com' + '/recipe/' + id);
+        const response = await fetch('http://tsaygenxmo.eu10.qoddiapp.com/' + '/recipe/' + id);
         const data = await response.json();
         console.log(data);
         showModal(data[0].recipeName, data[0].recipe);  
