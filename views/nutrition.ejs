@@ -1,12 +1,12 @@
 <%- include("templates/header") %>
 <link rel="stylesheet" href="/css/nutrition.css">
-<script src="/js/calorie.js"></script>
+
 
 <!-- Card to be dispalyed on the screen -->
     <div class="d-flex justify-content-center align-items-center calorieBox" style="height: 50vh;" >
       <div id="nutritionCard" class=" card w-100 m-5">
         <div class="card-body text-center">
-        <h3>Calories</h3> 
+        <h2>Calories</h2> 
             
 
         <% if(calGoal>0 && Calories>0) { %>
@@ -59,11 +59,11 @@
         </button> -->
         <form action="/nutritionInfo" method="post">
           <input name="calories" type="text" placeholder="Amount">
-          <button id="amount" type="submit" class="btn btn-primary">Add</button>
+          <button id="amount" type="submit" class="btn btn-light">Add</button>
         </form>
         <form action="/nutritionInfo" method="post">
           <input name="calGoal" type="text" placeholder="Goal">
-          <button id="goal" type="submit" class="btn btn-warning">Goal</button>
+          <button id="goal" type="submit" class="btn btn-light">Goal</button>
         </form>
 
         </div>
@@ -127,7 +127,7 @@
       </div>
     </div>
 
-
+    <script src="/js/calorie.js"></script>
  <!-- Modal code ends -->
     <%- include("templates/navbar") %>
     <%- include("templates/footer") %> 

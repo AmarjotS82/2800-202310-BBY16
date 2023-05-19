@@ -9,21 +9,23 @@
       align-items: center;
 }
 h3{
-  color: aliceblue;
+  color: rgb(78, 51, 28);
   
 }
 #nutritionCard{
-  background-color: rgba(204, 131, 131, 0.548);
+ background-color: #e5b299;
 }
 
 #nutritionCard .btn{
-
-  background-color: rgb(249, 219, 219);
+  background-color: rgb(173, 127, 105);
   font-size: 13pt;
   border-color: black;
   
 } */
 
+button{
+  color: antiquewhite;
+}
 /* #test2{
   background-color: rgba(204, 131, 131, 0.548);
 } */

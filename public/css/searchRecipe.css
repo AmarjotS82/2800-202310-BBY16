@@ -3,7 +3,7 @@ body{
 }
 
 h1{
-    color: rgb(212, 209, 199);
+    color: rgb(212, 209, 199);  
     font-size: 30px;
     font-weight: bold;
     font-family:'Times New Roman', Times, serif;
@@ -33,16 +33,18 @@ h1{
 .searchDiv {
     position: relative;
   }
-
+  
   #searchBar {
-    padding-right: 30px; /* Adjust the value to make space for the icon /
+    padding-right: 30px; /* Adjust the value to make space for the icon */
   }
-
-  #searchBar::before {
+  
+  /* #searchBar::before {
     content: \F52A;
+    position: absolute;
     top: 50%;
-    right: 10px; / Adjust the value to position the icon /
+    right: 10px; /* Adjust the value to position the icon 
     transform: translateY(-50%);
-    font-family: "Font Awesome"; / Assuming the icon font is loaded /
-    font-size: 16px; / Adjust the size of the icon */
-  }
+    font-family: "Font Awesome"; /* Assuming the icon font is loaded 
+    font-size: 16px; /* Adjust the size of the icon 
+  } */
+  

@@ -54,8 +54,8 @@ const questions = [
 	"Who is your favourite author?"
 ];
 
-const generateRecipe = async () => {
-	const prompt = constructPrompt();
+const generateRecipe = async (username) => {
+	const prompt = await constructPrompt(username);
 
 	const response = await openai.createChatCompletion({
 		model: "gpt-3.5-turbo",
@@ -81,12 +81,13 @@ const generateRecipe = async () => {
 	return recipe;
 };
 
-function constructPrompt() {
+async function constructPrompt(username) {
 	// Construct the prompt based on the ingredients and dietary preferences
 	let prompt = "Generate a single recipe using ";
 
 	// Add the list of ingredients to the prompt
-	const ingredientList = getLocalIngredients().join(", ");
+	const ingredientList = await getLocalIngredients(username);
+	console.log("ing: " + ingredientList); //.join(", ");
 	prompt += ingredientList;
 
 	// Add dietary preferences to the prompt if provided
@@ -97,9 +98,12 @@ function constructPrompt() {
 	prompt += preferencesList;
 	}
 
-	prompt += ". Format the recipe to be displayed in a HTML div element."
+	prompt += " Put the recipe name in a h2 element."
+	prompt += " Put the ingredient and instruction headings in h3 elements."
+	prompt += " Surround the recipe in a div element."
 	prompt += " Do not include any images. Do not include any comments in the code."
 	prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
+	prompt += " Ensure that the key and value pair are both strings."
 
 	return prompt;
 }
@@ -124,32 +128,7 @@ const testCollection = database.db(mongodb_database).collection('ingredient');
 //search recipe collection
 const recipeCollection = database.db(mongodb_database).collection('search_recipes');
 
-//---------------For generating recipe on console input-----------------
 
-
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout
-});
-
-// Define the method to run when the specific input is received
-function processInput() {
-	generateRecipe();
-}
-
-// Ask for user input
-rl.question('Enter 8 into console to generate recipe: ', (answer) => {
-	if (answer === '8') {
-		processInput();
-	} else {
-		console.log('Input does not match the specific condition.');
-	}
-
-	rl.close();
-});
-
-
-//-------------------------------------------------------------------------
 
 
 
@@ -172,11 +151,6 @@ app.use(session({
 }
 ));
 
-function getLocalIngredients() {
-	const storedIngredients = localStorage.getItem('ingredients');
-	return JSON.parse(storedIngredients) || [];
-}
-
 function getLocalDietaryPreferences() {
 	const storedPreferences = localStorage.getItem('dietaryPreferences');
 	return JSON.parse(storedPreferences) || [];
@@ -189,6 +163,7 @@ function validateNutrition(jsonString) {
 			if (typeof value !== 'string') {
 				jsonObject[key] = JSON.stringify(value);
 			}
+
 			if (key.charAt(0) !== key.charAt(0).toUpperCase()) {
 				const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
 				jsonObject[capitalizedKey] = jsonObject[key];
@@ -198,6 +173,7 @@ function validateNutrition(jsonString) {
 		return JSON.stringify(jsonObject);
 
 	  } catch (error) {
+		console.log(jsonString);
 		console.log("JSON parsing failure:", error.message);
 		return false;
 	  }
@@ -423,7 +399,6 @@ app.post('/loggingin', async (req, res) => { //done
 	}
 });
 
-
 app.use(express.static(__dirname + "/public"));
 
 app.get('/login', (req, res) => {
@@ -450,14 +425,11 @@ app.get('/loggedin/members', async (req,res) => {
 
 
 app.post('/generateRecipe', async (req, res) => {
-	try {
-	  const recipe = await generateRecipe();
+	
+	  const recipe = await generateRecipe(req.session.username);
 	  localStorage.setItem('recipe', JSON.stringify(recipe));
 	  res.redirect('/loggedin/members');
-	} catch (error) {
-	  // Handle any errors that occur during recipe generation
-	  res.status(500).send('Error generating recipe.');
-	}
+
   });
 
 app.post('/clearRecipe', async (req,res) => {
@@ -627,8 +599,8 @@ app.post('/nutritionInfo', async (req,res) => {
 
 });
 
-app.get('/filters',(req, res)  => {
-	res.render("filters", { ingredients: getLocalIngredients() , preferences:getLocalDietaryPreferences()});
+app.get('/filters', async (req, res)  => {
+	res.render("filters", { ingredients: await getLocalIngredients(req.session.username) , preferences:getLocalDietaryPreferences()});
 });
 
 //route for list of ingredients page
@@ -641,7 +613,7 @@ app.get("/lists", async (req, res) => {
 		// console.log("L: " + ingredientList[i].Food);
 	}
 
-	const chosenIngredients = getLocalIngredients();
+	const chosenIngredients = await getLocalIngredients(req.session.username);
 
 	//Render the lists.ejs file that has the html for this apge
 	res.render("lists", { list: ingredientList, ingredients: chosenIngredients });
@@ -655,21 +627,35 @@ app.get("/loggedin/members/profile", async (req, res) => {
 	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question] });
 });
 
-app.post('/updateLocalIngredient/', (req, res) => {
+async function getLocalIngredients(username) {
+	const storedIngredients = await userCollection.find({username: username}).project({selected_ingredients: 1}).toArray();
+
+	// if(storedIngredients == undefined) {
+	// 	await userCollection.updateOne({username: username}, {$set: {selected_ingredients: []}});
+	// 	storedIngredients = storedIngredients = await userCollection.find({username: username}).project({selected_ingredients: 1}).toArray();
+	// }
+
+	return storedIngredients[0].selected_ingredients || [];
+}
+
+app.post('/updateLocalIngredient/', async (req, res) => {
 	const foodName = req.body.foodName;
 	
-	const ingredients = getLocalIngredients();
+	let ingredients = await getLocalIngredients(req.session.username);
+	console.log(req.session.username);
 	const index = ingredients.indexOf(foodName);
 
 	if (index !== -1) {
 		// If foodName is already in the ingredients array, remove it
 		ingredients.splice(index, 1);
-		localStorage.setItem('ingredients', JSON.stringify(ingredients));
+		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
+		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Removed " + foodName);
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
-		localStorage.setItem('ingredients', JSON.stringify(ingredients));
+		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
+		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Added " + foodName);
 	}
 
@@ -710,8 +696,8 @@ async function saveRecipe( recipe, username) {
 }
 
 app.post('/saveRecipe', async (req,res) => {
-	if(typeof recipe !== 'undefined') {
-		saveRecipe(recipe, req.session.username);
+	if(typeof recipeResponse !== 'undefined') {
+		saveRecipe(recipeResponse, req.session.username);
 	} else {
 		console.log("Must create recipe!");
 		return;
