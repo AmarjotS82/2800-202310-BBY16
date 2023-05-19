@@ -8,3 +8,17 @@ buttons.forEach(button => {
       this.classList.toggle('btn-secondary');
     });
   });
+
+  const button = document.querySelectorAll('.dietary-button');
+  const colors = ['#85603F', '#EADDCA'];
+  
+  button.forEach(function(button) {
+    let index = 0;
+  
+    button.addEventListener('click', function() {
+      button.style.backgroundColor = colors[index];
+      button.style.color = 'black';
+  
+      index = index >= colors.length - 1 ? 0 : index + 1;
+    });
+  });

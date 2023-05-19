@@ -13,29 +13,32 @@
     </div>
 
     <a href="/lists">
-        <button type="button" class="btn btn-primary btn-lg">Add Ingredients</button>
+       <div class="add-ingredient-div"> <button type="button" class="add-ingredient-btn">Add Ingredients <i class='fas fa-plus'></i></button></div>
     </a>
 
-    <form action="/generateRecipe" method="post">
-        <button type="submit" class="btn btn-primary btn-lg">Generate Recipe</button>
-    </form>
-
+   
 
     <form method="POST" action="/updateDietaryPreference" class="py-5">
-        <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button btn btn-light">Keto</button>
-        <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button btn btn-light">Gluten-free</button>
-        <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button btn btn-light">Vegan</button>
-        <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button btn btn-light">Vegetarian</button>
-        <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button btn btn-light">Lactose-free</button>
-        <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button btn btn-light">Pescatarian</button>
-        <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button btn btn-light">Kosher</button>
-        <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button btn btn-light">Low Carb</button>
+        <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button" >Keto</button>
+        <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button ">Gluten-free</button>
+        <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button ">Vegan</button>
+        <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button">Vegetarian</button>
+        <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button">Lactose-free</button>
+        <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button">Pescatarian</button>
+        <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button">Kosher</button>
+        <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button">Low Carb</button>
     </form>
 
+    <form action="/generateRecipe" method="post">
+        <button type="submit" class="btn btn-primary btn-lg">Get Recipe</button>
+    </form>
 
+  
 
     <br>
     <br>
     <script src="/js/filters.js"></script>
     <%- include("templates/navbar") %>
     <%- include("templates/footer") %>
+
+   
