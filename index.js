@@ -613,9 +613,6 @@ app.get("/lists", async (req, res) => {
 	//Make sure capital F for food otherwise doesn't work
 	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
 	//Checking if it works
-	for (var i = 0; i < ingredientList.length; i++) {
-		// console.log("L: " + ingredientList[i].Food);
-	}
 
 	const chosenIngredients = await getLocalIngredients(req.session.username);
 
@@ -642,7 +639,7 @@ async function getLocalIngredients(username) {
 	return storedIngredients[0].selected_ingredients || [];
 }
 
-app.post('/updateLocalIngredient/', async (req, res) => {
+app.post('/updateLocalIngredient', async (req, res) => {
 	const foodName = req.body.foodName;
 	
 	let ingredients = await getLocalIngredients(req.session.username);
@@ -655,14 +652,14 @@ app.post('/updateLocalIngredient/', async (req, res) => {
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Removed " + foodName);
-		return;
+		res.redirect('/lists');
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Added " + foodName);
-		return;
+		res.redirect('/lists');
 	}
 });
 
