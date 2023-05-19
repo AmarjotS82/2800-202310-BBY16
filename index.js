@@ -405,10 +405,12 @@ app.use(express.static(__dirname + "/public"));
 //new stuff added
 
 
-app.get('/loggedin/members', (req,res) => {
+app.get('/loggedin/members', async (req,res) => {
 	const recipe = JSON.parse(localStorage.getItem('recipe'));
+	var username = req.session.username;
+	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
 
-	res.render('members', {recipe: recipe});
+	res.render('members', {recipe: recipe, username: result[0].username });
 })
 
 
