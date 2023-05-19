@@ -214,8 +214,7 @@ app.post('/forgetPassword', async (req, res) => {
 		res.render('answer-questions', { question: userQuestion, email: result[0].email });
 
 	} else {
-		alert("INVALID EMAIL");
-		res.redirect("/forgetPassword");
+		res.render("changePassword", {message: "Email doesn't exist!"});
 		return;
 
 	}
