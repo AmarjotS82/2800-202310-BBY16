@@ -710,8 +710,8 @@ async function saveRecipe( recipe, username) {
 }
 
 app.post('/saveRecipe', async (req,res) => {
-	if(typeof recipe !== 'undefined') {
-		saveRecipe(recipe, req.session.username);
+	if(typeof recipeResponse !== 'undefined') {
+		saveRecipe(recipeResponse, req.session.username);
 	} else {
 		console.log("Must create recipe!");
 		return;
