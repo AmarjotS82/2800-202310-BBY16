@@ -1,6 +1,6 @@
 body{
     background-color: #B4846C;
-    margin-top: 25%;
+    margin-top: 3%;
     font-family:'Times New Roman', Times, serif;
 }
 h5{
@@ -309,3 +309,25 @@ button {
 
 
 /* --------------------------------------- */
+
+
+.ingredient-wrapper{
+  background-color: #e5b299;
+  border-radius: 20px;
+  height: 100%;
+  padding: 20px;
+  margin:1em; 
+}
+
+
+/* ************* displayed ingredient buttons **************** */
+.displayed-ingredient{
+  background-color: #e0d0ba;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.ingredient{
+  display: flex;
+  flex-wrap: wrap;
+}
