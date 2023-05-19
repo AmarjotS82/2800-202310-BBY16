@@ -1,16 +1,71 @@
 <%- include("templates/header") %>
-
-
+<link rel="stylesheet" href="/css/nutrition.css">
+<script src="/js/calorie.js"></script>
 
 <!-- Card to be dispalyed on the screen -->
-    <div class="d-flex justify-content-center align-items-center calorieBox" style="height: 50vh;">
+    <div class="d-flex justify-content-center align-items-center calorieBox" style="height: 50vh;" >
       <div id="nutritionCard" class=" card w-100 m-5">
         <div class="card-body text-center">
         <h3>Calories</h3> 
+            
+
+        <% if(calGoal>0 && Calories>0) { %>
+          <svg
+          class="progress-ring d-flex"
+          width="120"
+          height="120">
+          <% let percent = ( Calories/ calGoal ) * 100 %>
+          <% if(percent <= 100) { %>
+          <defs>
+            <linearGradient id="gradient" gradientTransform="rotate(90)">
+              <stop offset="30%" stop-color="orange" />
+      <stop offset="60%" stop-color="yellow" />
+      <stop offset="100%" stop-color="red" />
+            </linearGradient>
+          </defs>
+         <circle
+         id="progressRing"
+           class="progress-ring__circle"
+           stroke = "url(#gradient)"
+           stroke-width="8"
+           fill="transparent"
+           r="52"
+           cx="60"
+           cy="60" 
+           aria-valuenow="<%= percent %>"/>
+          
+       </svg>
+
+
+       <div class="pT d-flex">
         
-        <button id="more" type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test2" >
+          <%# Calories  / %><%# calGoal %>  <%= Math.round(percent) %>%
+        
+        
+      </div>
+      <% } else { %>
+        <p>Erroe: Calorie Amount esceeds goal. Please update your goal. </p>
+        <% } %>
+      <% } %>
+  
+          <p>Total Intake: <%= Calories %> </p>
+
+          <p>Goal: <%= calGoal %></p>
+        </div>
+
+
+        <!-- <button id="more" type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test2" >
           More
-        </button>
+        </button> -->
+        <form action="/nutritionInfo" method="post">
+          <input name="calories" type="text" placeholder="Amount">
+          <button id="amount" type="submit" class="btn btn-primary">Add</button>
+        </form>
+        <form action="/nutritionInfo" method="post">
+          <input name="calGoal" type="text" placeholder="Goal">
+          <button id="goal" type="submit" class="btn btn-warning">Goal</button>
+        </form>
+
         </div>
       </div>  
     </div>

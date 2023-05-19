@@ -66,13 +66,24 @@ const generateRecipe = async () => {
 
 	console.log(prompt);
 	console.log(response["data"]["choices"][0]["message"]["content"]);
-	recipe = response["data"]["choices"][0]["message"]["content"];
+	recipeResponse = response["data"]["choices"][0]["message"]["content"];
+
+	//Separate recipe HTML from nutrition information JSON
+	let startIndex = recipeResponse.indexOf('{');
+	let endIndex = recipeResponse.indexOf('}') + 1;
+	
+	let nutritionInfo = recipeResponse.substring(startIndex, endIndex);
+	nutritionInfo = validateNutrition(nutritionInfo);
+	localStorage.setItem('nutritionalInfo', nutritionInfo);
+
+	let recipe = recipeResponse.substring(0, startIndex);
+
 	return recipe;
 };
 
 function constructPrompt() {
 	// Construct the prompt based on the ingredients and dietary preferences
-	let prompt = "Generate a recipe using ";
+	let prompt = "Generate a single recipe using ";
 
 	// Add the list of ingredients to the prompt
 	const ingredientList = getLocalIngredients().join(", ");
@@ -86,17 +97,17 @@ function constructPrompt() {
 	prompt += preferencesList;
 	}
 
-	prompt += ". Please format the recipe to be displayed in a HTML div element."
-	prompt += " Please do not include any images. "
-	//prompt += " Also, please list each item used in the recipe along with amounts used as a array of JSON objects at the end of the recipe."
+	prompt += ". Format the recipe to be displayed in a HTML div element."
+	prompt += " Do not include any images. Do not include any comments in the code."
+	prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
 
 	return prompt;
 }
 
-// Example usage
 localStorage.setItem('ingredients', '[]');
 localStorage.setItem('recipe', '[]');
 localStorage.setItem('dietaryPreferences', '[]');
+localStorage.setItem('nutritionalInfo', '');
 
 const saltRounds = 12; //use for encryption
 
@@ -110,7 +121,8 @@ const savedRecipeCollection = database.db(mongodb_database).collection('saved_re
 
 const testCollection = database.db(mongodb_database).collection('ingredient');
 
-const recipeCollection = database.db(mongodb_database).collection('recipes');
+//search recipe collection
+const recipeCollection = database.db(mongodb_database).collection('search_recipes');
 
 //---------------For generating recipe on console input-----------------
 
@@ -169,6 +181,29 @@ function getLocalDietaryPreferences() {
 	const storedPreferences = localStorage.getItem('dietaryPreferences');
 	return JSON.parse(storedPreferences) || [];
 }
+
+function validateNutrition(jsonString) {
+	try {
+		const jsonObject = JSON.parse(jsonString);
+		for ([key, value] of Object.entries(jsonObject)) {
+			if (typeof value !== 'string') {
+				jsonObject[key] = JSON.stringify(value);
+			}
+			if (key.charAt(0) !== key.charAt(0).toUpperCase()) {
+				const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+				jsonObject[capitalizedKey] = jsonObject[key];
+				delete jsonObject[key];
+			}
+		}
+		return JSON.stringify(jsonObject);
+
+	  } catch (error) {
+		console.log("JSON parsing failure:", error.message);
+		return false;
+	  }
+	  
+}
+
 /** Use later for valid session */
 function isValidSession(req) {
 	if (req.session.authenticated) {
@@ -428,6 +463,8 @@ app.post('/generateRecipe', async (req, res) => {
 app.post('/clearRecipe', async (req,res) => {
 	localStorage.setItem('recipe', '[]');
 	localStorage.setItem('ingredients', '[]');
+	localStorage.setItem('dietaryPreferences', '[]');
+	localStorage.setItem('nutritionalInfo');
 	res.redirect('loggedin/members');
   });
 
@@ -560,6 +597,7 @@ app.post('/nutritionInfo', async (req,res) => {
 			res.redirect("/loggedin/nutrition");
 			return;
 		}
+		
 		//Find exisiting value so that user can add on to the amount 
 		let calCount2 = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
 		//Add new amount to existing amount
@@ -583,6 +621,7 @@ app.post('/nutritionInfo', async (req,res) => {
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: calorieGoal}});
 	}
 
+	// Store
 	res.redirect("/loggedin/nutrition");
 
 
@@ -724,8 +763,22 @@ app.get('/recipe/:id', async (req,res ) => {
 
 // *************** searchRecipe section**************************
 app.get('/loggedin/searchRecipe', async (req, res)=> {
-	let recipes = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
-	res.render('searchRecipe',{ recipe: recipes});
+	let recipesList = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
+	
+	// console.log("size: " + recipesList.length)
+	// for(let i = 0; i < recipesList.length; i++) {
+	// let instructions = recipesList[i].Instructions;
+	// //console.log( "first: " +ingredient);
+	// for(let y = 0; y < instructions.length; y++){
+	// 	let letter = instructions.charAt(y) + instructions.charAt(y + 1);
+	// 	if(letter == '. ') {
+	// 		instructions= instructions.replace(letter, "</li><li>")
+	// 	}	
+	// }
+	// //await recipeCollection.updateOne({Title: recipesList[i].Title}, {$set: {Instructions: instructions}}); 
+	// }
+	
+	res.render('searchRecipe',{ recipe: recipesList});
 })
 
 // ------------------------------------------------------
