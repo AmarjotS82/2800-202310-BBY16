@@ -597,6 +597,7 @@ app.post('/nutritionInfo', async (req,res) => {
 			res.redirect("/loggedin/nutrition");
 			return;
 		}
+		
 		//Find exisiting value so that user can add on to the amount 
 		let calCount2 = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
 		//Add new amount to existing amount

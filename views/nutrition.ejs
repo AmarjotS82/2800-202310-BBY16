@@ -15,6 +15,7 @@
           width="120"
           height="120">
           <% let percent = ( Calories/ calGoal ) * 100 %>
+          <% if(percent <= 100) { %>
           <defs>
             <linearGradient id="gradient" gradientTransform="rotate(90)">
               <stop offset="30%" stop-color="orange" />
@@ -42,7 +43,11 @@
         
         
       </div>
+      <% } else { %>
+        <p>Erroe: Calorie Amount esceeds goal. Please update your goal. </p>
+        <% } %>
       <% } %>
+  
           <p>Total Intake: <%= Calories %> </p>
 
           <p>Goal: <%= calGoal %></p>
