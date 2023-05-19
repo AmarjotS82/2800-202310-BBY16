@@ -17,21 +17,66 @@ body{
     margin:1.5em; 
 }
 
+h1{
+    color: rgb(84, 47, 21);  
+    font-size: 30px;
+    font-weight: bold;
+}
 
-h2{
-    color: aliceblue;  
-}
-  #nutritionCard{
-    background-color: rgba(204, 131, 131, 0.548);
-}
+
+ 
 
 #nutritionCard .btn{
 
     background-color: rgb(249, 219, 219);
-    font-size: 13pt;
+    font-size: 10pt;
     border-color: black;
 }
 
 
+
+.icon-container {
+    position: relative;
+  }
+  
+  .bi-heart,
+  .bi-heart-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .bi-heart-fill {
+    display: none;
+  }
   
 
+.icon-container{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+h5{
+    grid-column:1/3;
+    
+}
+
+.bi-heart,
+.bi-heart-fill {
+    grid-column: 3/4;
+    grid-row: 1/2;
+    margin-left: 50px;
+    margin-top: -10px;
+}
+  
+#nutritionCard{
+    background-color: rgb(171, 102, 82);
+    margin: 10px;
+    border-radius: 20px;
+    width: 170px;
+}
+
+.calorie-btn{
+    border: hidden;
+    margin: 10px;
+}

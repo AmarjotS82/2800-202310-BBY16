@@ -6,11 +6,12 @@
 
 #navbar {
     overflow: hidden;
-    background-color: #1a1919;
+    background-color: #42170b;
     position: fixed;
     bottom: 0;
     width: 100vh;
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
+    margin-top: 20px;
   }
   
   /* Navbar links */
@@ -31,8 +32,8 @@
   }
   
   .bi{
-    font-size: 3em;
-    padding-left: 20px;
+    font-size: 2em;
+    padding-left: 15px;
   }
 
   

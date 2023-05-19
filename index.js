@@ -421,13 +421,13 @@ app.post('/clearRecipe', async (req,res) => {
 
 app.get('/loggedin/nutrition', async (req, res) => {
 
-	//email to identify the user adn get only their information
+	//email to identify the user and get only their information
 	var email = req.session.email
 
 	//Stores the last time the user accesed the page by using email to find the specific user and turns it into an array
 	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
 	
-	//gets the valur in the databse from the array crated above
+	//gets the value in the database from the array crated above
 	var lastTime = storedTime[0].LastDateUsed;
 
 	//Gets the current date by creating a new date object and getting the day
@@ -686,15 +686,10 @@ app.get('/loggedin/searchRecipe', async (req, res)=> {
 	let recipes = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
 	res.render('searchRecipe',{ recipe: recipes[0].Image_Name});
 })
-// *************** searchRecipe section******************
-app.get('/loggedin/searchRecipe', (req, res)=> {
-	res.render('searchRecipe');
 
-})
-// ------------------------------------------------------
 
 // *************** Grocery List *******************
-app.get('/todo', (req, res)=> {
+app.get('/loggedin/todo', (req, res)=> {
 	res.render('todo');
 })
 //-------------------------------------------------
