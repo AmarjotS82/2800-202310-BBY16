@@ -26,6 +26,16 @@
       window.location.replace("/signup");
     }
 
+    let count = 0;
+    $('.index-img').click(function() {
+      count++;
+      if(count == 3){
+        $('.index-img').addClass('animate');
+      } else if (count > 3) {
+        $('.index-img').removeClass('animate');
+        count = 0;
+      }
+    });
   </script>
 
   <%- include("templates/footer") %>

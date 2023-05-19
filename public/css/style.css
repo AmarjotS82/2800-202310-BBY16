@@ -60,4 +60,14 @@ body{
 }
 
 
+.index-img.animate {
+  animation: beat 0.7s 4 normal;
+  transform-origin: center;
+}
+
+@keyframes beat{
+  to { transform: scale(1.2); }
+}
+
+
 
