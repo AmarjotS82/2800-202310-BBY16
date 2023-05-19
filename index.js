@@ -67,18 +67,18 @@ const generateRecipe = async (username) => {
 	console.log(prompt);
 	console.log(response["data"]["choices"][0]["message"]["content"]);
 	recipeResponse = response["data"]["choices"][0]["message"]["content"];
-
+/**
 	//Separate recipe HTML from nutrition information JSON
 	let startIndex = recipeResponse.indexOf('{');
 	let endIndex = recipeResponse.indexOf('}') + 1;
-	
+	 
 	let nutritionInfo = recipeResponse.substring(startIndex, endIndex);
 	nutritionInfo = validateNutrition(nutritionInfo);
 	localStorage.setItem('nutritionalInfo', nutritionInfo);
 
 	let recipe = recipeResponse.substring(0, startIndex);
-
-	return recipe;
+*/
+	return recipeResponse;
 };
 
 async function constructPrompt(username) {
@@ -100,8 +100,10 @@ async function constructPrompt(username) {
 
 	prompt += " Put the recipe name in a h2 element."
 	prompt += " Put the ingredient and instruction headings in h3 elements."
-	prompt += " Surround the recipe in a div element."
+	prompt += " Also, provide the fat, protein, calorie and carbohydrates content after the recipe. "
+	prompt += " Surround the recipe and nutritional info in a div element with an id of recipeDiv."
 	prompt += " Do not include any images. Do not include any comments in the code."
+	
 	//prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
 	//prompt += " Ensure that the key and value pair are both strings."
 	//prompt += " Do not generate a script tag anywhere. "
@@ -156,7 +158,7 @@ function getLocalDietaryPreferences() {
 	const storedPreferences = localStorage.getItem('dietaryPreferences');
 	return JSON.parse(storedPreferences) || [];
 }
-
+/** 
 function validateNutrition(jsonString) {
 	try {
 		const jsonObject = JSON.parse(jsonString);
@@ -180,7 +182,7 @@ function validateNutrition(jsonString) {
 	  }
 	  
 }
-
+*/
 /** Use later for valid session */
 function isValidSession(req) {
 	if (req.session.authenticated) {
