@@ -533,32 +533,6 @@ app.post('/nutritionInfo', async (req,res) => {
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: calorieGoal}});
 	}
 
-	let cafCount = 0;
-
-
-	if (caffeine != null) {
-		cafCount += parseInt(caffeine);
-		if (localStorage.getItem("Calories") != null) {
-			cafCount += parseInt(localStorage.getItem("Caffeine"));
-		}
-	} else {
-		cafCount += parseInt(localStorage.getItem("Caffeine"));
-	}
-
-	// Store
-	localStorage.setItem("Caffeine", cafCount);
-
-	if (caffeineGoal != null) {
-		const validationResult = schema.validate(caffeineGoal);Store
-		if (validationResult.error != null) {
-			console.log(validationResult.error);
-			res.redirect("/loggedin/nutrition");
-			return;
-		}
-
-		localStorage.setItem("cafGoal", caffeineGoal);
-	}
-
 	// Store
 	res.redirect("/loggedin/nutrition");
 
@@ -680,32 +654,19 @@ app.get('/recipe/:id', async (req,res ) => {
 app.get('/loggedin/searchRecipe', async (req, res)=> {
 	let recipesList = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
 	
-	console.log("size: " + recipesList.length)
-	for(let i = 0; i < recipesList.length; i++) {
-	let ingredient = recipesList[i].Ingredients;
-	console.log(ingredient);
-	for(let y = 0; y < ingredient.length; y++){
-		let letter = ingredient.charAt(y) + ingredient.charAt(y + 1);
-		if(letter == '\',') {
-			ingredient= ingredient.replace(letter, "</li>")
-		}  else if(letter == '[\''){
-			ingredient = ingredient.replace(letter, "<li>");
-		}else if(letter == '\']'){
-			ingredient = ingredient.replace(letter, "</li>");
-		}
-			console.log("list: " + ingredient);
-		recipesList[i].Ingredients = ingredient
-		
-	}
-	for(let y = 0; y < ingredient.length; y++){
-		let letter = ingredient.charAt(y);
-		if(letter == '\'') {
-			ingredient= ingredient.replace(letter, "<li>")
-		} 
-		recipesList[i].Ingredients = ingredient	
-	}
-
-	}
+	// console.log("size: " + recipesList.length)
+	// for(let i = 0; i < recipesList.length; i++) {
+	// let instructions = recipesList[i].Instructions;
+	// //console.log( "first: " +ingredient);
+	// for(let y = 0; y < instructions.length; y++){
+	// 	let letter = instructions.charAt(y) + instructions.charAt(y + 1);
+	// 	if(letter == '. ') {
+	// 		instructions= instructions.replace(letter, "</li><li>")
+	// 	}	
+	// }
+	// //await recipeCollection.updateOne({Title: recipesList[i].Title}, {$set: {Instructions: instructions}}); 
+	// }
+	
 	res.render('searchRecipe',{ recipe: recipesList});
 })
 // ------------------------------------------------------

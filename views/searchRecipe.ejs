@@ -4,7 +4,19 @@
 
 <input id="searchBar" type="text" placeholder="find recipes...">
 
+
 <% for(let i =0; i < recipe.length; i++ ) { %>
+    <div class="card" style="width: 18rem;">
+        <img src="/img/recipes/<%= recipe[i].Image_Name %>.jpg" class="card-img-top" alt="<%= recipe[i].Image_Name %>">
+        <div class="card-body">
+          <h5 class="card-title"><%= recipe[i].Title %></h5>
+          <button type="submit" class="btn btn-primary" id="details" data-bs-toggle="modal" data-bs-target="#info" value=" <%= JSON.stringify({recipe: recipe,index: i}) %>" >Details</button>
+        </div>
+    </div>
+    
+  <% } %>
+
+<!-- <% for(let i =0; i < recipe.length; i++ ) { %>
 <div class="card" style="width: 18rem;">
     <img src="/img/recipes/<%= recipe[i].Image_Name %>.jpg" class="card-img-top" alt="<%= recipe[i].Image_Name %>">
     <div class="card-body">
@@ -13,7 +25,7 @@
     </div>
 </div>
 
-<% } %>
+<% } %> -->
 
 <div id="info" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">

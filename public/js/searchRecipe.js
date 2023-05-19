@@ -1,29 +1,69 @@
 $(document).ready(async function() {
+  // const arr = [];
+  // let i =0;
+  // var cardTitles = $(".card");
 
+  //       cardTitles.each(function() {
+  //         var title = $(this).text().toLowerCase();
+  //         arr[i] = $(this).html();
+  //         i++;
+  // });
+  // for(let k=0 ;k<arr.length;k++){
+  //   console.log("arr: " + arr[i]);
+  // }
 
 
       var searchBar = document.getElementById("searchBar");
 
       searchBar.addEventListener("input", function(){
-        
-        let input = searchBar.value;
+        let input = searchBar.value.toLowerCase();
+        // searchBar.addEventListener('keydown', function(event) {
+        //   const key = event.key;
+        //   if (key === "Backspace" || key === "Delete") {
+        //       console.log("backspace pressed");
+        //       in
+        //   }
+        // });
+        //let input = searchBar.value;
         console.log("input: " + input);
+        console.log("input: " + input.length);
+        if (input.length == 0) {
+          var cardTitles = $(".card");
+
+          cardTitles.each(function() {
+            //got show method from gpt
+            $(this).show();
+        });
+      } else {
         
-       if(input != null){
         var cardTitles = $(".card");
+
+        
+
         cardTitles.each(function() {
-          var title = $(this).text();
-          if (title.includes(input)) {
+          var title = $(this).text().toLowerCase();
+          
+          //console.log("match: " + title.includes(input.toLowerCase()));
+          
+          if (title.includes(input.toLowerCase())) {
             // The search value is found in a heading
-            console.log("title :"+ title);
-            
+             // console.log("title :"+ title);
+            // $(this).append('${arr}')
+            // for (let k = 0; k < arr.length; k++) {
+            //   if(arr[k].toLowerCase().includes(title))
+            //   $("body").append(`<div class="card" style="width: 18rem;">` + arr[k] + "</div>");
+            // }
+            console.log("match")
+            $(this).show();
           }else{
-            $(this).remove();
+            console.log("no match")
+            //got hide method from gpt
+            $(this).hide();
           }
         });
         
-       }  
-
+       }
+  
 
       });      
 
@@ -54,18 +94,3 @@ $(document).ready(async function() {
     })
 
 });
-
-
-// for(let i = 0; i < recipe.length; i++) {
-//   let ingredient = recipe[i];
-//   for(let y = 0; y < ingredient.length; y++){
-//     let letter = ingredient.charAt(y);
-//     if(letter == '\',') {
-//       ingredient.replace(ingredient.charAt(y), "</li>")
-//     } else if(letter == '\'],'){
-
-//     }else {
-//       ingredient.replace('\'', "<li>");
-//     }
-//   }
-// }
