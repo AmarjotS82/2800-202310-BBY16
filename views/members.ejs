@@ -6,6 +6,31 @@
 
   <link rel="stylesheet" href="/css/members.css">
 
+<!-- hamsterrr -->
+<div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
+	<div class="wheel"></div>
+	<div class="hamster">
+		<div class="hamster__body">
+			<div class="hamster__head">
+				<div class="hamster__ear"></div>
+				<div class="hamster__eye"></div>
+				<div class="hamster__nose"></div>
+			</div>
+			<div class="hamster__limb hamster__limb--fr"></div>
+			<div class="hamster__limb hamster__limb--fl"></div>
+			<div class="hamster__limb hamster__limb--br"></div>
+			<div class="hamster__limb hamster__limb--bl"></div>
+			<div class="hamster__tail"></div>
+		</div>
+	</div>
+	<div class="spoke"></div>
+</div>
+<!-- ----------------------------------- -->
+
+<div class="header">
+  <h1><img class="logo" src="/img/logo-no-background.png" alt="logo-no-background"></h1>
+</div>
+
 
   <div id="nutritionCard">
     <div class="card-body text-center">
@@ -16,9 +41,7 @@
     </div>
   </div>
 
-  <div class="header">
-    <h1><img class="logo" src="/img/logo-no-background.png" alt="logo-no-background"></h1>
-  </div>
+ 
 
   <h2>Welcome! <%= username %></h2>
 
@@ -81,8 +104,29 @@
 
 
 
-<script src="/js/members.js"></script>
+<!-- <script src="/js/members.js"></script> -->
   <%- include("templates/navbar") %>
     <%- include("templates/footer") %>
 
-    
+    <script>
+      var iconVisible = document.querySelector('.bi-heart');
+        var iconHidden = document.querySelector('.bi-heart-fill');
+
+        iconVisible.addEventListener('click', function () {
+          iconHidden.style.display = 'inline-block';
+        });
+
+        var saveButton = document.querySelector('.save');
+
+        saveButton.addEventListener('click', function () {
+          swal("Recipe saved successfully!", "checkout saved recipe page!", "success");
+        });
+
+
+        var visible = document.querySelector('.logo');
+        var invisible = document.querySelector('.wheel-and-hamster');
+        visible.addEventListener('click', function () {
+          invisible.style.display = 'block';
+          visible.style.display = 'none';
+        });
+    </script>
