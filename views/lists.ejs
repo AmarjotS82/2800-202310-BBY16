@@ -42,7 +42,7 @@
                   <!--div for content in list-->
                   <div>
                     <form method="POST" action="/updateLocalIngredient">
-                      <button type="submit" id="ingredient-List" class="btn <%= ingredientFound ? 'btn-secondary m-1' : 'btn-light m-1' %> custom-button" name="foodName" value="<%= list[y].Food %>" data-ingredient="<%= list[y].Food %>">
+                      <button type="submit" id="ingredient-List" class="btn <%= ingredientFound ? 'btn-secondary m-1' : 'btn-light m-1' %> custom-button" name="foodName" value="<%= list[y] %>" data-ingredient="<%= list[y].Food %>">
                         <%= list[y] %>
                       </button>
                     </form>
