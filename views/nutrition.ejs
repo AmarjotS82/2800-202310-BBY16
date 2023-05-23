@@ -1,7 +1,7 @@
 <%- include("templates/header") %>
 <link rel="stylesheet" href="/css/nutrition.css">
 
-
+<% if(cal) { %>
 <!-- Card to be dispalyed on the screen -->
     <div class="d-flex justify-content-center align-items-center calorieBox" style="height: 50vh;" >
       <div id="nutritionCard" class=" card w-100 m-5">
@@ -44,7 +44,7 @@
         
       </div>
       <% } else { %>
-        <p>Erroe: Calorie Amount esceeds goal. Please update your goal. </p>
+        <p>Error: Calorie Amount esceeds goal. Please update your goal. </p>
         <% } %>
       <% } %>
   
@@ -71,62 +71,79 @@
     </div>
     <!-- Card code ends -->
 
-    <!-- Modal that appears wheen the suer clicks more -->
-    <div id="test2" class="modal fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Calories</h5>
-            <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">X</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <% if(calGoal>0 && Calories>0) { %>
-            <svg
-            class="progress-ring d-flex"
-            width="120"
-            height="120">
-            <% let percent = ( Calories/ calGoal ) * 100 %>
-           <circle
-           id="progressRing"
-             class="progress-ring__circle"
-             stroke="black"
-             stroke-width="8"
-             fill="transparent"
-             r="52"
-             cx="60"
-             cy="60" 
-             aria-valuenow="<%= percent %>"/>
+  
+<% } else if(carbs){ %>
+
+    <!-- Card to be dispalyed on the screen -->
+        <div class="d-flex justify-content-center align-items-center calorieBox" style="height: 50vh;" >
+          <div id="nutritionCard" class=" card w-100 m-5">
+            <div class="card-body text-center">
+            <h2>Carbohydrates</h2> 
+                
+    
+            <% if(carbGoal>0 && Carbohydrates>0) { %>
+              <svg
+              class="progress-ring d-flex"
+              width="120"
+              height="120">
+              <% let percent = ( Carbohydrates/ carbGoal ) * 100 %>
+              <% if(percent <= 100) { %>
+              <defs>
+                <linearGradient id="gradient" gradientTransform="rotate(90)">
+                  
+                  <stop offset="60%" stop-color="yellow" />
+                  <stop offset="100%" stop-color="brown" />
+                </linearGradient>
+              </defs>
+             <circle
+             id="progressRing"
+               class="progress-ring__circle"
+               stroke = "url(#gradient)"
+               stroke-width="8"
+               fill="transparent"
+               r="52"
+               cx="60"
+               cy="60" 
+               aria-valuenow="<%= percent %>"/>
+              
+           </svg>
+    
+    
+           <div class="pT d-flex">
             
-         </svg>
-
-
-         <div class="pT d-flex">
-          
-            <%# Calories  / %><%# calGoal %>  <%= Math.round(percent) %>%
-          
-          
-        </div>
-        <% } %>
-            <p>Total Intake: <%= Calories %> </p>
-
-            <p>Goal: <%= calGoal %></p>
+              <%# Carbohydrates  / %><%# carbGoal %>  <%= Math.round(percent) %>%
+            
+            
           </div>
-          <div class="modal-footer">
-              <form action="/nutritionInfo" method="post">
-                <input name="calories" type="text" placeholder="Amount">
-                <button type="submit" class="btn btn-primary">Add</button>
-              </form>
-              <form action="/nutritionInfo" method="post">
-                <input name="calGoal" type="text" placeholder="Goal">
-                <button type="submit" class="btn btn-warning">Goal</button>
-              </form>
-          </div>
+          <% } else { %>
+            <p>Error: Carbohydrates Amount esceeds goal. Please update your goal. </p>
+            <% } %>
+          <% } %>
+      
+              <p>Total Intake: <%= Carbohydrates %> </p>
+    
+              <p>Goal: <%= carbGoal %></p>
+            </div>
+    
+    
+            <!-- <button id="more" type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test2" >
+              More
+            </button> -->
+            <form action="/nutritionInfo" method="post">
+              <input name="carbohydrates" type="text" placeholder="Amount">
+              <button id="amount" type="submit" class="btn btn-light">Add</button>
+            </form>
+            <form action="/nutritionInfo" method="post">
+              <input name="carbGoal" type="text" placeholder="Goal">
+              <button id="goal" type="submit" class="btn btn-light">Goal</button>
+            </form>
+    
+            </div>
+          </div>  
         </div>
-      </div>
-    </div>
-
+        <!-- Card code ends -->
+    
+    <% } %>
     <script src="/js/calorie.js"></script>
  <!-- Modal code ends -->
     <%- include("templates/navbar") %>
