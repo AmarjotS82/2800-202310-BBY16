@@ -489,6 +489,12 @@ app.get('/loggedin/nutrition', async (req, res) => {
 	//email to identify the user and get only their information
 	var email = req.session.email
 
+	var caloriesPicked = req.query.calories;
+	console.log("pickedCal: "+ caloriesPicked);
+
+	var carbsPicked = req.query.carbs;
+	console.log("pickedCal: "+ carbsPicked);
+
 	//Stores the last time the user accesed the page by using email to find the specific user and turns it into an array
 	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
 	
@@ -510,6 +516,8 @@ app.get('/loggedin/nutrition', async (req, res) => {
 		//Sets the calories and goals to zero since the user hasn't input anytihng yet
 		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
+		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
+		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: 0}});
 	}
 	//Check if the user is logging in on a new day and reset values so they can keep track daily
 	// * Currently every 2 mins for testing purposes
@@ -519,6 +527,8 @@ app.get('/loggedin/nutrition', async (req, res) => {
 		//Resets the calories and goals to zero so user can add daily
 		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
+		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
+		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: 0}});
 	}else if(currTime < lastTime){
 		//This is to deal with days when the differnece of last vist and current date is less than 1
 		// Example: May 29 and then June 4 the first if statement wouldn't catch this case and not update values/date 
@@ -529,26 +539,57 @@ app.get('/loggedin/nutrition', async (req, res) => {
 		//Resets the calories and goals to zero so user can add daily
 		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
+		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
+		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: 0}});
 
 	}
 
-	//Stores the number of calories the user has input by using email to find the specific user and turns it into an array
-	let calorieCount = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
+	if(caloriesPicked){
+		//Stores the number of calories the user has input by using email to find the specific user and turns it into an array
+		let calorieCount = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
 
-	//Stores the calorie goal the user has input by using email to find the specific user and turns it into an array
-	let storedcalorieGoal = await userCollection.find({email : email}).project({CalorieGoal: 1 }).toArray();
-	
+		//Stores the calorie goal the user has input by using email to find the specific user and turns it into an array
+		let storedcalorieGoal = await userCollection.find({email : email}).project({CalorieGoal: 1 }).toArray();
+
+		//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
+		res.render("nutrition", {
+			//Calorie intake gotten from calorieCount array above 
+			// .Calories - the specific column name in the databse that the value is located in
+			Calories: calorieCount[0].Calories,
+
+			//Calorie goal gotten from calorieCount array above
+			//Calorie intake gotten from calorieCount array above  
+			// .CalorieGoal - the specific column name in the databse that the value is located in
+			calGoal: storedcalorieGoal[0].CalorieGoal,
+			cal: caloriesPicked,
+			carbs: false
+		});
+	} else if(carbsPicked){
+		let carbCount = await userCollection.find({email : email}).project({Carbohydrates: 1 }).toArray();
+		let storedCarbGoal = await userCollection.find({email : email}).project({carbohydrateGoal: 1 }).toArray();
 	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
 	res.render("nutrition", {
-		//Calorie intake gotten from calorieCount array above 
-		// .Calories - the specific column name in the databse that the value is located in
-		Calories: calorieCount[0].Calories,
-
-		//Calorie goal gotten from calorieCount array above
-		//Calorie intake gotten from calorieCount array above  
-		// .CalorieGoal - the specific column name in the databse that the value is located in
-		calGoal: storedcalorieGoal[0].CalorieGoal
+		Carbohydrates: carbCount[0].Carbohydrates,
+		carbGoal: storedCarbGoal[0].carbohydrateGoal,
+		cal:false,
+		carbs: carbsPicked
 	});
+	}
+	
+	
+
+	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
+	// res.render("nutrition", {
+	// 	//Calorie intake gotten from calorieCount array above 
+	// 	// .Calories - the specific column name in the databse that the value is located in
+	// 	Calories: calorieCount[0].Calories,
+
+	// 	//Calorie goal gotten from calorieCount array above
+	// 	//Calorie intake gotten from calorieCount array above  
+	// 	// .CalorieGoal - the specific column name in the databse that the value is located in
+	// 	calGoal: storedcalorieGoal[0].CalorieGoal,
+	// 	Carbohydrates: carbCount[0].Carbohydrates,
+	// });
 });
 //********************** Calorie Counter Page Ends*/
 
@@ -561,6 +602,11 @@ app.post('/nutritionInfo', async (req,res) => {
 	//calorie Goal value inputted by user
 	 var calorieGoal = req.body.calGoal;
 
+	 var carbohydrates = req.body.carbohydrates;
+
+	 var carbGoal = req.body.carbGoal;
+
+	 console.log("carbs amt: " + carbohydrates)
 	 //If user gives blank input calories is zero so no change to previous value and don't allow negative numbers
 	if (calories == "" || calories < 0) {
 		calories = 0;
@@ -576,7 +622,7 @@ app.post('/nutritionInfo', async (req,res) => {
 		//If there is an error message redirect to same page
 		if (validationResult.error != null) {
 			console.log(validationResult.error);
-			res.redirect("/loggedin/nutrition");
+			res.redirect("/loggedin/nutrition?calories=true");
 			return;
 		}
 		
@@ -586,7 +632,8 @@ app.post('/nutritionInfo', async (req,res) => {
 		calCount2[0].Calories += parseInt(calories);
 		//Update database with new value
 		await userCollection.updateOne({email: email}, {$set: {Calories: calCount2[0].Calories}});
-	
+		res.redirect("/loggedin/nutrition?calories=true");
+			return;
 	}
 
 	//Can only fill one feild at a time so other field becomes undefined this makes it so the undefined doesn't get added
@@ -596,15 +643,56 @@ app.post('/nutritionInfo', async (req,res) => {
 		//If there is an error message redirect to same page
 		if (validationResult.error != null) {
 			console.log(validationResult.error);
-			res.redirect("/loggedin/nutrition");
+			res.redirect("/loggedin/nutrition?calories=true");
 			return;
 		}
 		//Set value inputted into the database overwrites old value
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: calorieGoal}});
+		res.redirect("/loggedin/nutrition?calories=true");
+		return;
 	}
 
+	if (carbohydrates == "" || carbohydrates < 0) {
+		carbohydrates = 0;
+	}
+
+	if (carbohydrates != null) {
+		//validate input using schema crated above
+		const validationResult = schema.validate(carbohydrates);
+		//If there is an error message redirect to same page
+		if (validationResult.error != null) {
+			console.log(validationResult.error);
+			res.redirect("/loggedin/nutrition?carbs=true");
+			return;
+		}
+		
+		//Find exisiting value so that user can add on to the amount 
+		let carbCount = await userCollection.find({email : email}).project({Carbohydrates: 1 }).toArray();
+		console.log("carbs amt: " + carbohydrates)
+		//Add new amount to existing amount
+		carbCount[0].Carbohydrates += parseInt(carbohydrates);
+		console.log("total: " + carbCount[0].Carbohydrates);
+		//Update database with new value
+		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: carbCount[0].Carbohydrates}});
+		res.redirect("/loggedin/nutrition?carbs=true");
+			return;
+	}
+	if (carbGoal != null) {
+		//validate input using schema crated above
+		const validationResult = schema.validate(carbGoal);
+		//If there is an error message redirect to same page
+		if (validationResult.error != null) {
+			console.log(validationResult.error);
+			res.redirect("/loggedin/nutrition?carbs=true");
+			return;
+		}
+		//Set value inputted into the database overwrites old value
+		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: carbGoal}});
+		res.redirect("/loggedin/nutrition?carbs=true");
+		return;
+	}
 	// Store
-	res.redirect("/loggedin/nutrition");
+	// res.redirect("/loggedin/nutrition");
 
 
 });
