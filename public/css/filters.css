@@ -50,13 +50,17 @@ form > button {
   }
 
  form > button {
-  margin: 8px;
-
+  margin: 7px;
+ }
+ .getRecipe-btn{
+  margin: -6px
  }
 
  /* ---------------------------------------------------------- */
 
  /****** generated recipe section ********/
+ /* Got the code from universe.io
+ did some minor changes to fit into our app */
 .getRecipe-btn {
   position: relative;
   padding: 12px 35px;
@@ -219,6 +223,9 @@ form > button {
 
 /* *************add ingredient btn*************** */
 
+ /****** generated recipe section ********/
+ /* Got the code from universe.io
+ did some minor changes to fit into our app */
 
 button {
   position: relative;
