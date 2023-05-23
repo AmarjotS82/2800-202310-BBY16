@@ -1,12 +1,6 @@
+body{
+  background-color: #B4846C;
 
-
-
-
-/* body{
-  background-color: black;
-  display: flex;
-      justify-content: center;
-      align-items: center;
 }
 h3{
   color: rgb(78, 51, 28);
@@ -21,14 +15,14 @@ h3{
   font-size: 13pt;
   border-color: black;
   
-} */
+} 
 
 button{
   color: antiquewhite;
 }
-/* #test2{
+ #test2{
   background-color: rgba(204, 131, 131, 0.548);
-} */
+} 
 
 /* Progrss Ring */
 
