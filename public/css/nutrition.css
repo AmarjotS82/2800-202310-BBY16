@@ -2,8 +2,11 @@
 
 
 
-body{
-  background-color: #B4846C;
+/* body{
+  background-color: black;
+  display: flex;
+      justify-content: center;
+      align-items: center;
 }
 h3{
   color: rgb(78, 51, 28);
@@ -16,17 +19,9 @@ h3{
 #nutritionCard .btn{
   background-color: rgb(173, 127, 105);
   font-size: 13pt;
-  border:none;
-  margin: 5px
-}
-
-input{
-  border: none;
-  background-color: antiquewhite;
-  border-radius: 5px;
-  margin-left: 10px;
-  padding-left: 10px;
-}
+  border-color: black;
+  
+} */
 
 button{
   color: antiquewhite;

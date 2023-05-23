@@ -99,9 +99,10 @@ async function constructPrompt(username) {
 	}
 
 	prompt += " Put the recipe name in a h2 element."
-	prompt += " Put the ingredient and instruction headings in h3 elements."
+	prompt += " Put the ingredient and instruction in h3 elements."
 	prompt += " Also, provide the fat, protein, calorie and carbohydrates content after the recipe. "
-	prompt += " Surround the recipe and nutritional info in a div element with an id of recipeDiv."
+	prompt += " Surround the recipe name, the recipe name and nutritional info in a div element."
+	prompt += " Do not give me any HTML head or body tags."
 	prompt += " Do not include any images. Do not include any comments in the code."
 	
 	//prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
@@ -612,9 +613,6 @@ app.get("/lists", async (req, res) => {
 	//Make sure capital F for food otherwise doesn't work
 	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
 	//Checking if it works
-	for (var i = 0; i < ingredientList.length; i++) {
-		// console.log("L: " + ingredientList[i].Food);
-	}
 
 	const chosenIngredients = await getLocalIngredients(req.session.username);
 
@@ -641,7 +639,7 @@ async function getLocalIngredients(username) {
 	return storedIngredients[0].selected_ingredients || [];
 }
 
-app.post('/updateLocalIngredient/', async (req, res) => {
+app.post('/updateLocalIngredient', async (req, res) => {
 	const foodName = req.body.foodName;
 	
 	let ingredients = await getLocalIngredients(req.session.username);
@@ -654,15 +652,15 @@ app.post('/updateLocalIngredient/', async (req, res) => {
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Removed " + foodName);
+		res.redirect('/lists');
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
 		console.log("Added " + foodName);
+		res.redirect('/lists');
 	}
-
-	console.log(ingredients);
 });
 
 app.post('/updateDietaryPreference', async (req,res ) => {

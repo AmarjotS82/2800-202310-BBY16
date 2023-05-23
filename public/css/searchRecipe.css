@@ -38,13 +38,13 @@ h1{
     padding-right: 30px; /* Adjust the value to make space for the icon */
   }
   
-  #searchBar::before {
+  /* #searchBar::before {
     content: \F52A;
     position: absolute;
     top: 50%;
-    right: 10px; /* Adjust the value to position the icon */
+    right: 10px; /* Adjust the value to position the icon 
     transform: translateY(-50%);
-    font-family: "Font Awesome"; /* Assuming the icon font is loaded */
-    font-size: 16px; /* Adjust the size of the icon */
-  }
+    font-family: "Font Awesome"; /* Assuming the icon font is loaded 
+    font-size: 16px; /* Adjust the size of the icon 
+  } */
   
