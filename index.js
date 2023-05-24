@@ -159,6 +159,12 @@ function getLocalDietaryPreferences() {
 	const storedPreferences = localStorage.getItem('dietaryPreferences');
 	return JSON.parse(storedPreferences) || [];
 }
+
+async function getUserDietaryPreferences() {
+	const storedPreferences = await userCollection.find({username: username}).project({dietary_preferences: 1}).toArray();
+	return storedPreferences[0].dietary_preferences || [];
+}
+
 /** 
 function validateNutrition(jsonString) {
 	try {
@@ -299,6 +305,23 @@ app.post('/newpassword/:id', async (req, res) => {
 
 	res.render('login');
 });
+
+app.post('/setNewDietaryPreference', (req, res) => {
+	const preference = req.body.preference;
+	const dietaryPreferences = req.body.dietaryPreferences;
+	console.log(dietaryPreferences)
+  
+	if (dietaryPreferences.includes(preference)) {
+	  // Remove preference if it's already selected
+	  const preferenceIndex = dietaryPreferences.indexOf(preference);
+	  dietaryPreferences.splice(preferenceIndex, 1);
+	} else {
+	  // Add preference if it's not selected
+	  dietaryPreferences.push(preference);
+	}
+  
+	res.render('signup', { dietaryPreferences }); 
+  });
 
 app.post('/submitUser', async (req, res) => { //good
 	var username = req.body.username;
@@ -623,9 +646,9 @@ app.get("/lists", async (req, res) => {
 app.get("/loggedin/members/profile", async (req, res) => {
 	var username = req.session.username;
 
-	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 }).toArray();
+	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 , dietary_preferences: 1}).toArray();
 
-	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question] });
+	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: result[0].dietary_preferences});
 });
 
 async function getLocalIngredients(username) {
@@ -638,6 +661,8 @@ async function getLocalIngredients(username) {
 
 	return storedIngredients[0].selected_ingredients || [];
 }
+
+
 
 app.post('/updateLocalIngredient', async (req, res) => {
 	const foodName = req.body.foodName;
@@ -663,6 +688,8 @@ app.post('/updateLocalIngredient', async (req, res) => {
 	}
 });
 
+
+
 app.post('/updateDietaryPreference', async (req,res ) => {
 	const newPreference = req.body.preference;
 	const storedPreferences = getLocalDietaryPreferences();
@@ -683,7 +710,26 @@ app.post('/updateDietaryPreference', async (req,res ) => {
 	console.log(storedPreferences);
 })
 
+app.post('/updateDietaryProfile', async (req,res ) => {
+	const newPreference = req.body.preference;
+	const storedPreferences = getUserDietaryPreferences();
 
+	const index = storedPreferences.indexOf(newPreference);
+
+	if (index === -1) {
+		//If preference is not in dietaryPreference, add it
+	  storedPreferences.push(newPreference);
+	  console.log("Added " + newPreference);
+	} else {
+		//If preference is in dietaryPreference, remove it
+	  storedPreferences.splice(index, 1);
+	  console.log("Removed " + newPreference);
+	}
+
+	await userCollection.updateOne({email: email}, {$set: {dietary_preferences: storedPreferences}});
+
+	console.log(storedPreferences);
+})
 
 //----------------------- For saving recipes ----------------------
 

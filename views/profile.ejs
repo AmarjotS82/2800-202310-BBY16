@@ -9,10 +9,16 @@
 <h3> <b> Username: </b> <%= username %></h3>
 <h3><b> Email:</b> <%= email %> </h3>
 <h3><b> Security question:</b> <%= question %></h3>
+<h3><b> Dietary preferences:</b></h3>
+<ul>
+  <% dietaryPreferences.forEach(function(preference) { %>
+    <li><%= preference %></li>
+  <% }); %>
+</ul>
 
 <form action="/logout" method="POST">
-    
     <button class="signout-button">Sign Out</button></form>
 </div>
+
 <%- include("templates/navbar") %>
 <%- include("templates/footer") %>
