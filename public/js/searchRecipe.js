@@ -70,6 +70,15 @@ $(document).ready( function() {
         console.log("button clicked")
         let ingredients = info.recipe[info.index].Ingredients;
         console.log("ingred: " + ingredients);
+        
+        for(let y = 0; y < ingredients.length; y++){
+          let letter = ingredients.charAt(y);
+        //                            <             l                            i                           >
+          if(letter == ',') {
+            ingredients= ingredients.replace(letter, " ")
+         }
+        }
+         console.log("com: " + ingredients) 
         for(let y = 0; y < ingredients.length; y++){
           	let letter = ingredients.charAt(y) + ingredients.charAt(y + 1) + ingredients.charAt(y + 2)+ ingredients.charAt(y + 3);
           //                            <             l                            i                           >
@@ -96,6 +105,7 @@ $(document).ready( function() {
             item += ingredients[i];
            } else{
             array.push(item);
+            console.log("arr: " + array);
             localStorage.setItem('todos', JSON.stringify(array));
             item="";
            }
