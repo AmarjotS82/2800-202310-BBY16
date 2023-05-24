@@ -3,21 +3,23 @@
 
 <div class="signup_wrapper">
   <h3>Let's set up your account </i></h3>
-  <h4>Set your dietary preferences:</h4>
-  <fieldset class="py-5">
-    <legend>Set your dietary preferences:</legend>
-    <h5>Set your personal dietary preferences:</h5>
-    <button type="button" data-item="Keto" class="dietary-button">Keto</button>
-    <button type="button" data-item="Gluten-free" class="dietary-button">Gluten-free</button>
-    <button type="button" data-item="Vegan" class="dietary-button">Vegan</button>
-    <button type="button" data-item="Vegetarian" class="dietary-button">Vegetarian</button>
-    <button type="button" data-item="Lactose-free" class="dietary-button">Lactose-free</button>
-    <button type="button" data-item="Pescatarian" class="dietary-button">Pescatarian</button>
-    <button type="button" data-item="Kosher" class="dietary-button">Kosher</button>
-    <button type="button" data-item="Low Carb" class="dietary-button">Low Carb</button>
-  </fieldset>
+
+
 
   <form action="/submitUser" method="post">
+    <input type="hidden" name="dietaryPreferences" id="dietaryPreferencesInput" />
+    <fieldset class="py-5">
+      <legend>Set your dietary preferences:</legend>
+      <button type="button" data-item="Keto" class="dietary-button">Keto</button>
+      <button type="button" data-item="Gluten-free" class="dietary-button">Gluten-free</button>
+      <button type="button" data-item="Vegan" class="dietary-button">Vegan</button>
+      <button type="button" data-item="Vegetarian" class="dietary-button">Vegetarian</button>
+      <button type="button" data-item="Lactose-free" class="dietary-button">Lactose-free</button>
+      <button type="button" data-item="Pescatarian" class="dietary-button">Pescatarian</button>
+      <button type="button" data-item="Kosher" class="dietary-button">Kosher</button>
+      <button type="button" data-item="Low Carb" class="dietary-button">Low Carb</button>
+    </fieldset>
+
     <div class="input-group mb-3">
       <label
         class="input-group-text"
@@ -70,39 +72,14 @@
       />
     </div>
 
-    <button>Get started</button>
+    <button type="submit">Get started</button>
   </form>
 </div>
 
-<script>
-  // Define the array to store the selected preferences
-  let dietaryPreferences = [];
 
-  // Function to handle button click
-  function handleButtonClick() {
-    const preference = this.getAttribute('data-item');
+<script src="/js/signup.js"></script>
 
-    // Toggle preference selection
-    if (dietaryPreferences.includes(preference)) {
-      dietaryPreferences = dietaryPreferences.filter(item => item !== preference);
-      this.classList.remove('selected');
-    } else {
-      dietaryPreferences.push(preference);
-      this.classList.add('selected');
-    }
-  }
-
-  // Add event listeners to the buttons
-  document.querySelectorAll('.dietary-button').forEach(button => {
-    button.addEventListener('click', handleButtonClick);
-  });
-
-  // Submit form
-  document.getElementById('submitBtn').addEventListener('click', () => {
-    // Send dietaryPreferences array to the server or perform desired actions
-    console.log(dietaryPreferences);
-    // Perform any additional logic or form submission
-  });
-</script>
+<%- include("templates/navbar") %>
+<%- include("templates/footer") %>
 
 

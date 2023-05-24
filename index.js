@@ -112,11 +112,6 @@ async function constructPrompt(username) {
 	return prompt;
 }
 
-localStorage.setItem('ingredients', '[]');
-localStorage.setItem('recipe', '[]');
-localStorage.setItem('dietaryPreferences', '[]');
-localStorage.setItem('nutritionalInfo', '');
-
 const saltRounds = 12; //use for encryption
 
 const expireTime = 1 * 60 * 60 * 1000; //expiration time
@@ -158,11 +153,6 @@ app.use(session({
 function getLocalDietaryPreferences() {
 	const storedPreferences = localStorage.getItem('dietaryPreferences');
 	return JSON.parse(storedPreferences) || [];
-}
-
-async function getUserDietaryPreferences() {
-	const storedPreferences = await userCollection.find({username: username}).project({dietary_preferences: 1}).toArray();
-	return storedPreferences[0].dietary_preferences || [];
 }
 
 /** 
@@ -327,6 +317,8 @@ app.post('/submitUser', async (req, res) => { //good
 	var username = req.body.username;
 	var email = req.body.email;
 	var password = req.body.password;
+	var preferences = req.body.dietaryPreferences;
+	console.log("preferences: " + preferences);
 	//forget password stuff
 	var question = req.body.question;
 	var answer = req.body.answer;
@@ -370,7 +362,7 @@ app.post('/submitUser', async (req, res) => { //good
 	var hashedPassword = await bcrypt.hash(password, saltRounds);
 	var hashedAnswer = await bcrypt.hash(answer, saltRounds);
 
-	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question });
+	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question, dietary_preferences: preferences});
 	console.log("inserted user");
 
 
@@ -636,6 +628,9 @@ app.get("/lists", async (req, res) => {
 	//Make sure capital F for food otherwise doesn't work
 	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
 	//Checking if it works
+	for (var i = 0; i < ingredientList.length; i++) {
+		// console.log("L: " + ingredientList[i].Food);
+	}
 
 	const chosenIngredients = await getLocalIngredients(req.session.username);
 
@@ -648,7 +643,7 @@ app.get("/loggedin/members/profile", async (req, res) => {
 
 	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 , dietary_preferences: 1}).toArray();
 
-	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: result[0].dietary_preferences});
+	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: JSON.parse(result[0].dietary_preferences)});
 });
 
 async function getLocalIngredients(username) {
@@ -706,27 +701,6 @@ app.post('/updateDietaryPreference', async (req,res ) => {
 	}
 
 	localStorage.setItem('dietaryPreferences', JSON.stringify(storedPreferences));
-
-	console.log(storedPreferences);
-})
-
-app.post('/updateDietaryProfile', async (req,res ) => {
-	const newPreference = req.body.preference;
-	const storedPreferences = getUserDietaryPreferences();
-
-	const index = storedPreferences.indexOf(newPreference);
-
-	if (index === -1) {
-		//If preference is not in dietaryPreference, add it
-	  storedPreferences.push(newPreference);
-	  console.log("Added " + newPreference);
-	} else {
-		//If preference is in dietaryPreference, remove it
-	  storedPreferences.splice(index, 1);
-	  console.log("Removed " + newPreference);
-	}
-
-	await userCollection.updateOne({email: email}, {$set: {dietary_preferences: storedPreferences}});
 
 	console.log(storedPreferences);
 })
