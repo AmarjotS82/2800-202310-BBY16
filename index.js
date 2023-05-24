@@ -643,7 +643,16 @@ app.get("/loggedin/members/profile", async (req, res) => {
 
 	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 , dietary_preferences: 1}).toArray();
 
-	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: JSON.parse(result[0].dietary_preferences)});
+	var preferences = result[0].dietary_preferences;
+	console.log(preferences);
+
+	if (preferences === null || typeof preferences === 'undefined'){
+        preferences = [];
+	} else {
+		preferences = JSON.parse(preferences);
+	}
+
+	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences});
 });
 
 async function getLocalIngredients(username) {
