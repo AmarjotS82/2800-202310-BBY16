@@ -241,6 +241,7 @@ app.post('/forgetPassword', async (req, res) => {
 	var email = req.body.email;
 
 	const schema = Joi.string().email().required();
+	
 
 	const validationResult = schema.validate(email);
 	if (validationResult.error != null) {
@@ -371,21 +372,28 @@ app.get('/loggedin', (req, res) => {
 });
 
 app.post('/loggingin', async (req, res) => { //done
-	var username = req.body.username;
-	var password = req.body.password;
+	var Username = req.body.username;
+	var Password = req.body.password;
 
-	const schema = Joi.string().max(20).required();
-	const validationResult = schema.validate(username, password);
+	const schema = Joi.object(
+	{
+		Username: Joi.string().alphanum().max(20).required(),
+		Password: Joi.string().max(20).required(),
+	});
+		
+	const validationResult = schema.validate({Username, Password});
 	if (validationResult.error != null) {
+		var message = validationResult.error.details[0].message;
 		console.log(validationResult.error);
-		res.redirect("/login");
+		res.render('invalid-login', {message: message})
 		return;
 	}
 
 	const result = await userCollection.find({ username: username }).project({ password: 1, _id: 1, username: 1, email: 1 }).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
-		res.redirect("/login");
+		// res.redirect("/login");
+		res.render('invalid-login', {message: "User does not exist!"})
 		return;
 	}
 
@@ -402,7 +410,7 @@ app.post('/loggingin', async (req, res) => { //done
 		//return;
 	}
 	else {
-		res.redirect("/login");
+		res.render('invalid-login', {message: "Password is incorrect!"})
 		return;
 	}
 });
