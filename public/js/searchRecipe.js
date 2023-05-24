@@ -1,30 +1,12 @@
 $(document).ready(async function() {
-  // const arr = [];
-  // let i =0;
-  // var cardTitles = $(".card");
 
-  //       cardTitles.each(function() {
-  //         var title = $(this).text().toLowerCase();
-  //         arr[i] = $(this).html();
-  //         i++;
-  // });
-  // for(let k=0 ;k<arr.length;k++){
-  //   console.log("arr: " + arr[i]);
-  // }
 
 
       var searchBar = document.getElementById("searchBar");
 
       searchBar.addEventListener("input", function(){
         let input = searchBar.value.toLowerCase();
-        // searchBar.addEventListener('keydown', function(event) {
-        //   const key = event.key;
-        //   if (key === "Backspace" || key === "Delete") {
-        //       console.log("backspace pressed");
-        //       in
-        //   }
-        // });
-        //let input = searchBar.value;
+
         console.log("input: " + input);
         console.log("input: " + input.length);
         if (input.length == 0) {
@@ -46,13 +28,6 @@ $(document).ready(async function() {
           //console.log("match: " + title.includes(input.toLowerCase()));
           
           if (title.includes(input.toLowerCase())) {
-            // The search value is found in a heading
-             // console.log("title :"+ title);
-            // $(this).append('${arr}')
-            // for (let k = 0; k < arr.length; k++) {
-            //   if(arr[k].toLowerCase().includes(title))
-            //   $("body").append(`<div class="card" style="width: 18rem;">` + arr[k] + "</div>");
-            // }
             console.log("match")
             $(this).show();
           }else{
@@ -83,14 +58,42 @@ $(document).ready(async function() {
       <h3 style="color:black">Ingredients: </h3>
       <ul>
       ${info.recipe[info.index].Ingredients}
-      </ul> `);
+      </ul> 
+      <a href="/loggedin/todo" type="button" class="btn btn-primary" id="addList">Add to list</a>`);
       console.log(info.recipe[info.index].Instructions);
       $('.modal-footer').html(`
       <h3 style="color:black; margin-right:auto">Instructions: </h3>
       <ol> 
       ${info.recipe[info.index].Instructions}
       </ol>`);
-      
+      $(`#addList`).on("click", function(){
+        console.log("button clicked")
+        let ingredients = info.recipe[info.index].Ingredients;
+        console.log("ingred: " + ingredients);
+        for(let y = 0; y < ingredients.length; y++){
+          	let letter = ingredients.charAt(y) + ingredients.charAt(y + 1) + ingredients.charAt(y + 2)+ ingredients.charAt(y + 3);
+          //                            <             l                            i                           >
+          	if(letter == '<li>') {
+          		ingredients= ingredients.replace(letter, "")
+          	} else if( letter =='</li'){
+              ingredients = ingredients.replace(letter, ", ")
+            }	
+           }
+           for(let y = 0; y < ingredients.length; y++){
+          	let letter = ingredients.charAt(y);
+          	if(letter == '>') {
+          		ingredients= ingredients.replace(letter, "")
+          	}
+           }
+           for(let y = 0; y < ingredients.length; y++){
+          	let letter = ingredients.charAt(y) + ingredients.charAt(y + 1);
+          	if(letter == '\n') {
+          		ingredients= ingredients.replace(letter, "")
+          	}
+           }
+           console.log("ingred2: " + ingredients);
+        localStorage.setItem("todos", "[ " + ingredients + " ]");
+      })
     })
-
+   
 });
