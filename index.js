@@ -7,6 +7,8 @@ const session = require('express-session');
 
 const MongoStore = require('connect-mongo');
 
+const Swal = require('sweetalert2');
+
 const axios = require('axios');
 
 //Crates a localstroage to sue for te counters 
@@ -25,6 +27,8 @@ const Joi = require("joi");
 const { Configuration, OpenAIApi } = require("openai");
 
 const app = express();
+
+
 
 const readline = require('readline');
 
@@ -353,7 +357,7 @@ app.post('/submitUser', async (req, res) => { //good
 
 	req.session.authenticated = true;
 	req.session.username = req.body.username;
-	res.redirect("/loggedin/members");
+	res.redirect("/loggedin/members/false");
 
 	return;
 });
@@ -394,7 +398,7 @@ app.post('/loggingin', async (req, res) => { //done
 		console.log(req.session.username);
 		req.session.cookie.maxAge = expireTime;
 
-		res.redirect('/loggedin/members');
+		res.redirect('/loggedin/members/false');
 		//return;
 	}
 	else {
@@ -419,12 +423,14 @@ app.use(express.static(__dirname + "/public"));
 //new stuff added
 
 
-app.get('/loggedin/members', async (req,res) => {
+app.get('/loggedin/members/:id', async (req,res) => {
+	var id = req.params.id;
+
 	const recipe = JSON.parse(localStorage.getItem('recipe'));
 	var username = req.session.username;
-	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
 
-	res.render('members', {recipe: recipe, username: result[0].username });
+	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
+	res.render('members', {recipe: recipe, username: result[0].username, isValid: id});
 })
 
 
@@ -432,7 +438,7 @@ app.post('/generateRecipe', async (req, res) => {
 	
 	  const recipe = await generateRecipe(req.session.username);
 	  localStorage.setItem('recipe', JSON.stringify(recipe));
-	  res.redirect('/loggedin/members');
+	  res.redirect('/loggedin/members/false');
 
   });
 
@@ -441,7 +447,7 @@ app.post('/clearRecipe', async (req,res) => {
 	localStorage.setItem('ingredients', '[]');
 	localStorage.setItem('dietaryPreferences', '[]');
 	localStorage.setItem('nutritionalInfo');
-	res.redirect('loggedin/members');
+	res.redirect('loggedin/members/false');
   });
 
   // Route handler for adding an item to the local storage
@@ -699,16 +705,23 @@ app.get('/filters', async (req, res)  => {
 app.get("/lists", async (req, res) => {
 	//Find all id and names(Food field) of all contents in collection
 	//Make sure capital F for food otherwise doesn't work
-	const ingredientList = await testCollection.find({}).project({ _id: 1, "Food": 1 }).toArray();
-	//Checking if it works
+	var ingredientList = await testCollection.find({}).project({Food: 1 }).toArray();
+
+	let list = [];
+	
+	for(let i = 0; i < ingredientList.length; i++){
+		list.push(ingredientList[i].Food);
+	}
 
 	const chosenIngredients = await getLocalIngredients(req.session.username);
 
+	chosenIngredients.sort();
+	list.sort();
 	//Render the lists.ejs file that has the html for this apge
-	res.render("lists", { list: ingredientList, ingredients: chosenIngredients });
+	res.render("lists", { list: list, ingredients: chosenIngredients });
 });
 
-app.get("/loggedin/members/profile", async (req, res) => {
+app.get("/loggedin/profile", async (req, res) => {
 	var username = req.session.username;
 
 	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 }).toArray();
@@ -782,13 +795,21 @@ async function saveRecipe( recipe, username) {
 	console.log(username);
 
 	await savedRecipeCollection.insertOne({username: username, recipeName: recipeName, recipe: recipeDetails});
+	return;
 }
 
 app.post('/saveRecipe', async (req,res) => {
-	if(typeof recipeResponse !== 'undefined') {
-		saveRecipe(recipeResponse, req.session.username);
+	if(typeof recipeResponse != 'undefined') {
+		await saveRecipe(recipeResponse, req.session.username);
+
+		// res.end('')
+		// res.redirect('back');
+		res.redirect("/loggedin/members/true");
+		return;
 	} else {
 		console.log("Must create recipe!");
+
+		res.redirect("/loggedin/members/false");
 		return;
 	}
 })
