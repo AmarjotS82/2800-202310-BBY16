@@ -116,11 +116,6 @@ async function constructPrompt(username) {
 	return prompt;
 }
 
-localStorage.setItem('ingredients', '[]');
-localStorage.setItem('recipe', '[]');
-localStorage.setItem('dietaryPreferences', '[]');
-localStorage.setItem('nutritionalInfo', '');
-
 const saltRounds = 12; //use for encryption
 
 const expireTime = 1 * 60 * 60 * 1000; //expiration time
@@ -163,6 +158,7 @@ function getLocalDietaryPreferences() {
 	const storedPreferences = localStorage.getItem('dietaryPreferences');
 	return JSON.parse(storedPreferences) || [];
 }
+
 /** 
 function validateNutrition(jsonString) {
 	try {
@@ -305,10 +301,29 @@ app.post('/newpassword/:id', async (req, res) => {
 	res.render('login');
 });
 
+app.post('/setNewDietaryPreference', (req, res) => {
+	const preference = req.body.preference;
+	const dietaryPreferences = req.body.dietaryPreferences;
+	console.log(dietaryPreferences)
+  
+	if (dietaryPreferences.includes(preference)) {
+	  // Remove preference if it's already selected
+	  const preferenceIndex = dietaryPreferences.indexOf(preference);
+	  dietaryPreferences.splice(preferenceIndex, 1);
+	} else {
+	  // Add preference if it's not selected
+	  dietaryPreferences.push(preference);
+	}
+  
+	res.render('signup', { dietaryPreferences }); 
+  });
+
 app.post('/submitUser', async (req, res) => { //good
 	var username = req.body.username;
 	var email = req.body.email;
 	var password = req.body.password;
+	var preferences = req.body.dietaryPreferences;
+	console.log("preferences: " + preferences);
 	//forget password stuff
 	var question = req.body.question;
 	var answer = req.body.answer;
@@ -352,7 +367,7 @@ app.post('/submitUser', async (req, res) => { //good
 	var hashedPassword = await bcrypt.hash(password, saltRounds);
 	var hashedAnswer = await bcrypt.hash(answer, saltRounds);
 
-	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question });
+	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question, dietary_preferences: preferences});
 	console.log("inserted user");
 
 
@@ -732,9 +747,18 @@ app.get("/lists", async (req, res) => {
 app.get("/loggedin/profile", async (req, res) => {
 	var username = req.session.username;
 
-	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 }).toArray();
+	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 , dietary_preferences: 1}).toArray();
 
-	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question] });
+	var preferences = result[0].dietary_preferences;
+	console.log(preferences);
+
+	if (preferences === null || typeof preferences === 'undefined'){
+        preferences = [];
+	} else {
+		preferences = JSON.parse(preferences);
+	}
+
+	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences});
 });
 
 async function getLocalIngredients(username) {
@@ -747,6 +771,8 @@ async function getLocalIngredients(username) {
 
 	return storedIngredients[0].selected_ingredients || [];
 }
+
+
 
 app.post('/updateLocalIngredient', async (req, res) => {
 	const foodName = req.body.foodName;
@@ -772,6 +798,8 @@ app.post('/updateLocalIngredient', async (req, res) => {
 	}
 });
 
+
+
 app.post('/updateDietaryPreference', async (req,res ) => {
 	const newPreference = req.body.preference;
 	const storedPreferences = getLocalDietaryPreferences();
@@ -791,8 +819,6 @@ app.post('/updateDietaryPreference', async (req,res ) => {
 
 	console.log(storedPreferences);
 })
-
-
 
 //----------------------- For saving recipes ----------------------
 

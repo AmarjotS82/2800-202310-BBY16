@@ -40,6 +40,12 @@ h3{
     border-style: none;
 }
 
+
+.dietary-button.active {
+    background-color: #333;
+    color: #fff;
+  }
+
 button{
     padding: 13px;
     width: 200px;

@@ -1,0 +1,24 @@
+<%- include("templates/header") %>
+
+
+<div class="preferences-div">
+    <h1 style="text-align: center; font-weight: bold;">Set New Dietary Preferences</h1>
+</div>
+
+<form method="POST" action="/updateDietaryProfile" class="py-5">
+    <h5>Set your personal dietary preferences:</h5>
+      <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button" >Keto</button>
+      <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button ">Gluten-free</button>
+      <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button ">Vegan</button>
+      <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button">Vegetarian</button>
+      <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button">Lactose-free</button>
+      <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button">Pescatarian</button>
+      <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button">Kosher</button>
+      <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button">Low Carb</button>
+</form>
+
+<form action="/submitPreferences" method="POST">  
+    <button class="signout-button">Submit</button></form>
+</div>
+
+<%- include("templates/footer") %>
