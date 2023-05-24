@@ -18,9 +18,6 @@ const showModal = (title, description) => {
             <div class="modal-body">
               <p>${description}</p>
             </div>
-            <div class="modal-footer bg-light">
-
-            </div>
           </div>
         </div>
       </div>
@@ -37,7 +34,7 @@ $('#modal-btn').each(function() {
     //this is the listener
     $('.modal-btn').click( async function() {
         const id = $(this).attr('object-id')
-        const response = await fetch('http://tsaygenxmo.eu10.qoddiapp.com' + '/recipe/' + id);
+        const response = await fetch('/recipe/' + id);
         const data = await response.json();
         console.log(data);
         showModal(data[0].recipeName, data[0].recipe);  

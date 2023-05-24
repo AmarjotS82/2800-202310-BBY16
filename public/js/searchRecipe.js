@@ -1,4 +1,4 @@
-$(document).ready(async function() {
+$(document).ready( function() {
 
 
 
@@ -85,14 +85,21 @@ $(document).ready(async function() {
           		ingredients= ingredients.replace(letter, "")
           	}
            }
-           for(let y = 0; y < ingredients.length; y++){
-          	let letter = ingredients.charAt(y) + ingredients.charAt(y + 1);
-          	if(letter == '\n') {
-          		ingredients= ingredients.replace(letter, "")
-          	}
-           }
+          
            console.log("ingred2: " + ingredients);
-        localStorage.setItem("todos", "[ " + ingredients + " ]");
+           let item ="";
+           let array = JSON.parse(localStorage.getItem('todos')) || [];
+
+
+           for(let i =0; i<ingredients.length; i++){
+            if(ingredients[i] != ","){
+            item += ingredients[i];
+           } else{
+            array.push(item);
+            localStorage.setItem('todos', JSON.stringify(array));
+            item="";
+           }
+          }
       })
     })
    

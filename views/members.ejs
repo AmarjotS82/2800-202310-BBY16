@@ -37,11 +37,11 @@
 
 
 
-  <div id="recipe-container">
+  <div id="recipe-container" isValid="<%= isValid %>">
 
 
     <!-- save button -->
-    <form action="/saveRecipe" method="post">
+    <form id="saveRecipeForm" action="/saveRecipe" method="post">
       <div class="icon-container">
         <h5>Generated Recipe:</h5>
         <button class="btn save">
@@ -165,8 +165,20 @@
 
         var saveButton = document.querySelector('.save');
 
-        saveButton.addEventListener('click', function () {
-          swal("Recipe saved successfully!", "checkout saved recipe page!", "success");
-        });
-
+        // saveRecipeForm.addEventListener('click', function () {
+        //   swal({
+        //     title: "Recipe saved!"
+        //   }).then(function() {
+        //     window.location.href = "http://localhost:3020/loggedin/members";
+        //   });
+        // });
+        var recipe = document.getElementById('recipe-container');
+        var isValid = recipe.getAttribute('isValid');
+        if(isValid == 'true') {
+          swal({
+            title: "Recipe saved!"
+          })
+        }
+       
       </script>
+        
