@@ -449,7 +449,7 @@ app.use(express.static(__dirname + "/public"));
 app.get('/loggedin/members/:id', async (req,res) => {
 	var id = req.params.id;
 
-	const recipe = JSON.parse(localStorage.getItem('recipe'));
+	const recipe = req.session.recipe;
 	var username = req.session.username;
 
 	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
@@ -459,8 +459,7 @@ app.get('/loggedin/members/:id', async (req,res) => {
 
 app.post('/generateRecipe', async (req, res) => {
 	  let emptyArray = [];
-	  const recipe = await generateRecipe(req.session.username);
-	  localStorage.setItem('recipe', JSON.stringify(recipe));
+	  req.session.recipe = await generateRecipe(req.session.username);
 	  await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: emptyArray } });
 
 	  res.redirect('/loggedin/members/false');
