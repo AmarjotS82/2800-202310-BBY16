@@ -60,13 +60,15 @@
     <form id="saveRecipeForm" action="/saveRecipe" method="post">
       <div class="icon-container">
         <h5>Generated Recipe:</h5>
-        <button  class="btn save">
+        <button id="save-button" class="btn save">
           <i class="bi bi-heart"></i>
           <i class="bi bi-heart-fill"></i>
         </button>
       </div>
     </form>
-    <%- recipe %>
+    <div id="generated-recipe">
+      <%- recipe %>
+    </div>
 
   <div class = "delete-generate-btn">
       <!-- generate recipe button -->
@@ -111,7 +113,7 @@
 
 
 
-<!-- <script src="/js/members.js"></script> -->
+<script src="/js/members.js"></script>
   <%- include("templates/navbar") %>
     <%- include("templates/footer") %>
 

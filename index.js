@@ -458,9 +458,11 @@ app.get('/loggedin/members/:id', async (req,res) => {
 
 
 app.post('/generateRecipe', async (req, res) => {
-	
+	  let emptyArray = [];
 	  const recipe = await generateRecipe(req.session.username);
 	  localStorage.setItem('recipe', JSON.stringify(recipe));
+	  await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: emptyArray } });
+
 	  res.redirect('/loggedin/members/false');
 
   });
