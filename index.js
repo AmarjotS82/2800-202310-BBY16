@@ -440,20 +440,18 @@ app.use(express.static(__dirname + "/public"));
 
 app.get('/loggedin/members/:id', async (req,res) => {
 	var id = req.params.id;
-
-	const recipe = JSON.parse(localStorage.getItem('recipe'));
 	var username = req.session.username;
-
+	let recipe = '';
 	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
-	res.render('members', {recipe: recipe, username: result[0].username, isValid: id});
+	res.render('members', {username: result[0].username, isValid: id, recipe: recipe});
 })
 
 
 app.post('/generateRecipe', async (req, res) => {
-	
-	  const recipe = await generateRecipe(req.session.username);
-	  localStorage.setItem('recipe', JSON.stringify(recipe));
-	  res.redirect('/loggedin/members/false');
+	var username = req.session.username;
+	const recipe = await generateRecipe(req.session.username);
+	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
+	res.render('members', {recipe: recipe, username: result[0].username, isValid: false});
 
   });
 
