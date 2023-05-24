@@ -15,7 +15,6 @@
   </div>
     
     <ul class="list-group list-unstyled align-items-center flex-column py-5">
-
         <% if(ingredients.length == 0) { %>
             <% for(let i = 0; i < list.length; i++) { %>
                 <li>
@@ -23,8 +22,8 @@
                     <div>
                         <form method="POST" action="/updateLocalIngredient">
                             <button type="submit" id="ingredient-List" class="btn btn-light custom-button m-2" name="foodName"
-                                value="<%= list[i].Food %>" data-ingredient="<%= list[i].Food %>">
-                                <%= list[i].Food %>
+                                value="<%= list[i] %>" data-ingredient="<%= list[i] %>">
+                                <%= list[i] %>
                             </button>
                         </form>
                     </div>
@@ -34,7 +33,7 @@
             <% for (let y = 0; y < list.length; y++) { %>
                 <% let ingredientFound = false; %>
                 <% for (let i = 0; i < ingredients.length; i++) { %>
-                  <% if (ingredients[i] == list[y].Food) { %>
+                  <% if (ingredients[i] == list[y]) { %>
                     <% ingredientFound = true; %>
                     <% break; %>
                   <% } %>
@@ -43,8 +42,8 @@
                   <!--div for content in list-->
                   <div>
                     <form method="POST" action="/updateLocalIngredient">
-                      <button type="submit" id="ingredient-List" class="btn <%= ingredientFound ? 'btn-secondary m-1' : 'btn-light m-1' %> custom-button" name="foodName" value="<%= list[y].Food %>" data-ingredient="<%= list[y].Food %>">
-                        <%= list[y].Food %>
+                      <button type="submit" id="ingredient-List" class="btn <%= ingredientFound ? 'btn-secondary m-1' : 'btn-light m-1' %> custom-button" name="foodName" value="<%= list[y] %>" data-ingredient="<%= list[y].Food %>">
+                        <%= list[y] %>
                       </button>
                     </form>
                   </div>
