@@ -404,7 +404,7 @@ app.post('/loggingin', async (req, res) => { //done
 		return;
 	}
 
-	const result = await userCollection.find({ username: username }).project({ password: 1, _id: 1, username: 1, email: 1 }).toArray();
+	const result = await userCollection.find({ username: Username }).project({ password: 1, _id: 1, username: 1, email: 1 }).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
 		// res.redirect("/login");
@@ -412,7 +412,7 @@ app.post('/loggingin', async (req, res) => { //done
 		return;
 	}
 
-	if (await bcrypt.compare(password, result[0].password)) {
+	if (await bcrypt.compare(Password, result[0].password)) {
 		console.log("correct password");
 		req.session.authenticated = true;
 		req.session.email = result[0].email;
