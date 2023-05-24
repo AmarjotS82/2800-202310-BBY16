@@ -30,11 +30,7 @@ h5{
     padding-top: 10px;
 }
 
-#nutritionCard .btn{
-    background-color: rgb(249, 219, 219);
-    font-size: 10pt;
-    border-color: black;
-}
+
 
 div{
     color:rgb(54, 28, 3)
@@ -73,29 +69,51 @@ h5{
     margin-left: 80px;
     /* margin-top: -5px; */
 }
-  
-#nutritionCard{
+
+  /* calorie and carb section */
+.card-body{
     background-color: rgb(171, 102, 82);
     margin: 10px;
     border-radius: 20px;
     width: 170px;
-    height: 150px;
-    float: right;
+    height: 150px; 
 }
+
+#nutritionCards .btn{
+  background-color: rgb(249, 219, 219);
+  font-size: 10pt;
+  border-color: black;
+}
+
+#nutritionCards{
+  display: flex;
+  flex-direction: row;
+}
+
 
 .calorie-btn{
     border: hidden;
     margin: 10px;
+    margin-top: 32px;
     width: 80px; /* Adjust the width and height as needed */
     height: 80px;
     border-radius: 50%;
 }
 
+.carb-btn{
+  border: hidden;
+    margin: 10px;
+    width: 80px; /* Adjust the width and height as needed */
+    height: 80px;
+    border-radius: 50%;
+}
 .bi-fire{
     text-align: center;
     padding-right: 10px;
     color: rgb(128, 31, 31);
 }
+
+/* ------------------------------------- */
 
 /****** generated recipe section ********/
 /* this code if taken from uiverse.io the code might
@@ -256,6 +274,8 @@ be changed depending on our need*/
 
   
   /* ******** delete recipe section **************/
+  /* this code if taken from uiverse.io the code might
+     be changed depending on our need*/
   button {
     width: 145px;
     height: 50px;
