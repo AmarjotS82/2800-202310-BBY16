@@ -178,3 +178,19 @@ select {
     background-color:rgb(187, 164, 133);
     border-radius: 50px;
 }
+
+#reset {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border-radius: 2rem;
+
+}
+ .reset{
+    opacity: 1;
+    background-color: rgb(218, 112, 13);
+ }
+ .reset:hover{
+
+    background-color: rgb(218, 112, 13);
+ }
