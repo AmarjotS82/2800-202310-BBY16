@@ -116,11 +116,6 @@ async function constructPrompt(username) {
 	return prompt;
 }
 
-localStorage.setItem('ingredients', '[]');
-localStorage.setItem('recipe', '[]');
-localStorage.setItem('dietaryPreferences', '[]');
-localStorage.setItem('nutritionalInfo', '');
-
 const saltRounds = 12; //use for encryption
 
 const expireTime = 1 * 60 * 60 * 1000; //expiration time
@@ -163,6 +158,7 @@ function getLocalDietaryPreferences() {
 	const storedPreferences = localStorage.getItem('dietaryPreferences');
 	return JSON.parse(storedPreferences) || [];
 }
+
 /** 
 function validateNutrition(jsonString) {
 	try {
@@ -241,6 +237,7 @@ app.post('/forgetPassword', async (req, res) => {
 	var email = req.body.email;
 
 	const schema = Joi.string().email().required();
+	
 
 	const validationResult = schema.validate(email);
 	if (validationResult.error != null) {
@@ -304,10 +301,29 @@ app.post('/newpassword/:id', async (req, res) => {
 	res.render('login');
 });
 
+app.post('/setNewDietaryPreference', (req, res) => {
+	const preference = req.body.preference;
+	const dietaryPreferences = req.body.dietaryPreferences;
+	console.log(dietaryPreferences)
+  
+	if (dietaryPreferences.includes(preference)) {
+	  // Remove preference if it's already selected
+	  const preferenceIndex = dietaryPreferences.indexOf(preference);
+	  dietaryPreferences.splice(preferenceIndex, 1);
+	} else {
+	  // Add preference if it's not selected
+	  dietaryPreferences.push(preference);
+	}
+  
+	res.render('signup', { dietaryPreferences }); 
+  });
+
 app.post('/submitUser', async (req, res) => { //good
 	var username = req.body.username;
 	var email = req.body.email;
 	var password = req.body.password;
+	var preferences = req.body.dietaryPreferences;
+	console.log("preferences: " + preferences);
 	//forget password stuff
 	var question = req.body.question;
 	var answer = req.body.answer;
@@ -351,7 +367,7 @@ app.post('/submitUser', async (req, res) => { //good
 	var hashedPassword = await bcrypt.hash(password, saltRounds);
 	var hashedAnswer = await bcrypt.hash(answer, saltRounds);
 
-	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question });
+	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question, dietary_preferences: preferences});
 	console.log("inserted user");
 
 
@@ -371,25 +387,32 @@ app.get('/loggedin', (req, res) => {
 });
 
 app.post('/loggingin', async (req, res) => { //done
-	var username = req.body.username;
-	var password = req.body.password;
+	var Username = req.body.username;
+	var Password = req.body.password;
 
-	const schema = Joi.string().max(20).required();
-	const validationResult = schema.validate(username, password);
+	const schema = Joi.object(
+	{
+		Username: Joi.string().alphanum().max(20).required(),
+		Password: Joi.string().max(20).required(),
+	});
+		
+	const validationResult = schema.validate({Username, Password});
 	if (validationResult.error != null) {
+		var message = validationResult.error.details[0].message;
 		console.log(validationResult.error);
-		res.redirect("/login");
+		res.render('invalid-login', {message: message})
 		return;
 	}
 
-	const result = await userCollection.find({ username: username }).project({ password: 1, _id: 1, username: 1, email: 1 }).toArray();
+	const result = await userCollection.find({ username: Username }).project({ password: 1, _id: 1, username: 1, email: 1 }).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
-		res.redirect("/login");
+		// res.redirect("/login");
+		res.render('invalid-login', {message: "User does not exist!"})
 		return;
 	}
 
-	if (await bcrypt.compare(password, result[0].password)) {
+	if (await bcrypt.compare(Password, result[0].password)) {
 		console.log("correct password");
 		req.session.authenticated = true;
 		req.session.email = result[0].email;
@@ -402,7 +425,7 @@ app.post('/loggingin', async (req, res) => { //done
 		//return;
 	}
 	else {
-		res.redirect("/login");
+		res.render('invalid-login', {message: "Password is incorrect!"})
 		return;
 	}
 });
@@ -435,9 +458,11 @@ app.get('/loggedin/members/:id', async (req,res) => {
 
 
 app.post('/generateRecipe', async (req, res) => {
-	
+	  let emptyArray = [];
 	  const recipe = await generateRecipe(req.session.username);
 	  localStorage.setItem('recipe', JSON.stringify(recipe));
+	  await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: emptyArray } });
+
 	  res.redirect('/loggedin/members/false');
 
   });
@@ -724,9 +749,18 @@ app.get("/lists", async (req, res) => {
 app.get("/loggedin/profile", async (req, res) => {
 	var username = req.session.username;
 
-	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 }).toArray();
+	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 , dietary_preferences: 1}).toArray();
 
-	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question] });
+	var preferences = result[0].dietary_preferences;
+	console.log(preferences);
+
+	if (preferences === null || typeof preferences === 'undefined'){
+        preferences = [];
+	} else {
+		preferences = JSON.parse(preferences);
+	}
+
+	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences});
 });
 
 async function getLocalIngredients(username) {
@@ -739,6 +773,8 @@ async function getLocalIngredients(username) {
 
 	return storedIngredients[0].selected_ingredients || [];
 }
+
+
 
 app.post('/updateLocalIngredient', async (req, res) => {
 	const foodName = req.body.foodName;
@@ -764,6 +800,8 @@ app.post('/updateLocalIngredient', async (req, res) => {
 	}
 });
 
+
+
 app.post('/updateDietaryPreference', async (req,res ) => {
 	const newPreference = req.body.preference;
 	const storedPreferences = getLocalDietaryPreferences();
@@ -783,8 +821,6 @@ app.post('/updateDietaryPreference', async (req,res ) => {
 
 	console.log(storedPreferences);
 })
-
-
 
 //----------------------- For saving recipes ----------------------
 
