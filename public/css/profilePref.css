@@ -1,0 +1,45 @@
+/******************/
+/*** signup.ejs ****/
+/******************/
+
+body{
+    background-color: #B4846C;
+    margin-top: 25%;
+    font-family:'Times New Roman', Times, serif;
+}
+
+h3{
+    color: #564225;
+    font-size: 20pt;
+    font-family:'Times New Roman', Times, serif;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.dietary-button.active {
+    background-color: #333;
+    color: #fff;
+  }
+
+button{
+    padding: 13px;
+    width: 200px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+    margin-left: 50px;
+    margin-top: 17px;
+    background-color: #7d5a50;
+    border-style: hidden;
+    color: #dcd0bf;
+    font-size: 18pt;
+    font-family:'Times New Roman', Times, serif;
+    
+}
+
+#button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+

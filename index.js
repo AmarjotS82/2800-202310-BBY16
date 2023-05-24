@@ -763,6 +763,11 @@ app.get("/loggedin/profile", async (req, res) => {
 	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences});
 });
 
+
+app.get("/loggedin/profilePreferences", async (req, res) => {
+	res.render('profilePreferences');
+})
+
 async function getLocalIngredients(username) {
 	const storedIngredients = await userCollection.find({username: username}).project({selected_ingredients: 1}).toArray();
 
@@ -820,6 +825,14 @@ app.post('/updateDietaryPreference', async (req,res ) => {
 	localStorage.setItem('dietaryPreferences', JSON.stringify(storedPreferences));
 
 	console.log(storedPreferences);
+})
+
+app.post('/updateDietaryProfile',async (req, res) => {
+	var preferencesSelected = req.body.dietaryPreferences;
+
+	await userCollection.updateOne({username: req.session.username}, {$set: {dietary_preferences: preferencesSelected}});
+	console.log(preferencesSelected);
+	res.redirect('/loggedin/profile');
 })
 
 //----------------------- For saving recipes ----------------------
