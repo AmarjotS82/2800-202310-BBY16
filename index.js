@@ -450,6 +450,7 @@ app.get('/loggedin/members/:id', async (req,res) => {
 	var id = req.params.id;
 
 	const recipe = JSON.parse(localStorage.getItem('recipe'));
+	// const recipe = "";
 	var username = req.session.username;
 
 	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
@@ -602,19 +603,6 @@ app.get('/loggedin/nutrition', async (req, res) => {
 	}
 	
 	
-
-	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
-	// res.render("nutrition", {
-	// 	//Calorie intake gotten from calorieCount array above 
-	// 	// .Calories - the specific column name in the databse that the value is located in
-	// 	Calories: calorieCount[0].Calories,
-
-	// 	//Calorie goal gotten from calorieCount array above
-	// 	//Calorie intake gotten from calorieCount array above  
-	// 	// .CalorieGoal - the specific column name in the databse that the value is located in
-	// 	calGoal: storedcalorieGoal[0].CalorieGoal,
-	// 	Carbohydrates: carbCount[0].Carbohydrates,
-	// });
 });
 //********************** Calorie Counter Page Ends*/
 

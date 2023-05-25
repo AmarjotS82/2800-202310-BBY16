@@ -8,6 +8,7 @@ h3{
 }
 #nutritionCard{
  background-color: #e5b299;
+ padding: 15px;
 }
 
 #nutritionCard .btn{
@@ -19,6 +20,16 @@ h3{
 
 button{
   color: antiquewhite;
+}
+#goal{
+  border: none;
+}
+#amount{
+  border: none;
+
+}
+.goal-form{
+  margin-bottom: 20px;
 }
  #test2{
   background-color: rgba(204, 131, 131, 0.548);
@@ -49,3 +60,4 @@ svg{
   margin-left: 35%;
   margin-bottom: 5%;
 }
+
