@@ -10,12 +10,22 @@
 <h3><b> Email:</b> <%= email %> </h3>
 <h3><b> Security Question:</b> <%= question %></h3>
 
-<h3><b>Dietary Preference:</b></h3>
-<% for (let i = 0; i < dietaryPreferences.length; i++) { %>
-    <h4><b><%= dietaryPreferences[i] %></b></h4>
+<h3><b>Dietary Preferences:</b></h3>
+<% if(dietaryPreferences.length > 0 && dietaryPreferences[0] !== null) { %>
+    <% for (let i = 0; i < dietaryPreferences.length; i++) { %>
+    <h3><%= dietaryPreferences[i] %></h3>
+    <% } %>
+<% } else if(dietaryPreferences[0] === null){ %>
+    <h3>None</h3>
+<% } else { %>
+    <h3>None</h3>
 <% } %>
+<form action="/loggedin/profilePreferences" method="GET">
+    <button class="signout-button">Change Dietary Preference</button>
+</form>
 <form action="/logout" method="POST">
-    <button class="signout-button">Sign Out</button></form>
+    <button class="signout-button">Sign Out</button>
+</form>
 </div>
 
 <script src="/js/profile.js"></script>

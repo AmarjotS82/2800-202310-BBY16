@@ -449,8 +449,7 @@ app.use(express.static(__dirname + "/public"));
 app.get('/loggedin/members/:id', async (req,res) => {
 	var id = req.params.id;
 
-	const recipe = JSON.parse(localStorage.getItem('recipe'));
-	// const recipe = "";
+	const recipe = req.session.recipe;
 	var username = req.session.username;
 
 	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
@@ -460,8 +459,7 @@ app.get('/loggedin/members/:id', async (req,res) => {
 
 app.post('/generateRecipe', async (req, res) => {
 	  let emptyArray = [];
-	  const recipe = await generateRecipe(req.session.username);
-	  localStorage.setItem('recipe', JSON.stringify(recipe));
+	  req.session.recipe = await generateRecipe(req.session.username);
 	  await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: emptyArray } });
 
 	  res.redirect('/loggedin/members/false');
@@ -604,7 +602,7 @@ app.get('/loggedin/nutrition', async (req, res) => {
 	
 	
 });
-//********************** Calorie Counter Page Ends*/
+//************ Calorie Counter Page Ends************/
 
 //method to put values in the database
 app.post('/nutritionInfo', async (req,res) => {
@@ -751,6 +749,11 @@ app.get("/loggedin/profile", async (req, res) => {
 	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences});
 });
 
+
+app.get("/loggedin/profilePreferences", async (req, res) => {
+	res.render('profilePreferences');
+})
+
 async function getLocalIngredients(username) {
 	const storedIngredients = await userCollection.find({username: username}).project({selected_ingredients: 1}).toArray();
 
@@ -808,6 +811,14 @@ app.post('/updateDietaryPreference', async (req,res ) => {
 	localStorage.setItem('dietaryPreferences', JSON.stringify(storedPreferences));
 
 	console.log(storedPreferences);
+})
+
+app.post('/updateDietaryProfile',async (req, res) => {
+	var preferencesSelected = req.body.dietaryPreferences;
+
+	await userCollection.updateOne({username: req.session.username}, {$set: {dietary_preferences: preferencesSelected}});
+	console.log(preferencesSelected);
+	res.redirect('/loggedin/profile');
 })
 
 //----------------------- For saving recipes ----------------------
