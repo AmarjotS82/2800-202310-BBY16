@@ -15,6 +15,7 @@
   </div>
     
     <ul class="list-group list-unstyled align-items-center flex-column py-5">
+      <!-- If ingredients amount is 0 then it prints all regular buttons non highlighted -->
         <% if(ingredients.length == 0) { %>
             <% for(let i = 0; i < list.length; i++) { %>
                 <li>
@@ -30,6 +31,7 @@
                 </li>
             <% } %>
         <% } else { %>
+          <!-- If ingredients selected is not 0 then it compares ingredients to the selected ones and prints the selected ones in a secondary background. -->
             <% for (let y = 0; y < list.length; y++) { %>
                 <% let ingredientFound = false; %>
                 <% for (let i = 0; i < ingredients.length; i++) { %>
