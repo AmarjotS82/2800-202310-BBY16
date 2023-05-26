@@ -6,51 +6,35 @@
 
   <link rel="stylesheet" href="/css/members.css">
 
-<!-- hamsterrr -->
-<div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
-	<div class="wheel"></div>
-	<div class="hamster">
-		<div class="hamster__body">
-			<div class="hamster__head">
-				<div class="hamster__ear"></div>
-				<div class="hamster__eye"></div>
-				<div class="hamster__nose"></div>
-			</div>
-			<div class="hamster__limb hamster__limb--fr"></div>
-			<div class="hamster__limb hamster__limb--fl"></div>
-			<div class="hamster__limb hamster__limb--br"></div>
-			<div class="hamster__limb hamster__limb--bl"></div>
-			<div class="hamster__tail"></div>
-		</div>
-	</div>
-	<div class="spoke"></div>
-</div>
-<!-- ----------------------------------- -->
-
-<div class="header">
-  <h1><img class="logo" src="/img/logo-no-background.png" alt="logo-no-background"></h1>
-</div>
 
 
-  <div id="nutritionCard">
+  <div class="header">
+    <h1><img class="logo" src="/img/logo-no-background.png" alt="logo-no-background">
+      <spam style="font-size: 13pt;"> Welcome! <%= username %>
+      </spam>
+    </h1>
+  </div>
+
+  <!-- Carb counter  -->
+  <div id="nutritionCards">
     <div class="card-body text-center">
       <h5>Calorie counter</h5>
       <a type="button" class="btn calorie-btn" href="/loggedin/nutrition?calories=true">
-        Get Started <i class="bi bi-fire"></i>
+        Add your calories <i class="bi bi-fire"></i>
       </a>
     </div>
-  </div>
+    <!-- </div>
 
-  <div id="nutritionCard">
+  <div id="nutritionCard"> -->
     <div class="card-body text-center">
       <h5>Carbohydrates counter</h5>
-      <a type="button" class="btn calorie-btn" href="/loggedin/nutrition?carbs=true">
-        Get Started <i class="bi bi-fire"></i>
+      <a type="button" class="btn carb-btn" href="/loggedin/nutrition?carbs=true">
+        Add your carbs <i class='fas fa-bread-slice' style='font-size:24px; margin-top: 5px;'></i>
       </a>
     </div>
   </div>
 
-  <h2>Welcome! <%= username %></h2>
+
 
 
   <div id="recipe-container" isValid="<%= isValid %>">
@@ -59,10 +43,10 @@
     <!-- save button -->
     <form id="saveRecipeForm" action="/saveRecipe" method="post">
       <div class="icon-container">
-        <h5>Generated Recipe:</h5>
-        <button id="save-button" class="btn save">
-          <i class="bi bi-heart"></i>
-          <i class="bi bi-heart-fill"></i>
+        <h5 style="color: rgba(110, 92, 92, 0.774);">Generated Recipe:</h5>
+        <button  id ="save-button" class="btn save">
+          <i class="bi bi-bookmark-star"></i>
+          <i class="bi bi-bookmark-star-fill"></i>
         </button>
       </div>
     </form>
@@ -70,85 +54,109 @@
       <%- recipe %>
     </div>
 
-  <div class = "delete-generate-btn">
+    <div class="delete-generate-btn">
       <!-- generate recipe button -->
-    <a href="/filters">
-      <button type="button" class="generate-recipe">Create new recipe
-        <div class="star-1">
-          <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
-        </div>
-        <div class="star-2">
-          <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
-        </div>
-        <div class="star-3">
-          <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
-        </div>
-        <div class="star-4">
-          <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
-        </div>
-        <div class="star-5">
-          <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
-        </div>
-        <div class="star-6">
-          <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
-        </div>
-      </button>
-    </a>
+      <a href="/filters">
+        <button type="button" class="generate-recipe">Create new recipe
+          <div class="star-1">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+              style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+              version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <g id="Layer_x0020_1">
+                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                <path
+                  d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  class="fil0"></path>
+              </g>
+            </svg>
+          </div>
+          <div class="star-2">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+              style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+              version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <g id="Layer_x0020_1">
+                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                <path
+                  d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  class="fil0"></path>
+              </g>
+            </svg>
+          </div>
+          <div class="star-3">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+              style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+              version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <g id="Layer_x0020_1">
+                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                <path
+                  d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  class="fil0"></path>
+              </g>
+            </svg>
+          </div>
+          <div class="star-4">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+              style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+              version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <g id="Layer_x0020_1">
+                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                <path
+                  d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  class="fil0"></path>
+              </g>
+            </svg>
+          </div>
+          <div class="star-5">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+              style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+              version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <g id="Layer_x0020_1">
+                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                <path
+                  d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  class="fil0"></path>
+              </g>
+            </svg>
+          </div>
+          <div class="star-6">
+            <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53"
+              style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+              version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+              <defs></defs>
+              <g id="Layer_x0020_1">
+                <metadata id="CorelCorpID_0Corel-Layer"></metadata>
+                <path
+                  d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  class="fil0"></path>
+              </g>
+            </svg>
+          </div>
+        </button>
+      </a>
 
-     <!-- delete recipe button -->
-    <form action="/clearRecipe" method="post">
-      <button type="submit" id="clearRecipeBtn" class="noselect"><span class="text">Delete</span><span class="icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z">
-        </path></svg></span></button>
-    </form>
+      <!-- delete recipe button -->
+      <form action="/clearRecipe" method="post">
+        <button type="submit" id="clearRecipeBtn" class="noselect"><span class="text">Delete</span><span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path
+                d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z">
+              </path>
+            </svg></span></button>
+      </form>
+
+    </div>
 
   </div>
 
+  <!-- <script src="/js/members.js"></script> -->
+
   </div>
+  <script src="/js/members.js"></script>
 
-
-
-
-
-
-
-<script src="/js/members.js"></script>
   <%- include("templates/navbar") %>
     <%- include("templates/footer") %>
-
-    <script>
-      var iconVisible = document.querySelector('.bi-heart');
-        var iconHidden = document.querySelector('.bi-heart-fill');
-
-        iconVisible.addEventListener('click', function () {
-          iconHidden.style.display = 'inline-block';
-        });
-
-        var saveButton = document.querySelector('.save');
-
-        // saveRecipeForm.addEventListener('click', function () {
-        //   swal({
-        //     title: "Recipe saved!"
-        //   }).then(function() {
-        //     window.location.href = "http://localhost:3020/loggedin/members";
-        //   });
-        // });
-        var recipe = document.getElementById('recipe-container');
-
-        var isValid = recipe.getAttribute('isValid');
-        if(isValid == 'true') {
-          swal({
-            title: "Recipe saved!"
-          })
-        }
-
-        console.log()
-
-        var visible = document.querySelector('.logo');
-        var invisible = document.querySelector('.wheel-and-hamster');
-        visible.addEventListener('click', function () {
-          invisible.style.display = 'block';
-          visible.style.display = 'none';
-        });
-    </script>

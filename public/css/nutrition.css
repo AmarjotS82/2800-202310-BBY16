@@ -1,12 +1,6 @@
+body{
+  background-color: #B4846C;
 
-
-
-
-/* body{
-  background-color: black;
-  display: flex;
-      justify-content: center;
-      align-items: center;
 }
 h3{
   color: rgb(78, 51, 28);
@@ -14,6 +8,7 @@ h3{
 }
 #nutritionCard{
  background-color: #e5b299;
+ padding: 15px;
 }
 
 #nutritionCard .btn{
@@ -21,14 +16,24 @@ h3{
   font-size: 13pt;
   border-color: black;
   
-} */
+} 
 
 button{
   color: antiquewhite;
 }
-/* #test2{
+#goal{
+  border: none;
+}
+#amount{
+  border: none;
+
+}
+.goal-form{
+  margin-bottom: 20px;
+}
+ #test2{
   background-color: rgba(204, 131, 131, 0.548);
-} */
+} 
 
 /* Progrss Ring */
 
@@ -55,3 +60,4 @@ svg{
   margin-left: 35%;
   margin-bottom: 5%;
 }
+
