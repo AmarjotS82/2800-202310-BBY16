@@ -311,7 +311,9 @@ app.post('/submitUser', async (req, res) => {
 	const schema = Joi.object(
 		{
 			username: Joi.string().alphanum().max(20).required(),
-			email: Joi.string().email().required(),
+			email: Joi.string().email().regex(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/).required().messages({
+				'string.pattern.base': 'Email must be in a valid format.',
+    		}),
 			password: Joi.string().max(20).required(),
 			answer: Joi.string().max(20).required(),
 		});
