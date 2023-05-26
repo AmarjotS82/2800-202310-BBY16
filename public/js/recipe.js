@@ -1,4 +1,4 @@
-
+//this clears the modal since we have a lot
 var modalWrap = null;
 //shows and creates a modal
 const showModal = (title, description) => {
@@ -6,6 +6,7 @@ const showModal = (title, description) => {
       modalWrap.remove();
     }
   
+    //creates a modal
     modalWrap = document.createElement('div');
     modalWrap.innerHTML = `
       <div class="modal fade" tabindex="-1">
@@ -22,7 +23,8 @@ const showModal = (title, description) => {
         </div>
       </div>
     `;
-    
+
+    //appends the modal
     document.body.append(modalWrap);
   
     var modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
@@ -42,6 +44,7 @@ $('#modal-btn').each(function() {
     });
 })
 
+//if no saved recipe found then this will display a "No saved recipes" text.
 if($('#recipe-list li').length == 0) {
     const h1 = document.createElement('h1');
     const text = document.createTextNode("No saved recipes");
