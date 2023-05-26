@@ -58,8 +58,8 @@ const questions = [
 	"Who is your favourite author?"
 ];
 
-const generateRecipe = async (username) => {
-	const prompt = await constructPrompt(username);
+const generateRecipe = async (username, dietaryPreference) => {
+	const prompt = await constructPrompt(username, dietaryPreference);
 
 	const response = await openai.createChatCompletion({
 		model: "gpt-3.5-turbo",
@@ -71,21 +71,21 @@ const generateRecipe = async (username) => {
 	console.log(prompt);
 	console.log(response["data"]["choices"][0]["message"]["content"]);
 	recipeResponse = response["data"]["choices"][0]["message"]["content"];
-/**
-	//Separate recipe HTML from nutrition information JSON
-	let startIndex = recipeResponse.indexOf('{');
-	let endIndex = recipeResponse.indexOf('}') + 1;
-	 
-	let nutritionInfo = recipeResponse.substring(startIndex, endIndex);
-	nutritionInfo = validateNutrition(nutritionInfo);
-	localStorage.setItem('nutritionalInfo', nutritionInfo);
-
-	let recipe = recipeResponse.substring(0, startIndex);
-*/
+	/**
+		//Separate recipe HTML from nutrition information JSON
+		let startIndex = recipeResponse.indexOf('{');
+		let endIndex = recipeResponse.indexOf('}') + 1;
+		 
+		let nutritionInfo = recipeResponse.substring(startIndex, endIndex);
+		nutritionInfo = validateNutrition(nutritionInfo);
+		localStorage.setItem('nutritionalInfo', nutritionInfo);
+	
+		let recipe = recipeResponse.substring(0, startIndex);
+	*/
 	return recipeResponse;
 };
+async function constructPrompt(username, dietaryPreference) {
 
-async function constructPrompt(username) {
 	// Construct the prompt based on the ingredients and dietary preferences
 	let prompt = "Generate a single recipe using ";
 
@@ -95,26 +95,28 @@ async function constructPrompt(username) {
 	prompt += ingredientList;
 
 	// Add dietary preferences to the prompt if provided
-	const preferencesList = getLocalDietaryPreferences().join(", ");
+	const preferencesList = JSON.parse(dietaryPreference).join(", ");
 
-	if(preferencesList.length > 0) {
-	prompt += ", considering these dietary preferences: ";
-	prompt += preferencesList;
+	if (preferencesList.length > 0) {
+		prompt += ", considering these dietary preferences: ";
+		prompt += preferencesList;
 	}
 
-	prompt += " Put the recipe name in a h2 element."
+	prompt += ". Put the recipe name in a h2 element."
 	prompt += " Put the ingredient and instruction in h3 elements."
 	prompt += " Also, provide the fat, protein, calorie and carbohydrates content after the recipe. "
 	prompt += " Surround the recipe name, the recipe name and nutritional info in a div element."
 	prompt += " Do not give me any HTML head or body tags."
 	prompt += " Do not include any images. Do not include any comments in the code."
-	
+
 	//prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
 	//prompt += " Ensure that the key and value pair are both strings."
 	//prompt += " Do not generate a script tag anywhere. "
 
 	return prompt;
 }
+
+localStorage.setItem('dietaryPreferences', '[]');
 
 const saltRounds = 12; //use for encryption
 
@@ -153,12 +155,12 @@ app.use(session({
 	resave: true
 }
 ));
-
+/** 
 function getLocalDietaryPreferences() {
-	const storedPreferences = localStorage.getItem('dietaryPreferences');
-	return JSON.parse(storedPreferences) || [];
+	const storedPreferences = req.session.dietaryPreferences;
+	return storedPreferences;
 }
-
+*/
 /** 
 function validateNutrition(jsonString) {
 	try {
@@ -237,7 +239,7 @@ app.post('/forgetPassword', async (req, res) => {
 	var email = req.body.email;
 
 	const schema = Joi.string().email().required();
-	
+
 
 	const validationResult = schema.validate(email);
 	if (validationResult.error != null) {
@@ -255,7 +257,7 @@ app.post('/forgetPassword', async (req, res) => {
 		res.render('answer-questions', { question: userQuestion, email: result[0].email });
 
 	} else {
-		res.render("changePassword", {message: "Email doesn't exist!"});
+		res.render("changePassword", { message: "Email doesn't exist!" });
 		return;
 
 	}
@@ -305,18 +307,18 @@ app.post('/setNewDietaryPreference', (req, res) => {
 	const preference = req.body.preference;
 	const dietaryPreferences = req.body.dietaryPreferences;
 	console.log(dietaryPreferences)
-  
+
 	if (dietaryPreferences.includes(preference)) {
-	  // Remove preference if it's already selected
-	  const preferenceIndex = dietaryPreferences.indexOf(preference);
-	  dietaryPreferences.splice(preferenceIndex, 1);
+		// Remove preference if it's already selected
+		const preferenceIndex = dietaryPreferences.indexOf(preference);
+		dietaryPreferences.splice(preferenceIndex, 1);
 	} else {
-	  // Add preference if it's not selected
-	  dietaryPreferences.push(preference);
+		// Add preference if it's not selected
+		dietaryPreferences.push(preference);
 	}
-  
-	res.render('signup', { dietaryPreferences }); 
-  });
+
+	res.render('signup', { dietaryPreferences });
+});
 
 app.post('/submitUser', async (req, res) => { //good
 	var username = req.body.username;
@@ -367,7 +369,7 @@ app.post('/submitUser', async (req, res) => { //good
 	var hashedPassword = await bcrypt.hash(password, saltRounds);
 	var hashedAnswer = await bcrypt.hash(answer, saltRounds);
 
-	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question, dietary_preferences: preferences});
+	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question, dietary_preferences: preferences });
 	console.log("inserted user");
 
 
@@ -391,16 +393,16 @@ app.post('/loggingin', async (req, res) => { //done
 	var Password = req.body.password;
 
 	const schema = Joi.object(
-	{
-		Username: Joi.string().alphanum().max(20).required(),
-		Password: Joi.string().max(20).required(),
-	});
-		
-	const validationResult = schema.validate({Username, Password});
+		{
+			Username: Joi.string().alphanum().max(20).required(),
+			Password: Joi.string().max(20).required(),
+		});
+
+	const validationResult = schema.validate({ Username, Password });
 	if (validationResult.error != null) {
 		var message = validationResult.error.details[0].message;
 		console.log(validationResult.error);
-		res.render('invalid-login', {message: message})
+		res.render('invalid-login', { message: message })
 		return;
 	}
 
@@ -408,7 +410,7 @@ app.post('/loggingin', async (req, res) => { //done
 
 	if (result.length != 1) { //if user doesnt exist
 		// res.redirect("/login");
-		res.render('invalid-login', {message: "User does not exist!"})
+		res.render('invalid-login', { message: "User does not exist!" })
 		return;
 	}
 
@@ -420,12 +422,13 @@ app.post('/loggingin', async (req, res) => { //done
 		req.session.username = result[0].username;
 		console.log(req.session.username);
 		req.session.cookie.maxAge = expireTime;
+		req.session.dietaryPreferences = [];
 
 		res.redirect('/loggedin/members/false');
 		//return;
 	}
 	else {
-		res.render('invalid-login', {message: "Password is incorrect!"})
+		res.render('invalid-login', { message: "Password is incorrect!" })
 		return;
 	}
 });
@@ -433,6 +436,7 @@ app.post('/loggingin', async (req, res) => { //done
 app.use(express.static(__dirname + "/public"));
 
 app.get('/login', (req, res) => {
+	
 	res.render('login');
 });
 
@@ -446,67 +450,68 @@ app.use(express.static(__dirname + "/public"));
 //new stuff added
 
 
-app.get('/loggedin/members/:id', async (req,res) => {
+app.get('/loggedin/members/:id', async (req, res) => {
 	var id = req.params.id;
 
 	const recipe = req.session.recipe;
 	var username = req.session.username;
 
-	const result = await userCollection.find({ username: username }).project({ username: 1}).toArray();
-	res.render('members', {recipe: recipe, username: result[0].username, isValid: id});
+	const result = await userCollection.find({ username: username }).project({ username: 1 }).toArray();
+	res.render('members', { recipe: recipe, username: result[0].username, isValid: id });
 })
 
 
 app.post('/generateRecipe', async (req, res) => {
-	  let emptyArray = [];
-	  req.session.recipe = await generateRecipe(req.session.username);
-	  await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: emptyArray } });
+	let emptyArray = [];
+	const dietaryPreferences = req.body.dietaryPreferences;
+	req.session.recipe = await generateRecipe(req.session.username, dietaryPreferences);
+	await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: emptyArray } });
 
-	  res.redirect('/loggedin/members/false');
+	res.redirect('/loggedin/members/false');
 
-  });
+});
 
-app.post('/clearRecipe', async (req,res) => {
+app.post('/clearRecipe', async (req, res) => {
 	localStorage.setItem('recipe', '[]');
 	localStorage.setItem('ingredients', '[]');
 	localStorage.setItem('dietaryPreferences', '[]');
 	localStorage.setItem('nutritionalInfo');
 	res.redirect('loggedin/members/false');
-  });
+});
 
-  // Route handler for adding an item to the local storage
+// Route handler for adding an item to the local storage
 app.post('/addToList', (req, res) => {
 	const newItem = req.body.item;
-  
+
 	// Retrieve the existing list from local storage
 	const existingList = JSON.parse(localStorage.getItem('list')) || [];
-  
+
 	// Add the new item to the list
 	existingList.push(newItem);
-  
+
 	// Store the updated list in local storage
 	localStorage.setItem('list', JSON.stringify(existingList));
-  
+
 	// Send back the updated list as the response
 	res.json(existingList);
-  });
-  
-  // Route handler for removing an item from the local storage
-  app.post('/removeFromList', (req, res) => {
+});
+
+// Route handler for removing an item from the local storage
+app.post('/removeFromList', (req, res) => {
 	const itemToRemove = req.body.item;
-  
+
 	// Retrieve the existing list from local storage
 	const existingList = JSON.parse(localStorage.getItem('list')) || [];
-  
+
 	// Filter out the item from the list
 	const updatedList = existingList.filter((item) => item !== itemToRemove);
-  
+
 	// Store the updated list in local storage
 	localStorage.setItem('list', JSON.stringify(updatedList));
-  
+
 	// Send back the updated list as the response
 	res.json(updatedList);
-  });
+});
 
 app.get('/loggedin/nutrition', async (req, res) => {
 
@@ -514,66 +519,66 @@ app.get('/loggedin/nutrition', async (req, res) => {
 	var email = req.session.email
 
 	var caloriesPicked = req.query.calories;
-	console.log("pickedCal: "+ caloriesPicked);
+	console.log("pickedCal: " + caloriesPicked);
 
 	var carbsPicked = req.query.carbs;
-	console.log("pickedCal: "+ carbsPicked);
+	console.log("pickedCal: " + carbsPicked);
 
 	//Stores the last time the user accesed the page by using email to find the specific user and turns it into an array
-	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
-	
+	var storedTime = await userCollection.find({ email: email }).project({ LastDateUsed: 1 }).toArray();
+
 	//gets the value in the database from the array crated above
 	var lastTime = storedTime[0].LastDateUsed;
 
 	//Gets the current date by creating a new date object and getting the day
 	// * Currently getting minutes for testing purposes
 	var currTime = new Date().getMinutes();
-	
+
 	//console.log(lastTime);
 
 	//Checks to see if the value in the array is null which happens the very first time the user accesses the page since they have no previous visits
 
-	if(storedTime[0].LastDateUsed == null){
+	if (storedTime[0].LastDateUsed == null) {
 		//sets the last visit date to current date to be used next visit
-		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
+		await userCollection.updateOne({ email: email }, { $set: { LastDateUsed: currTime } });
 
 		//Sets the calories and goals to zero since the user hasn't input anytihng yet
-		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
-		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
-		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
-		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: 0}});
+		await userCollection.updateOne({ email: email }, { $set: { Calories: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { CalorieGoal: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { Carbohydrates: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { carbohydrateGoal: 0 } });
 	}
 	//Check if the user is logging in on a new day and reset values so they can keep track daily
 	// * Currently every 2 mins for testing purposes
-	if(currTime - lastTime > 1) {
+	if (currTime - lastTime > 1) {
 		//sets the last visit date to current date to be used next visit by finding difference between last vist and current date
-		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
+		await userCollection.updateOne({ email: email }, { $set: { LastDateUsed: currTime } });
 		//Resets the calories and goals to zero so user can add daily
-		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
-		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
-		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
-		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: 0}});
-	}else if(currTime < lastTime){
+		await userCollection.updateOne({ email: email }, { $set: { Calories: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { CalorieGoal: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { Carbohydrates: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { carbohydrateGoal: 0 } });
+	} else if (currTime < lastTime) {
 		//This is to deal with days when the differnece of last vist and current date is less than 1
 		// Example: May 29 and then June 4 the first if statement wouldn't catch this case and not update values/date 
-		
+
 		//sets the last visit date to current date to be used next visit
-		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
+		await userCollection.updateOne({ email: email }, { $set: { LastDateUsed: currTime } });
 
 		//Resets the calories and goals to zero so user can add daily
-		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
-		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
-		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
-		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: 0}});
+		await userCollection.updateOne({ email: email }, { $set: { Calories: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { CalorieGoal: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { Carbohydrates: 0 } });
+		await userCollection.updateOne({ email: email }, { $set: { carbohydrateGoal: 0 } });
 
 	}
 
-	if(caloriesPicked){
+	if (caloriesPicked) {
 		//Stores the number of calories the user has input by using email to find the specific user and turns it into an array
-		let calorieCount = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
+		let calorieCount = await userCollection.find({ email: email }).project({ Calories: 1 }).toArray();
 
 		//Stores the calorie goal the user has input by using email to find the specific user and turns it into an array
-		let storedcalorieGoal = await userCollection.find({email : email}).project({CalorieGoal: 1 }).toArray();
+		let storedcalorieGoal = await userCollection.find({ email: email }).project({ CalorieGoal: 1 }).toArray();
 
 		//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
 		res.render("nutrition", {
@@ -588,19 +593,19 @@ app.get('/loggedin/nutrition', async (req, res) => {
 			cal: caloriesPicked,
 			carbs: false
 		});
-	} else if(carbsPicked){
-		let carbCount = await userCollection.find({email : email}).project({Carbohydrates: 1 }).toArray();
-		let storedCarbGoal = await userCollection.find({email : email}).project({carbohydrateGoal: 1 }).toArray();
-	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
-	res.render("nutrition", {
-		Carbohydrates: carbCount[0].Carbohydrates,
-		carbGoal: storedCarbGoal[0].carbohydrateGoal,
-		cal:false,
-		carbs: carbsPicked
-	});
+	} else if (carbsPicked) {
+		let carbCount = await userCollection.find({ email: email }).project({ Carbohydrates: 1 }).toArray();
+		let storedCarbGoal = await userCollection.find({ email: email }).project({ carbohydrateGoal: 1 }).toArray();
+		//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
+		res.render("nutrition", {
+			Carbohydrates: carbCount[0].Carbohydrates,
+			carbGoal: storedCarbGoal[0].carbohydrateGoal,
+			cal: false,
+			carbs: carbsPicked
+		});
 	}
-	
-	
+
+
 
 	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
 	// res.render("nutrition", {
@@ -618,27 +623,27 @@ app.get('/loggedin/nutrition', async (req, res) => {
 //********************** Calorie Counter Page Ends*/
 
 //method to put values in the database
-app.post('/nutritionInfo', async (req,res) => {
+app.post('/nutritionInfo', async (req, res) => {
 	//email to idnetify user
 	var email = req.session.email;
 	//calorie maount value inputted by user
 	var calories = req.body.calories;
 	//calorie Goal value inputted by user
-	 var calorieGoal = req.body.calGoal;
+	var calorieGoal = req.body.calGoal;
 
-	 var carbohydrates = req.body.carbohydrates;
+	var carbohydrates = req.body.carbohydrates;
 
-	 var carbGoal = req.body.carbGoal;
+	var carbGoal = req.body.carbGoal;
 
-	 console.log("carbs amt: " + carbohydrates)
-	 //If user gives blank input calories is zero so no change to previous value and don't allow negative numbers
+	console.log("carbs amt: " + carbohydrates)
+	//If user gives blank input calories is zero so no change to previous value and don't allow negative numbers
 	if (calories == "" || calories < 0) {
 		calories = 0;
 	}
 
 	//Crate schema to validate input is a number and integer
 	const schema = Joi.number().integer();
-	
+
 	//Can only fill one feild at a time so other field becomes undefined this makes it so the undefined doesn't get added
 	if (calories != null) {
 		//validate input using schema crated above
@@ -649,15 +654,15 @@ app.post('/nutritionInfo', async (req,res) => {
 			res.redirect("/loggedin/nutrition?calories=true");
 			return;
 		}
-		
+
 		//Find exisiting value so that user can add on to the amount 
-		let calCount2 = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
+		let calCount2 = await userCollection.find({ email: email }).project({ Calories: 1 }).toArray();
 		//Add new amount to existing amount
 		calCount2[0].Calories += parseInt(calories);
 		//Update database with new value
-		await userCollection.updateOne({email: email}, {$set: {Calories: calCount2[0].Calories}});
+		await userCollection.updateOne({ email: email }, { $set: { Calories: calCount2[0].Calories } });
 		res.redirect("/loggedin/nutrition?calories=true");
-			return;
+		return;
 	}
 
 	//Can only fill one feild at a time so other field becomes undefined this makes it so the undefined doesn't get added
@@ -671,7 +676,7 @@ app.post('/nutritionInfo', async (req,res) => {
 			return;
 		}
 		//Set value inputted into the database overwrites old value
-		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: calorieGoal}});
+		await userCollection.updateOne({ email: email }, { $set: { CalorieGoal: calorieGoal } });
 		res.redirect("/loggedin/nutrition?calories=true");
 		return;
 	}
@@ -689,17 +694,17 @@ app.post('/nutritionInfo', async (req,res) => {
 			res.redirect("/loggedin/nutrition?carbs=true");
 			return;
 		}
-		
+
 		//Find exisiting value so that user can add on to the amount 
-		let carbCount = await userCollection.find({email : email}).project({Carbohydrates: 1 }).toArray();
+		let carbCount = await userCollection.find({ email: email }).project({ Carbohydrates: 1 }).toArray();
 		console.log("carbs amt: " + carbohydrates)
 		//Add new amount to existing amount
 		carbCount[0].Carbohydrates += parseInt(carbohydrates);
 		console.log("total: " + carbCount[0].Carbohydrates);
 		//Update database with new value
-		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: carbCount[0].Carbohydrates}});
+		await userCollection.updateOne({ email: email }, { $set: { Carbohydrates: carbCount[0].Carbohydrates } });
 		res.redirect("/loggedin/nutrition?carbs=true");
-			return;
+		return;
 	}
 	if (carbGoal != null) {
 		//validate input using schema crated above
@@ -711,7 +716,7 @@ app.post('/nutritionInfo', async (req,res) => {
 			return;
 		}
 		//Set value inputted into the database overwrites old value
-		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: carbGoal}});
+		await userCollection.updateOne({ email: email }, { $set: { carbohydrateGoal: carbGoal } });
 		res.redirect("/loggedin/nutrition?carbs=true");
 		return;
 	}
@@ -721,19 +726,20 @@ app.post('/nutritionInfo', async (req,res) => {
 
 });
 
-app.get('/filters', async (req, res)  => {
-	res.render("filters", { ingredients: await getLocalIngredients(req.session.username) , preferences:getLocalDietaryPreferences()});
+app.get('/filters', async (req, res) => {
+	
+	res.render("filters", { ingredients: await getLocalIngredients(req.session.username), preferences: req.session.dietaryPreferences });
 });
 
 //route for list of ingredients page
 app.get("/lists", async (req, res) => {
 	//Find all id and names(Food field) of all contents in collection
 	//Make sure capital F for food otherwise doesn't work
-	var ingredientList = await testCollection.find({}).project({Food: 1 }).toArray();
+	var ingredientList = await testCollection.find({}).project({ Food: 1 }).toArray();
 
 	let list = [];
-	
-	for(let i = 0; i < ingredientList.length; i++){
+
+	for (let i = 0; i < ingredientList.length; i++) {
 		list.push(ingredientList[i].Food);
 	}
 
@@ -748,18 +754,18 @@ app.get("/lists", async (req, res) => {
 app.get("/loggedin/profile", async (req, res) => {
 	var username = req.session.username;
 
-	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1 , dietary_preferences: 1}).toArray();
+	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1, dietary_preferences: 1 }).toArray();
 
 	var preferences = result[0].dietary_preferences;
 	console.log(preferences);
 
-	if (preferences === null || typeof preferences === 'undefined'){
-        preferences = [];
+	if (preferences === null || typeof preferences === 'undefined') {
+		preferences = [];
 	} else {
 		preferences = JSON.parse(preferences);
 	}
 
-	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences});
+	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences });
 });
 
 
@@ -768,7 +774,7 @@ app.get("/loggedin/profilePreferences", async (req, res) => {
 })
 
 async function getLocalIngredients(username) {
-	const storedIngredients = await userCollection.find({username: username}).project({selected_ingredients: 1}).toArray();
+	const storedIngredients = await userCollection.find({ username: username }).project({ selected_ingredients: 1 }).toArray();
 
 	// if(storedIngredients == undefined) {
 	// 	await userCollection.updateOne({username: username}, {$set: {selected_ingredients: []}});
@@ -782,7 +788,7 @@ async function getLocalIngredients(username) {
 
 app.post('/updateLocalIngredient', async (req, res) => {
 	const foodName = req.body.foodName;
-	
+
 	let ingredients = await getLocalIngredients(req.session.username);
 	console.log(req.session.username);
 	const index = ingredients.indexOf(foodName);
@@ -791,63 +797,60 @@ app.post('/updateLocalIngredient', async (req, res) => {
 		// If foodName is already in the ingredients array, remove it
 		ingredients.splice(index, 1);
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
-		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
+		await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: ingredients } });
 		console.log("Removed " + foodName);
 		res.redirect('/lists');
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
 		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
-		await userCollection.updateOne({username: req.session.username}, {$set: {selected_ingredients: ingredients}});
+		await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: ingredients } });
 		console.log("Added " + foodName);
 		res.redirect('/lists');
 	}
 });
 
-
-
-app.post('/updateDietaryPreference', async (req,res ) => {
-	const newPreference = req.body.preference;
-	const storedPreferences = getLocalDietaryPreferences();
-	const index = storedPreferences.indexOf(newPreference);
-
-	if (index === -1) {
-		//If preference is not in dietaryPreference in localstorage, add it
-	  storedPreferences.push(newPreference);
-	  console.log("Added " + newPreference);
-	} else {
-		//If preference is in dietaryPreference in localstorage, remove it
-	  storedPreferences.splice(index, 1);
-	  console.log("Removed " + newPreference);
-	}
-
-	localStorage.setItem('dietaryPreferences', JSON.stringify(storedPreferences));
-
+app.post('/addUserDietaryPreferences', async (req, res) => {
+	const result = await userCollection.find({ username: req.session.username }).project({ dietary_preferences: 1 }).toArray();
+	const personalPreferences = result[0].dietary_preferences;
+	const storedPreferences = req.session.dietaryPreferences;
+	console.log(personalPreferences);
 	console.log(storedPreferences);
+
+
+	if (personalPreferences === storedPreferences) {
+		// Clear the dietaryPreferences localStorage
+		localStorage.setItem('dietaryPreferences', '[]');
+	} else {
+		localStorage.setItem('dietaryPreferences', personalPreferences);
+	}
+	console.log("-------")
+	console.log(localStorage.getItem('dietaryPreferences'));
+	console.log("--------")
 })
 
-app.post('/updateDietaryProfile',async (req, res) => {
+app.post('/updateDietaryProfile', async (req, res) => {
 	var preferencesSelected = req.body.dietaryPreferences;
 
-	await userCollection.updateOne({username: req.session.username}, {$set: {dietary_preferences: preferencesSelected}});
+	await userCollection.updateOne({ username: req.session.username }, { $set: { dietary_preferences: preferencesSelected } });
 	console.log(preferencesSelected);
 	res.redirect('/loggedin/profile');
 })
 
 //----------------------- For saving recipes ----------------------
 
-async function saveRecipe( recipe, username) {
+async function saveRecipe(recipe, username) {
 	recipeName = recipe.substring(12, recipe.indexOf("/") - 1).trim();
 	recipeDetails = recipe.substring(recipe.indexOf("Ingredients:"), recipe.length);
 	console.log(recipeName);
 	console.log(username);
 
-	await savedRecipeCollection.insertOne({username: username, recipeName: recipeName, recipe: recipeDetails});
+	await savedRecipeCollection.insertOne({ username: username, recipeName: recipeName, recipe: recipeDetails });
 	return;
 }
 
-app.post('/saveRecipe', async (req,res) => {
-	if(typeof recipeResponse != 'undefined') {
+app.post('/saveRecipe', async (req, res) => {
+	if (typeof recipeResponse != 'undefined') {
 		await saveRecipe(recipeResponse, req.session.username);
 
 		// res.end('')
@@ -866,10 +869,10 @@ app.post('/saveRecipe', async (req,res) => {
 
 //----------------------- For unsaving recipes ----------------------
 
-app.post('/unsaveRecipe/:id', async (req,res) => {
+app.post('/unsaveRecipe/:id', async (req, res) => {
 	let recipe_id = req.params.id;
 
-	await savedRecipeCollection.deleteOne({_id: new mongo.ObjectId(recipe_id)});
+	await savedRecipeCollection.deleteOne({ _id: new mongo.ObjectId(recipe_id) });
 	// const result = await savedRecipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
 
 
@@ -884,9 +887,9 @@ app.post('/unsaveRecipe/:id', async (req,res) => {
 //----------------------- For displaying recipes ----------------------
 
 app.get('/loggedin/recipes', async (req, res) => {
-	const result = await savedRecipeCollection.find({username: req.session.username }).toArray();
+	const result = await savedRecipeCollection.find({ username: req.session.username }).toArray();
 
-	res.render('recipes', {result: result})
+	res.render('recipes', { result: result })
 })
 
 
@@ -895,9 +898,9 @@ app.get('/loggedin/recipes', async (req, res) => {
 
 //----------------------- For recipe modal ----------------------
 
-app.get('/recipe/:id', async (req,res ) => {
+app.get('/recipe/:id', async (req, res) => {
 	const recipe_id = req.params.id;
-	const result = await savedRecipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
+	const result = await savedRecipeCollection.find({ _id: new mongo.ObjectId(recipe_id) }).toArray();
 
 	res.send(result);
 })
@@ -906,9 +909,9 @@ app.get('/recipe/:id', async (req,res ) => {
 //------------------------------------------------------------------
 
 // *************** searchRecipe section**************************
-app.get('/loggedin/searchRecipe', async (req, res)=> {
-	let recipesList = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
-	
+app.get('/loggedin/searchRecipe', async (req, res) => {
+	let recipesList = await recipeCollection.find({}).project({ Title: 1, Ingredients: 1, Instructions: 1, Image_Name: 1 }).toArray();
+
 	// console.log("size: " + recipesList.length)
 	// for(let i = 0; i < recipesList.length; i++) {
 	// let instructions = recipesList[i].Instructions;
@@ -921,14 +924,14 @@ app.get('/loggedin/searchRecipe', async (req, res)=> {
 	// }
 	// //await recipeCollection.updateOne({Title: recipesList[i].Title}, {$set: {Instructions: instructions}}); 
 	// }
-	
-	res.render('searchRecipe',{ recipe: recipesList});
+
+	res.render('searchRecipe', { recipe: recipesList });
 })
 
 // ------------------------------------------------------
 
 // *************** Grocery List *******************
-app.get('/loggedin/todo', (req, res)=> {
+app.get('/loggedin/todo', (req, res) => {
 	res.render('todo');
 })
 //-------------------------------------------------

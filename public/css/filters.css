@@ -31,7 +31,7 @@ h5{
 }
 
 /****** ******* filter buttons *************/
-form > button {
+.dietary-button{
     outline: none;
     color: #3c240f;
     padding: 1em;
@@ -44,15 +44,17 @@ form > button {
     transition: .1s ease-in-out, .4s color;
   }
   
-  form > button:active {
+  .dietary-button:active {
     transform: translateX(0.1em) translateY(0.1em);
     box-shadow: 0 0 0 4px #3a2f1d, 1.5px 1.5px 2.5px 1.5px rgba(0, 0, 0, 0.5);
   }
 
- form > button {
+ .dietary-button{
   margin: 8px;
 
  }
+
+
 
  /* ---------------------------------------------------------- */
 
@@ -69,7 +71,7 @@ form > button {
   box-shadow: 0 0 0 #fec1958c;
   transition: all .3s ease-in-out;
   border-radius: 15px;
-  float: right;
+  /* float: right; */
   padding: 25px;
   padding: 20px 80px 20px 80px;
 }
@@ -335,3 +337,9 @@ button {
   display: flex;
   flex-wrap: wrap;
 }
+
+.recipe-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+ }
