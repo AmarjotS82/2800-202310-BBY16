@@ -1,5 +1,6 @@
 body{
     background-color: #B4846C;
+    
 }
 
 h1{
@@ -8,6 +9,9 @@ h1{
     font-weight: bold;
     font-family:'Times New Roman', Times, serif;
     padding-left: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #details{
@@ -36,6 +40,13 @@ h1{
   
   #searchBar {
     padding-right: 30px; /* Adjust the value to make space for the icon */
+    margin-bottom: 2%;
   }
 
+  .card{
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 2%;
+  }
   
