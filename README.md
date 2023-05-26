@@ -7,6 +7,7 @@ Our team, BBY-16, is developing PantryPal, a recipe generator app designed to he
 We used CSS, EJS, and JavaScript for the front end. And node js for the backend, enabling us to handle complex logic and  gpt 3.5 API. We used Kaggle datasets. MongoDB was chosen as our database.
 
 4. File directory
+```
 │   .env
 │   .gitignore
 │   databaseConnection.js
@@ -193,7 +194,7 @@ We used CSS, EJS, and JavaScript for the front end. And node js for the backend,
             header.ejs
             navbar.ejs
             Recipe-template.ejs
-
+```
 
 The test Log URL: 05b_testing_log_BBY16 - Google Sheets 
 
