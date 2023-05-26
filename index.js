@@ -52,6 +52,7 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
+//-------------------------------------------------------------------------------------
 
 const questions = [
 	"What is the name of your hometown?",
@@ -60,8 +61,6 @@ const questions = [
 	"What was your first pet's name?",
 	"Who is your favourite author?"
 ];
-
-//-------------------------------------------------------------------------------------
 
 //*************************Recipe Generation ****************************************
 
