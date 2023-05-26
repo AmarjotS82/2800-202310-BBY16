@@ -45,6 +45,8 @@ const openai_api_key = process.env.OPENAI_API_KEY;
 
 //------------------------------------------------------------------------------------------
 
+
+//**************************OpenAI Configuration ***************************************
 const configuration = new Configuration({
 	apiKey: openai_api_key,
 });
@@ -59,6 +61,11 @@ const questions = [
 	"Who is your favourite author?"
 ];
 
+//-------------------------------------------------------------------------------------
+
+//*************************Recipe Generation ****************************************
+
+//Saynchronously generates recipe using OpenAI's GPT-3.5 turbo model
 const generateRecipe = async (username, dietaryPreference) => {
 	const prompt = await constructPrompt(username, dietaryPreference);
 
@@ -74,6 +81,8 @@ const generateRecipe = async (username, dietaryPreference) => {
 	recipeResponse = response["data"]["choices"][0]["message"]["content"];
 	return recipeResponse;
 };
+
+//Construct prompts based on user's chosen ingredients and dietary preferences
 async function constructPrompt(username, dietaryPreference) {
 
 	// Construct the prompt based on the ingredients and dietary preferences
@@ -92,6 +101,7 @@ async function constructPrompt(username, dietaryPreference) {
 		prompt += preferencesList;
 	}
 
+	// Add miscellaneous information to prompt to format response so that it fits in recipe div
 	prompt += ". Put the recipe name in a h2 element."
 	prompt += " Put the ingredient and instruction in h3 elements."
 	prompt += " Also, provide the fat, protein, calorie and carbohydrates content after the recipe. "
@@ -102,7 +112,7 @@ async function constructPrompt(username, dietaryPreference) {
 	return prompt;
 }
 
-localStorage.setItem('dietaryPreferences', '[]');
+//-----------------------------------------------------------------------------
 
 const saltRounds = 12; //use for encryption
 
@@ -133,7 +143,7 @@ var mongoStore = MongoStore.create({
 		secret: mongodb_session_secret
 	}
 });
-
+//*********************Establish Session *****************************
 app.use(session({
 	secret: node_session_secret,
 	store: mongoStore,
@@ -157,6 +167,7 @@ function sessionValidation(req, res, next) {
 		res.redirect('/login');
 	}
 }
+//------------------------------------------------------------------
 
 app.get('/', (req, res) => { 
 	res.render("index");
