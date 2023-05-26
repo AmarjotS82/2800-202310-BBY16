@@ -53,6 +53,7 @@ buttons.forEach(button => {
       dietaryPreferences.push(preference);
       button.classList.add('active');
     }
+    //Set new dietary preferences in local storage
     localStorage.setItem("dietaryPreferences", JSON.stringify(dietaryPreferences));
     console.log(dietaryPreferences);
   }

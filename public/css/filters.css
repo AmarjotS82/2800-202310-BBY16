@@ -14,7 +14,6 @@ h5{
   padding-left: 15px;
   padding-right: 15px;
   border-radius: 80px;
-  /* margin-left: 50px; */
   margin-top: 17px;
   background-color: #7d5a50;
   border-style: hidden;
@@ -73,7 +72,6 @@ h5{
   box-shadow: 0 0 0 #fec1958c;
   transition: all .3s ease-in-out;
   border-radius: 15px;
-  /* float: right; */
   padding: 25px;
   padding: 20px 80px 20px 80px;
 }

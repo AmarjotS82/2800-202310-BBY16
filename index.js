@@ -1,4 +1,4 @@
-//BBY-16
+
 require("./utils.js");
 
 const express = require('express');
@@ -72,17 +72,6 @@ const generateRecipe = async (username, dietaryPreference) => {
 	console.log(prompt);
 	console.log(response["data"]["choices"][0]["message"]["content"]);
 	recipeResponse = response["data"]["choices"][0]["message"]["content"];
-	/**
-		//Separate recipe HTML from nutrition information JSON
-		let startIndex = recipeResponse.indexOf('{');
-		let endIndex = recipeResponse.indexOf('}') + 1;
-		 
-		let nutritionInfo = recipeResponse.substring(startIndex, endIndex);
-		nutritionInfo = validateNutrition(nutritionInfo);
-		localStorage.setItem('nutritionalInfo', nutritionInfo);
-	
-		let recipe = recipeResponse.substring(0, startIndex);
-	*/
 	return recipeResponse;
 };
 async function constructPrompt(username, dietaryPreference) {
@@ -109,10 +98,6 @@ async function constructPrompt(username, dietaryPreference) {
 	prompt += " Surround the recipe name, the recipe name and nutritional info in a div element."
 	prompt += " Do not give me any HTML head or body tags."
 	prompt += " Do not include any images. Do not include any comments in the code."
-
-	//prompt += " Also, provide the fat, protein, calorie and carbohydrates content of the recipe in the form of a JSON object outside of the HTML."
-	//prompt += " Ensure that the key and value pair are both strings."
-	//prompt += " Do not generate a script tag anywhere. "
 
 	return prompt;
 }
@@ -156,38 +141,7 @@ app.use(session({
 	resave: true
 }
 ));
-/** 
-function getLocalDietaryPreferences() {
-	const storedPreferences = req.session.dietaryPreferences;
-	return storedPreferences;
-}
-*/
-/** 
-function validateNutrition(jsonString) {
-	try {
-		const jsonObject = JSON.parse(jsonString);
-		for ([key, value] of Object.entries(jsonObject)) {
-			if (typeof value !== 'string') {
-				jsonObject[key] = JSON.stringify(value);
-			}
 
-			if (key.charAt(0) !== key.charAt(0).toUpperCase()) {
-				const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-				jsonObject[capitalizedKey] = jsonObject[key];
-				delete jsonObject[key];
-			}
-		}
-		return JSON.stringify(jsonObject);
-
-	  } catch (error) {
-		console.log(jsonString);
-		console.log("JSON parsing failure:", error.message);
-		return false;
-	  }
-	  
-}
-*/
-/** Use later for valid session */
 function isValidSession(req) {
 	if (req.session.authenticated) {
 		return true;
@@ -204,7 +158,7 @@ function sessionValidation(req, res, next) {
 	}
 }
 
-app.get('/', (req, res) => { //good
+app.get('/', (req, res) => { 
 	res.render("index");
 });
 
@@ -321,7 +275,7 @@ app.post('/setNewDietaryPreference', (req, res) => {
 	res.render('signup', { dietaryPreferences });
 });
 
-app.post('/submitUser', async (req, res) => { //good
+app.post('/submitUser', async (req, res) => { 
 	var username = req.body.username;
 	var email = req.body.email;
 	var password = req.body.password;
@@ -389,7 +343,7 @@ app.get('/loggedin', (req, res) => {
 	res.render("loggedin");
 });
 
-app.post('/loggingin', async (req, res) => { //done
+app.post('/loggingin', async (req, res) => { 
 	var Username = req.body.username;
 	var Password = req.body.password;
 
@@ -410,7 +364,7 @@ app.post('/loggingin', async (req, res) => { //done
 	const result = await userCollection.find({ username: Username }).project({ password: 1, _id: 1, username: 1, email: 1 }).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
-		// res.redirect("/login");
+		
 		res.render('invalid-login', { message: "User does not exist!" })
 		return;
 	}
@@ -426,7 +380,7 @@ app.post('/loggingin', async (req, res) => { //done
 		req.session.dietaryPreferences = [];
 
 		res.redirect('/loggedin/members/false');
-		//return;
+		
 	}
 	else {
 		res.render('invalid-login', { message: "Password is incorrect!" })
@@ -447,6 +401,7 @@ app.get('/changePassword', (req, res) => {
 });
 
 //new stuff added
+app.use(express.static(__dirname + "/public"));
 
 
 app.get('/loggedin/members/:id', async (req, res) => {
@@ -698,8 +653,7 @@ app.post('/nutritionInfo', async (req, res) => {
 		res.redirect("/loggedin/nutrition?carbs=true");
 		return;
 	}
-	// Store
-	// res.redirect("/loggedin/nutrition");
+
 
 
 });
@@ -712,7 +666,7 @@ app.get('/filters', async (req, res) => {
 //route for list of ingredients page
 app.get("/lists", async (req, res) => {
 	//Find all id and names(Food field) of all contents in collection
-	//Make sure capital F for food otherwise doesn't work
+	
 	var ingredientList = await testCollection.find({}).project({ Food: 1 }).toArray();
 
 	let list = [];
@@ -753,12 +707,6 @@ app.get("/loggedin/profilePreferences", async (req, res) => {
 
 async function getLocalIngredients(username) {
 	const storedIngredients = await userCollection.find({ username: username }).project({ selected_ingredients: 1 }).toArray();
-
-	// if(storedIngredients == undefined) {
-	// 	await userCollection.updateOne({username: username}, {$set: {selected_ingredients: []}});
-	// 	storedIngredients = storedIngredients = await userCollection.find({username: username}).project({selected_ingredients: 1}).toArray();
-	// }
-
 	return storedIngredients[0].selected_ingredients || [];
 }
 
@@ -774,14 +722,12 @@ app.post('/updateLocalIngredient', async (req, res) => {
 	if (index !== -1) {
 		// If foodName is already in the ingredients array, remove it
 		ingredients.splice(index, 1);
-		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: ingredients } });
 		console.log("Removed " + foodName);
 		res.redirect('/lists');
 	} else {
 		// If foodName is not in the ingredients array, add it
 		ingredients.push(foodName);
-		// localStorage.setItem('ingredients', JSON.stringify(ingredients));
 		await userCollection.updateOne({ username: req.session.username }, { $set: { selected_ingredients: ingredients } });
 		console.log("Added " + foodName);
 		res.redirect('/lists');
@@ -830,9 +776,6 @@ async function saveRecipe(recipe, username) {
 app.post('/saveRecipe', async (req, res) => {
 	if (typeof recipeResponse != 'undefined') {
 		await saveRecipe(recipeResponse, req.session.username);
-
-		// res.end('')
-		// res.redirect('back');
 		res.redirect("/loggedin/members/true");
 		return;
 	} else {
@@ -851,11 +794,6 @@ app.post('/unsaveRecipe/:id', async (req, res) => {
 	let recipe_id = req.params.id;
 
 	await savedRecipeCollection.deleteOne({ _id: new mongo.ObjectId(recipe_id) });
-	// const result = await savedRecipeCollection.find({_id: new mongo.ObjectId(recipe_id)}).toArray();
-
-
-
-	// console.log(result[0].recipeName)
 
 	res.redirect("/loggedin/recipes");
 })
