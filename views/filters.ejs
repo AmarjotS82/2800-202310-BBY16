@@ -5,7 +5,7 @@
     <div class="ingredient-wrapper">
       <table>
         <tr>
-          <th><h5>Selected Ingredients:</h5></th>
+          <th><h5>Step 1: Choose Ingredients.</h5></th>
         </tr>
         <tr>
           <td>
@@ -33,20 +33,25 @@
 
    
 
-    <form method="POST" action="/updateDietaryPreference" class="py-5">
-      <h5>Add your dietary preference:</h5>
-        <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button" >Keto</button>
-        <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button ">Gluten-free</button>
-        <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button ">Vegan</button>
-        <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button">Vegetarian</button>
-        <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button">Lactose-free</button>
-        <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button">Pescatarian</button>
-        <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button">Kosher</button>
-        <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button">Low Carb</button>
-    </form>
+
+
    <div class="get-recipe-btn-Wrapper">
     <form action="/generateRecipe" method="post">
-        <button type="submit" class="getRecipe-btn">Get Recipe
+
+        <input type="hidden" name="dietaryPreferences" id="dietaryPreferencesInput" />
+        <fieldset class="py-5">
+            <legend>Set your dietary preferences:</legend>
+            <button type="button" data-item="Keto" class="dietary-button">Keto</button>
+            <button type="button" data-item="Gluten-free" class="dietary-button">Gluten-free</button>
+            <button type="button" data-item="Vegan" class="dietary-button">Vegan</button>
+            <button type="button" data-item="Vegetarian" class="dietary-button">Vegetarian</button>
+            <button type="button" data-item="Lactose-free" class="dietary-button">Lactose-free</button>
+            <button type="button" data-item="Pescatarian" class="dietary-button">Pescatarian</button>
+            <button type="button" data-item="Kosher" class="dietary-button">Kosher</button>
+            <button type="button" data-item="Low Carb" class="dietary-button">Low Carb</button>
+        </fieldset>
+
+      <div class="recipe-div"> <button type="submit" class="getRecipe-btn">Get Recipe </div> 
           <div class="star-1">
             <svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 784.11 815.53" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><defs></defs><g id="Layer_x0020_1"><metadata id="CorelCorpID_0Corel-Layer"></metadata><path d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z" class="fil0"></path></g></svg>
           </div>

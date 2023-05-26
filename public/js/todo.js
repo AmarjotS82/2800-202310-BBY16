@@ -8,6 +8,9 @@ const todoButton = document.querySelector(".todo-button");
 const todoList = document.querySelector(".todo-list");
 const filterOption = document.querySelector(".filter-todo");
 
+
+
+
 document.addEventListener("DOMContentLoaded", getLocalTodos);
 todoButton.addEventListener("click", addTodo);
 todoList.addEventListener("click", deleteCheck);
@@ -41,7 +44,6 @@ function addTodo(event){
 
 function deleteCheck(e) {
     const item = e.target;
-
     if(item.classList[0] === "trash-btn"){
         const todo = item.parentElement;
         todo.classList.add("slide");
@@ -141,7 +143,13 @@ function removeLocalTodos(todo) {
     todos.splice(todos.indexOf(todoIndex), 1);
     //stores the updated array back to local storage
     localStorage.setItem("todos", JSON.stringify(todos));
+
+    
 }
 
-
-
+$("body").on("click", ".reset", function(){
+    console.log("reset clicked")
+    $(".todo").remove();
+    localStorage.clear();
+    
+})

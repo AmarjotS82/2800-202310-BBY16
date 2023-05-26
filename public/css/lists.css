@@ -1,6 +1,7 @@
 body{
     background-color: #B4846C;
     font-family: 'Times New Roman', Times, serif;
+    margin-bottom: 50px;
 }
 #search-input{
     border-radius: 10px;
@@ -29,11 +30,15 @@ h1{
    
 position: sticky;
 }
-.text-center{
+.done-btn{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%; 
 }
 #ingredient-List{
     border: none;

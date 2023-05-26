@@ -1,24 +1,32 @@
 <%- include("templates/header") %>
 
 
+
+
+<link rel="stylesheet" href="/css/profilePref.css">
+
 <div class="preferences-div">
-    <h1 style="text-align: center; font-weight: bold;">Set New Dietary Preferences</h1>
+    <h1 style="text-align: center; font-weight: bold;">Set Your Dietary Preference</h1>
 </div>
 
-<form method="POST" action="/updateDietaryProfile" class="py-5">
-    <h5>Set your personal dietary preferences:</h5>
-      <button type="submit" data-item="Keto" name="preference" value="Keto" class="dietary-button" >Keto</button>
-      <button type="submit" data-item="Gluten-free" name="preference" value="Gluten-free" class="dietary-button ">Gluten-free</button>
-      <button type="submit" data-item="Vegan" name="preference" value="Vegan" class="dietary-button ">Vegan</button>
-      <button type="submit" data-item="Vegetarian" name="preference" value="Vegetarian" class="dietary-button">Vegetarian</button>
-      <button type="submit" data-item="Lactose-free" name="preference" value="Lactose-free" class="dietary-button">Lactose-free</button>
-      <button type="submit" data-item="Pescatarian" name="preference" value="Pescatarian" class="dietary-button">Pescatarian</button>
-      <button type="submit" data-item="Kosher" name="preference" value="Kosher" class="dietary-button">Kosher</button>
-      <button type="submit" data-item="Low Carb" name="preference" value="Low Carb" class="dietary-button">Low Carb</button>
+<div id="button-container">
+<form action="/updateDietaryProfile" method="POST" >
+    <fieldset class="py-5">
+        <!-- <legend>Set your dietary preferences:</legend> -->
+        <button type="button" data-item="Keto" class="dietary-button">Keto</button>
+        <button type="button" data-item="Gluten-free" class="dietary-button">Gluten-free</button>
+        <button type="button" data-item="Vegan" class="dietary-button">Vegan</button>
+        <button type="button" data-item="Vegetarian" class="dietary-button">Vegetarian</button>
+        <button type="button" data-item="Lactose-free" class="dietary-button">Lactose-free</button>
+        <button type="button" data-item="Pescatarian" class="dietary-button">Pescatarian</button>
+        <button type="button" data-item="Kosher" class="dietary-button">Kosher</button>
+        <button type="button" data-item="Low Carb" class="dietary-button">Low Carb</button>
+        <button type="button" class="dietary-button">None</button>
+    </fieldset>
+   <div class="div-submit"><button class="submit-btn" type="submit">Submit</button></div>
 </form>
-
-<form action="/submitPreferences" method="POST">  
-    <button class="signout-button">Submit</button></form>
 </div>
 
+<script src="/js/profilePref.js"></script>
+<%- include("templates/navbar") %>
 <%- include("templates/footer") %>
