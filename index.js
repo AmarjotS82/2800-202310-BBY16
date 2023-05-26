@@ -11,7 +11,7 @@ const Swal = require('sweetalert2');
 
 const axios = require('axios');
 
-//Crates a localstroage to sue for te counters 
+//Creates a localstorage to sue for te counters 
 var LocalStorage = require('node-localstorage').LocalStorage;
 //A folder that holds the data
 localStorage = new LocalStorage('./scratch');
@@ -28,10 +28,9 @@ const { Configuration, OpenAIApi } = require("openai");
 
 const app = express();
 
-
-
 const readline = require('readline');
 
+// ************For storing environment-specific configuration values************************
 const port = process.env.PORT || 3020;
 
 const mongodb_host = process.env.MONGODB_HOST;
@@ -43,6 +42,8 @@ const mongodb_session_secret = process.env.MONGODB_SESSION_SECRET;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 const openai_api_key = process.env.OPENAI_API_KEY;
+
+//------------------------------------------------------------------------------------------
 
 const configuration = new Configuration({
 	apiKey: openai_api_key,
@@ -444,8 +445,6 @@ app.get('/login', (req, res) => {
 app.get('/changePassword', (req, res) => {
 	res.render('changePassword', { message: "" });
 });
-
-app.use(express.static(__dirname + "/public"));
 
 //new stuff added
 
