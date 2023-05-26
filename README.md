@@ -219,7 +219,7 @@ Create a grocery list in the grocery list page
 Search for recipes in the search page
 Add dietary restrictions if you have any to generate recipe based on ur diet
 	
-
+7.No licences,credits or refrences used
 8. How did you use AI? Tell us exactly what AI services and products you used and how you used them. Be very specific:
 During this project, we used AI in a variety of places to help us troubleshoot and fix our bugs. In addition, We built our main feature with the use of Chat GPT 3.5 turbo API to generate recipes, using ingredients selected by the user. In this way, each user gets a variety of personalized recipes based on the selected ingredient.
 We construct the prompts based on the user’s selected inputs, and we then feed it into ChatGPT with a mix of our prompt and users ingredient list, which gives us an output. In our prompt, we ask ChatGPT also to give us nutritional information of the recipe generated. We made sure that the AI formats the output in the specific way we wanted it by using specific prompts such as “ Put the recipe name in a h2 element."
