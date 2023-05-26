@@ -59,6 +59,8 @@ h5{
  /* ---------------------------------------------------------- */
 
  /****** generated recipe section ********/
+ /* Got the code from universe.io
+ did some minor changes to fit into our app */
 .getRecipe-btn {
   position: relative;
   padding: 12px 35px;
@@ -221,6 +223,9 @@ h5{
 
 /* *************add ingredient btn*************** */
 
+ /****** generated recipe section ********/
+ /* Got the code from universe.io
+ did some minor changes to fit into our app */
 
 button {
   position: relative;

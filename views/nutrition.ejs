@@ -57,14 +57,17 @@
         <!-- <button id="more" type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test2" >
           More
         </button> -->
-        <form action="/nutritionInfo" method="post">
-          <input name="calories" type="text" placeholder="Amount">
-          <button id="amount" type="submit" class="btn btn-light">Add</button>
-        </form>
-        <form action="/nutritionInfo" method="post">
-          <input name="calGoal" type="text" placeholder="Goal">
+
+        <form class="goal-form" action="/nutritionInfo" method="post">
+        
+          <input name="calGoal" type="text" placeholder=" First set today's Goal">
           <button id="goal" type="submit" class="btn btn-light">Goal</button>
         </form>
+        <form  action="/nutritionInfo" method="post">
+          <input name="calories" type="text" placeholder="Add calorie intake">
+          <button id="amount" type="submit" class="btn btn-light">Add</button>
+        </form>
+       
 
         </div>
       </div>  
@@ -129,15 +132,16 @@
             <!-- <button id="more" type="button" class="btn w-50" data-bs-toggle="modal" data-bs-target="#test2" >
               More
             </button> -->
-            <form action="/nutritionInfo" method="post">
-              <input name="carbohydrates" type="text" placeholder="Amount">
-              <button id="amount" type="submit" class="btn btn-light">Add</button>
-            </form>
-            <form action="/nutritionInfo" method="post">
-              <input name="carbGoal" type="text" placeholder="Goal">
+            <form class="goal-form" action="/nutritionInfo" method="post">
+              <input name="carbGoal" type="text" placeholder="First set today's Goal">
               <button id="goal" type="submit" class="btn btn-light">Goal</button>
             </form>
     
+            <form action="/nutritionInfo" method="post">
+              <input name="carbohydrates" type="text" placeholder="Add carbs intake">
+              <button id="amount" type="submit" class="btn btn-light">Add</button>
+            </form>
+         
             </div>
           </div>  
         </div>

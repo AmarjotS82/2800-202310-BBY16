@@ -472,10 +472,7 @@ app.post('/generateRecipe', async (req, res) => {
 });
 
 app.post('/clearRecipe', async (req, res) => {
-	localStorage.setItem('recipe', '[]');
-	localStorage.setItem('ingredients', '[]');
-	localStorage.setItem('dietaryPreferences', '[]');
-	localStorage.setItem('nutritionalInfo');
+	req.session.recipe = '';
 	res.redirect('loggedin/members/false');
 });
 
@@ -604,23 +601,10 @@ app.get('/loggedin/nutrition', async (req, res) => {
 			carbs: carbsPicked
 		});
 	}
-
-
-
-	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
-	// res.render("nutrition", {
-	// 	//Calorie intake gotten from calorieCount array above 
-	// 	// .Calories - the specific column name in the databse that the value is located in
-	// 	Calories: calorieCount[0].Calories,
-
-	// 	//Calorie goal gotten from calorieCount array above
-	// 	//Calorie intake gotten from calorieCount array above  
-	// 	// .CalorieGoal - the specific column name in the databse that the value is located in
-	// 	calGoal: storedcalorieGoal[0].CalorieGoal,
-	// 	Carbohydrates: carbCount[0].Carbohydrates,
-	// });
+	
+	
 });
-//********************** Calorie Counter Page Ends*/
+//************ Calorie Counter Page Ends************/
 
 //method to put values in the database
 app.post('/nutritionInfo', async (req, res) => {
