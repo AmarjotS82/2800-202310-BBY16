@@ -9,8 +9,8 @@
   <input id="searchBar" type="text" placeholder="find recipes...">
 </div>
 
-
-<% for(let i =0; i < recipe.length; i++ ) { %>
+<% let numofRecipes = 30 %> 
+<% for(let i =0; i < numofRecipes; i++ ) { %>
     <div class="card" style="width: 18rem;">
         <img src="/img/recipes/<%= recipe[i].Image_Name %>.jpg" class="card-img-top" alt="<%= recipe[i].Image_Name %>">
         <div class="card-body">

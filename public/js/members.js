@@ -13,14 +13,6 @@ iconVisible.addEventListener('click', function () {
 });
 
 var saveButton = document.querySelector('.save');
-
-// saveRecipeForm.addEventListener('click', function () {
-//   swal({
-//     title: "Recipe saved!"
-//   }).then(function() {
-//     window.location.href = "http://localhost:3020/loggedin/members";
-//   });
-// });
 var recipe = document.getElementById('recipe-container');
 var isValid = recipe.getAttribute('isValid');
 if(isValid == 'true') {

@@ -23,14 +23,6 @@ buttons.forEach(button => {
       index = index >= colors.length - 1 ? 0 : index + 1;
     });
   });
- 
-  /**
-  $("body").on("click", ".dietary-button", function(){
-    const prefrence = [];
-    prefrence.pus
-    localStorage.setItem("prefrence", prefrence);
-  })
-   */
 
   document.addEventListener('DOMContentLoaded', function() {
     localStorage.removeItem('dietaryPreferences');
