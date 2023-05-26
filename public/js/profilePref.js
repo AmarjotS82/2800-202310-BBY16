@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    //When DOM is loaded, remove any previously stored dietary preferences
     localStorage.removeItem('dietaryPreferences');
     getDietaryPreferences();
   });
@@ -6,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add event listeners to the buttons
   document.querySelectorAll('.dietary-button').forEach(button => {
     button.addEventListener('click', function() {
+      //Handle click event on a dietary preference
       let preference = this.getAttribute('data-item');
       handleButtonClick(button, preference);
     });
@@ -25,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
       dietaryPreferences.push(preference);
       button.classList.add('active');
     }
+    //Set new dietary preferences in local storage
     localStorage.setItem("dietaryPreferences", JSON.stringify(dietaryPreferences));
     console.log(dietaryPreferences);
   }
@@ -32,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Function to update the dietary preferences before form submission
   function updateDietaryPreferences() {
     dietaryPreferences = getDietaryPreferences();
+    //Update hidden input field with dietary preferences before form submission
     document.getElementById('dietaryPreferencesInput').value = JSON.stringify(dietaryPreferences);
   
   }
@@ -41,10 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let dietaryPreferences;
     console.log(localStorage.getItem("dietaryPreferences"));
     if(localStorage.getItem("dietaryPreferences") === null){
-          //if null initilize the array to empty
+          //Initialize empty array if no preferences are currently stored
           dietaryPreferences = [];
       }else{
-          //Retrieves the stored todos from the local storage
+          //Retrieves the stored dietary preferences from the local storage and parse
           dietaryPreferences = JSON.parse(localStorage.getItem("dietaryPreferences")); 
       }
       return dietaryPreferences;

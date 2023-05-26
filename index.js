@@ -11,7 +11,7 @@ const Swal = require('sweetalert2');
 
 const axios = require('axios');
 
-//Crates a localstroage to sue for the counters 
+//Creates a localstorage to sue for te counters 
 var LocalStorage = require('node-localstorage').LocalStorage;
 //A folder that holds the data
 localStorage = new LocalStorage('./scratch');
@@ -28,10 +28,9 @@ const { Configuration, OpenAIApi } = require("openai");
 
 const app = express();
 
-
-
 const readline = require('readline');
 
+// ************For storing environment-specific configuration values************************
 const port = process.env.PORT || 3020;
 
 const mongodb_host = process.env.MONGODB_HOST;
@@ -44,11 +43,16 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 const openai_api_key = process.env.OPENAI_API_KEY;
 
+//------------------------------------------------------------------------------------------
+
+
+//**************************OpenAI Configuration ***************************************
 const configuration = new Configuration({
 	apiKey: openai_api_key,
 });
 
 const openai = new OpenAIApi(configuration);
+//-------------------------------------------------------------------------------------
 
 const questions = [
 	"What is the name of your hometown?",
@@ -58,6 +62,9 @@ const questions = [
 	"Who is your favourite author?"
 ];
 
+//*************************Recipe Generation ****************************************
+
+//Saynchronously generates recipe using OpenAI's GPT-3.5 turbo model
 const generateRecipe = async (username, dietaryPreference) => {
 	const prompt = await constructPrompt(username, dietaryPreference);
 
@@ -73,6 +80,8 @@ const generateRecipe = async (username, dietaryPreference) => {
 	recipeResponse = response["data"]["choices"][0]["message"]["content"];
 	return recipeResponse;
 };
+
+//Construct prompts based on user's chosen ingredients and dietary preferences
 async function constructPrompt(username, dietaryPreference) {
 
 	// Construct the prompt based on the ingredients and dietary preferences
@@ -91,6 +100,7 @@ async function constructPrompt(username, dietaryPreference) {
 		prompt += preferencesList;
 	}
 
+	// Add miscellaneous information to prompt to format response so that it fits in recipe div
 	prompt += ". Put the recipe name in a h2 element."
 	prompt += " Put the ingredient and instruction in h3 elements."
 	prompt += " Also, provide the fat, protein, calorie and carbohydrates content after the recipe. "
@@ -101,7 +111,7 @@ async function constructPrompt(username, dietaryPreference) {
 	return prompt;
 }
 
-localStorage.setItem('dietaryPreferences', '[]');
+//-----------------------------------------------------------------------------
 
 const saltRounds = 12; //use for encryption
 
@@ -132,7 +142,7 @@ var mongoStore = MongoStore.create({
 		secret: mongodb_session_secret
 	}
 });
-
+//*********************Establish Session *****************************
 app.use(session({
 	secret: node_session_secret,
 	store: mongoStore,
@@ -156,6 +166,7 @@ function sessionValidation(req, res, next) {
 		res.redirect('/login');
 	}
 }
+//------------------------------------------------------------------
 
 app.get('/', (req, res) => { 
 	res.render("index");
@@ -169,6 +180,7 @@ app.get('/invalid-signup', (req, res) => {
 	res.render('invalid-signup');
 });
 
+//This checks if the email exist in the database
 async function doesEmailExist(email) {
 	const result = await userCollection.find({ email: email }).project({ email: 1, _id: 1, username: 1 }).toArray();
 
@@ -179,6 +191,7 @@ async function doesEmailExist(email) {
 	}
 }
 
+//This checks if the username exist in the database
 async function doesUsernameExist(username) {
 	const result = await userCollection.find({ username: username }).project({ email: 1, _id: 1, username: 1 }).toArray();
 
@@ -189,6 +202,7 @@ async function doesUsernameExist(username) {
 	}
 }
 
+// For user if they forget password, finds the user using email then confirms with a security question.
 app.post('/forgetPassword', async (req, res) => {
 	var email = req.body.email;
 
@@ -196,11 +210,12 @@ app.post('/forgetPassword', async (req, res) => {
 
 
 	const validationResult = schema.validate(email);
+	//if validation error then give message
 	if (validationResult.error != null) {
 		res.render('changePassword', { message: "Invalid Email" });
 		return;
 	}
-
+	//if email exist
 	if (await doesEmailExist(email)) {
 
 		const result = await userCollection.find({ email: email }).project({ email: 1, question: 1 }).toArray();
@@ -219,10 +234,12 @@ app.post('/forgetPassword', async (req, res) => {
 
 });
 
+// Renders the answer-questions ejs
 app.get('/answer-questions', (req, res) => {
 	res.render('answer-questions');
 });
 
+// This compares the user's answer to the one they have in database.
 app.post('/submitAnswer/:id', async (req, res) => {
 	var answer = req.body.answer;
 	var email = req.params.id;
@@ -239,14 +256,17 @@ app.post('/submitAnswer/:id', async (req, res) => {
 	}
 });
 
+// This overwrites the old password to the new password
 app.post('/newpassword/:id', async (req, res) => {
 	var password = req.body.password;
 	var email = req.params.id;
+	//make sure the password input is validated
 	const schema = Joi.string().max(20).required();
 
+	//if there is an error with validation then send invalid password
 	const validationResult = schema.validate(password);
 	if (validationResult.error != null) {
-		res.send("INVALID PASSWORD");
+		res.redirect("/changePassword");
 		return;
 	}
 
@@ -274,6 +294,9 @@ app.post('/setNewDietaryPreference', (req, res) => {
 	res.render('signup', { dietaryPreferences });
 });
 
+// This creates a new user and verifies all inputs are valid
+// We use joi for validation.
+// Incorrect input has a message specific to it
 app.post('/submitUser', async (req, res) => { 
 	var username = req.body.username;
 	var email = req.body.email;
@@ -284,6 +307,7 @@ app.post('/submitUser', async (req, res) => {
 	var question = req.body.question;
 	var answer = req.body.answer;
 
+	// the joi scheme for the validation
 	const schema = Joi.object(
 		{
 			username: Joi.string().alphanum().max(20).required(),
@@ -300,6 +324,7 @@ app.post('/submitUser', async (req, res) => {
 		return;
 	}
 
+	//if no question is selected then an error is shown with a message
 	if (question == 0) {
 		var message = "You must select a question.";
 		res.render("invalid-signup", { message: message });
@@ -307,26 +332,30 @@ app.post('/submitUser', async (req, res) => {
 		return;
 	}
 
+	//if email already exist then an error is shown
 	if (await doesEmailExist(email)) {
 		var message = "This email already exist!";
 		res.render("invalid-signup", { message: message });
 		return;
 	}
 
+	//if username already exist then error is shown
 	if (await doesUsernameExist(username)) {
 		var message = "This username already exist!";
 		res.render("invalid-signup", { message: message });
 		return;
 	}
 
-
+	//hashing password for safety
 	var hashedPassword = await bcrypt.hash(password, saltRounds);
+	//hashing security answer for safety
 	var hashedAnswer = await bcrypt.hash(answer, saltRounds);
 
+	//inserting the user with all the information into the database
 	await userCollection.insertOne({ username: username, email: email, password: hashedPassword, answer: hashedAnswer, question: question, dietary_preferences: preferences });
 	console.log("inserted user");
 
-
+	//session is authenticated then redirected to members page
 	req.session.authenticated = true;
 	req.session.username = req.body.username;
 	res.redirect("/loggedin/members/false");
@@ -334,24 +363,29 @@ app.post('/submitUser', async (req, res) => {
 	return;
 });
 
+//Our middleware
 app.use('/loggedin', sessionValidation);
 app.get('/loggedin', (req, res) => {
+	//checks if session is authenticated if not then redirect to login
 	if (!req.session.authenticated) {
 		res.redirect('/login');
 	}
 	res.render("loggedin");
 });
 
+// This verifies user information when they login, gives a specific error when any of the input is incorrect
 app.post('/loggingin', async (req, res) => { 
 	var Username = req.body.username;
 	var Password = req.body.password;
 
+	//the joi scheme for the logging in these values must be valid
 	const schema = Joi.object(
 		{
 			Username: Joi.string().alphanum().max(20).required(),
 			Password: Joi.string().max(20).required(),
 		});
 
+	//if any error is found from the validation then a message for that particular error is shown
 	const validationResult = schema.validate({ Username, Password });
 	if (validationResult.error != null) {
 		var message = validationResult.error.details[0].message;
@@ -360,6 +394,7 @@ app.post('/loggingin', async (req, res) => {
 		return;
 	}
 
+	//finds the user from the database using username
 	const result = await userCollection.find({ username: Username }).project({ password: 1, _id: 1, username: 1, email: 1 }).toArray();
 
 	if (result.length != 1) { //if user doesnt exist
@@ -368,13 +403,12 @@ app.post('/loggingin', async (req, res) => {
 		return;
 	}
 
+	//this compares the hashed password with the hashed input password
 	if (await bcrypt.compare(Password, result[0].password)) {
-		console.log("correct password");
+		//sets the authenticated variable to true
 		req.session.authenticated = true;
 		req.session.email = result[0].email;
-		console.log(req.session.email);
 		req.session.username = result[0].username;
-		console.log(req.session.username);
 		req.session.cookie.maxAge = expireTime;
 		req.session.dietaryPreferences = [];
 
@@ -399,16 +433,21 @@ app.get('/changePassword', (req, res) => {
 	res.render('changePassword', { message: "" });
 });
 
+//new stuff added
 app.use(express.static(__dirname + "/public"));
 
-
+// This is the route to members page where id is either true or false if true then an alert for saving recipe is show, false for normal
 app.get('/loggedin/members/:id', async (req, res) => {
 	var id = req.params.id;
 
+	//assigns recipe  variable to the session variable
 	const recipe = req.session.recipe;
+
+	//assign username variable to the session variable
 	var username = req.session.username;
 
 	const result = await userCollection.find({ username: username }).project({ username: 1 }).toArray();
+
 	res.render('members', { recipe: recipe, username: result[0].username, isValid: id });
 })
 
@@ -423,6 +462,7 @@ app.post('/generateRecipe', async (req, res) => {
 
 });
 
+// This resets the recipe session
 app.post('/clearRecipe', async (req, res) => {
 	req.session.recipe = '';
 	res.redirect('loggedin/members/false');
@@ -681,20 +721,25 @@ app.get("/lists", async (req, res) => {
 	res.render("lists", { list: list, ingredients: chosenIngredients });
 });
 
+//This is the get method for the profile page
 app.get("/loggedin/profile", async (req, res) => {
 	var username = req.session.username;
 
+	//gets the needed information for the user
 	const result = await userCollection.find({ username: username }).project({ username: 1, email: 1, question: 1, dietary_preferences: 1 }).toArray();
 
+	//the preferences
 	var preferences = result[0].dietary_preferences;
 	console.log(preferences);
 
+	//if preference is null or undefined then preference is null
 	if (preferences === null || typeof preferences === 'undefined') {
 		preferences = [];
 	} else {
 		preferences = JSON.parse(preferences);
 	}
 
+	//render profile passing the details
 	res.render('profile', { username: result[0].username, email: result[0].email, question: questions[result[0].question], dietaryPreferences: preferences });
 });
 
@@ -751,9 +796,12 @@ app.post('/addUserDietaryPreferences', async (req, res) => {
 	console.log("--------")
 })
 
+//this updates the user dietary profile
 app.post('/updateDietaryProfile', async (req, res) => {
+	//the selected buttons by user
 	var preferencesSelected = req.body.dietaryPreferences;
 
+	//pushing selected into the database
 	await userCollection.updateOne({ username: req.session.username }, { $set: { dietary_preferences: preferencesSelected } });
 	console.log(preferencesSelected);
 	res.redirect('/loggedin/profile');
@@ -762,20 +810,27 @@ app.post('/updateDietaryProfile', async (req, res) => {
 //----------------------- For saving recipes ----------------------
 
 async function saveRecipe(recipe, username) {
+	//This finds the recipe name by manipulating string, we made sure the AI output is consistent so we start at index 12 then find the / as it is part of an end tag
+	//then we subtract 1 to get the index of <
 	recipeName = recipe.substring(12, recipe.indexOf("/") - 1).trim();
+	//This just takes the recipe details by taking the data after the index of Ingredients:
 	recipeDetails = recipe.substring(recipe.indexOf("Ingredients:"), recipe.length);
 	console.log(recipeName);
 	console.log(username);
 
+	//Inserts it into the database.
 	await savedRecipeCollection.insertOne({ username: username, recipeName: recipeName, recipe: recipeDetails });
 	return;
 }
 
+//This is the post request for saving recipe using the function above.
 app.post('/saveRecipe', async (req, res) => {
+	//if type of recipeResponse is not undefined then it saves the recipe
 	if (typeof recipeResponse != 'undefined') {
 		await saveRecipe(recipeResponse, req.session.username);
 		res.redirect("/loggedin/members/true");
 		return;
+	//if not then redirect user to members
 	} else {
 		console.log("Must create recipe!");
 
@@ -788,6 +843,7 @@ app.post('/saveRecipe', async (req, res) => {
 
 //----------------------- For unsaving recipes ----------------------
 
+//This unsaves the recipe by using the recipe id
 app.post('/unsaveRecipe/:id', async (req, res) => {
 	let recipe_id = req.params.id;
 
@@ -800,6 +856,8 @@ app.post('/unsaveRecipe/:id', async (req, res) => {
 
 //----------------------- For displaying recipes ----------------------
 
+//this displays the recipes in the saved recipe page, it just finds all the recipe that has the username linked into it.
+//then passed into recipes
 app.get('/loggedin/recipes', async (req, res) => {
 	const result = await savedRecipeCollection.find({ username: req.session.username }).toArray();
 
@@ -812,6 +870,7 @@ app.get('/loggedin/recipes', async (req, res) => {
 
 //----------------------- For recipe modal ----------------------
 
+//this sends a raw data of html that we use on client side to find details for the modal.
 app.get('/recipe/:id', async (req, res) => {
 	const recipe_id = req.params.id;
 	const result = await savedRecipeCollection.find({ _id: new mongo.ObjectId(recipe_id) }).toArray();
