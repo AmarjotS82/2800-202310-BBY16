@@ -508,47 +508,47 @@ app.post('/addToList', (req, res) => {
 	res.json(updatedList);
   });
 
+  //Route for the calorie and carbohydrate counters
 app.get('/loggedin/nutrition', async (req, res) => {
 
 	//email to identify the user and get only their information
 	var email = req.session.email
 
+	//variable that is gotten from url to check if user is changing calories
 	var caloriesPicked = req.query.calories;
-	console.log("pickedCal: "+ caloriesPicked);
 
+	//variable that is gotten from url to check if user is changing carbohydrates
 	var carbsPicked = req.query.carbs;
-	console.log("pickedCal: "+ carbsPicked);
 
-	//Stores the last time the user accesed the page by using email to find the specific user and turns it into an array
+
+	//Stores the last time the user accessed the page by using email to find the specific user and turns it into an array
 	var storedTime = await userCollection.find({email : email}).project({LastDateUsed: 1 }).toArray();
 	
-	//gets the value in the database from the array crated above
+	//gets the value in the database at the LastDateUsed field from the array created above
 	var lastTime = storedTime[0].LastDateUsed;
 
 	//Gets the current date by creating a new date object and getting the day
-	// * Currently getting minutes for testing purposes
-	var currTime = new Date().getMinutes();
+	// * Can use var currTime = new Date().getMinutes(); to test this will update every 2 mins
+	var currTime = new Date().getDay();
 	
-	//console.log(lastTime);
 
 	//Checks to see if the value in the array is null which happens the very first time the user accesses the page since they have no previous visits
-
 	if(storedTime[0].LastDateUsed == null){
 		//sets the last visit date to current date to be used next visit
 		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
 
-		//Sets the calories and goals to zero since the user hasn't input anytihng yet
+		//Sets all datbase fields to zero since the user hasn't input anything yet
 		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
 		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
 		await userCollection.updateOne({email: email}, {$set: {carbohydrateGoal: 0}});
 	}
+
 	//Check if the user is logging in on a new day and reset values so they can keep track daily
-	// * Currently every 2 mins for testing purposes
 	if(currTime - lastTime > 1) {
 		//sets the last visit date to current date to be used next visit by finding difference between last vist and current date
 		await userCollection.updateOne({email: email}, {$set: {LastDateUsed: currTime}});
-		//Resets the calories and goals to zero so user can add daily
+		//Resets the fields to zero so user can add daily
 		await userCollection.updateOne({email: email}, {$set: {Calories: 0}});
 		await userCollection.updateOne({email: email}, {$set: {CalorieGoal: 0}});
 		await userCollection.updateOne({email: email}, {$set: {Carbohydrates: 0}});
@@ -568,6 +568,7 @@ app.get('/loggedin/nutrition', async (req, res) => {
 
 	}
 
+	//If CaloriesPicked is true then update calorie related fields and redirect to calorie counter
 	if(caloriesPicked){
 		//Stores the number of calories the user has input by using email to find the specific user and turns it into an array
 		let calorieCount = await userCollection.find({email : email}).project({Calories: 1 }).toArray();
@@ -575,20 +576,14 @@ app.get('/loggedin/nutrition', async (req, res) => {
 		//Stores the calorie goal the user has input by using email to find the specific user and turns it into an array
 		let storedcalorieGoal = await userCollection.find({email : email}).project({CalorieGoal: 1 }).toArray();
 
-		//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
+		//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal to sue in nutrition.ejs
 		res.render("nutrition", {
-			//Calorie intake gotten from calorieCount array above 
-			// .Calories - the specific column name in the databse that the value is located in
 			Calories: calorieCount[0].Calories,
-
-			//Calorie goal gotten from calorieCount array above
-			//Calorie intake gotten from calorieCount array above  
-			// .CalorieGoal - the specific column name in the databse that the value is located in
 			calGoal: storedcalorieGoal[0].CalorieGoal,
 			cal: caloriesPicked,
 			carbs: false
 		});
-	} else if(carbsPicked){
+	} else if(carbsPicked){ //If CarbsPicked is true then update carbohydrates related fields and redirect to carbohydrate counter
 		let carbCount = await userCollection.find({email : email}).project({Carbohydrates: 1 }).toArray();
 		let storedCarbGoal = await userCollection.find({email : email}).project({carbohydrateGoal: 1 }).toArray();
 	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
@@ -600,20 +595,7 @@ app.get('/loggedin/nutrition', async (req, res) => {
 	});
 	}
 	
-	
 
-	//renders the Calorie counter page and passes the variables with the values for calorie intake and calorie goal
-	// res.render("nutrition", {
-	// 	//Calorie intake gotten from calorieCount array above 
-	// 	// .Calories - the specific column name in the databse that the value is located in
-	// 	Calories: calorieCount[0].Calories,
-
-	// 	//Calorie goal gotten from calorieCount array above
-	// 	//Calorie intake gotten from calorieCount array above  
-	// 	// .CalorieGoal - the specific column name in the databse that the value is located in
-	// 	calGoal: storedcalorieGoal[0].CalorieGoal,
-	// 	Carbohydrates: carbCount[0].Carbohydrates,
-	// });
 });
 //********************** Calorie Counter Page Ends*/
 
@@ -660,7 +642,7 @@ app.post('/nutritionInfo', async (req,res) => {
 			return;
 	}
 
-	//Can only fill one feild at a time so other field becomes undefined this makes it so the undefined doesn't get added
+	//Can only fill one field at a time so other field becomes undefined this makes it so the undefined doesn't get added
 	if (calorieGoal != null) {
 		//validate input using schema crated above
 		const validationResult = schema.validate(calorieGoal);
@@ -906,22 +888,9 @@ app.get('/recipe/:id', async (req,res ) => {
 //------------------------------------------------------------------
 
 // *************** searchRecipe section**************************
+//route for te search recipe page that renders the ejs
 app.get('/loggedin/searchRecipe', async (req, res)=> {
-	let recipesList = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();
-	
-	// console.log("size: " + recipesList.length)
-	// for(let i = 0; i < recipesList.length; i++) {
-	// let instructions = recipesList[i].Instructions;
-	// //console.log( "first: " +ingredient);
-	// for(let y = 0; y < instructions.length; y++){
-	// 	let letter = instructions.charAt(y) + instructions.charAt(y + 1);
-	// 	if(letter == '. ') {
-	// 		instructions= instructions.replace(letter, "</li><li>")
-	// 	}	
-	// }
-	// //await recipeCollection.updateOne({Title: recipesList[i].Title}, {$set: {Instructions: instructions}}); 
-	// }
-	
+	let recipesList = await recipeCollection.find({}).project({Title: 1,Ingredients: 1,Instructions: 1, Image_Name: 1  }).toArray();	
 	res.render('searchRecipe',{ recipe: recipesList});
 })
 

@@ -1,5 +1,6 @@
+<!-- Contains the html for the search recipe page -->
 <%- include("templates/header") %>
-<script src="/js/searchRecipe.js"></script>
+
 <link rel="stylesheet" href="/css/searchRecipe.css">
 <h1 style="color: aliceblue;"> Find a Recipe</h1>
 
@@ -20,7 +21,7 @@
     
   <% } %>
 
-
+<!-- Modal that pops up after clicking details button -->
 <div id="info" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -37,6 +38,9 @@
   </div>
 </div>
 </div>
+
+<!-- Scripts connecting javascript files to ejs -->
+<script src="/js/searchRecipe.js"></script>
 <script src="/js/todo.js"></script>
 
 <%- include("templates/navbar") %>
