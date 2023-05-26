@@ -1,4 +1,4 @@
-
+//this clears the modal since we have a lot
 var modalWrap = null;
 //shows and creates a modal
 const showModal = (title, description) => {
@@ -6,6 +6,7 @@ const showModal = (title, description) => {
       modalWrap.remove();
     }
   
+    //creates a modal
     modalWrap = document.createElement('div');
     modalWrap.innerHTML = `
       <div class="modal fade" tabindex="-1">
@@ -18,14 +19,12 @@ const showModal = (title, description) => {
             <div class="modal-body">
               <p>${description}</p>
             </div>
-            <div class="modal-footer bg-light">
-
-            </div>
           </div>
         </div>
       </div>
     `;
-    
+
+    //appends the modal
     document.body.append(modalWrap);
   
     var modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
@@ -37,7 +36,7 @@ $('#modal-btn').each(function() {
     //this is the listener
     $('.modal-btn').click( async function() {
         const id = $(this).attr('object-id')
-        const response = await fetch('http://tsaygenxmo.eu10.qoddiapp.com' + '/recipe/' + id);
+        const response = await fetch('/recipe/' + id);
         const data = await response.json();
         console.log(data);
         showModal(data[0].recipeName, data[0].recipe);  
@@ -45,6 +44,7 @@ $('#modal-btn').each(function() {
     });
 })
 
+//if no saved recipe found then this will display a "No saved recipes" text.
 if($('#recipe-list li').length == 0) {
     const h1 = document.createElement('h1');
     const text = document.createTextNode("No saved recipes");

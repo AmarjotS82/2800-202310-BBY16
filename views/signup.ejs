@@ -3,7 +3,23 @@
 
 <div class="signup_wrapper">
   <h3>Let's set up your account </i></h3>
+
+
+
   <form action="/submitUser" method="post">
+    <input type="hidden" name="dietaryPreferences" id="dietaryPreferencesInput" />
+    <fieldset class="py-5">
+      <legend>Set your dietary preferences <b>(Optional)</b>:</legend>
+      <button type="button" data-item="Keto" class="dietary-button">Keto</button>
+      <button type="button" data-item="Gluten-free" class="dietary-button">Gluten-free</button>
+      <button type="button" data-item="Vegan" class="dietary-button">Vegan</button>
+      <button type="button" data-item="Vegetarian" class="dietary-button">Vegetarian</button>
+      <button type="button" data-item="Lactose-free" class="dietary-button">Lactose-free</button>
+      <button type="button" data-item="Pescatarian" class="dietary-button">Pescatarian</button>
+      <button type="button" data-item="Kosher" class="dietary-button">Kosher</button>
+      <button type="button" data-item="Low Carb" class="dietary-button">Low Carb</button>
+    </fieldset>
+
     <div class="input-group mb-3">
       <label
         class="input-group-text"
@@ -55,6 +71,15 @@
         placeholder="password"
       />
     </div>
-    <button>Get started</button>
+
+    <button type="submit">Get started</button>
   </form>
 </div>
+
+
+<script src="/js/signup.js"></script>
+
+<%- include("templates/navbar") %>
+<%- include("templates/footer") %>
+
+

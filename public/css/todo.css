@@ -6,7 +6,6 @@
 
 body {
     font-family: 'Times New Roman', Times, serif;
-    /* min-height: 100vh; */
     background-color: #B4846C;
 }
 
@@ -178,3 +177,19 @@ select {
     background-color:rgb(187, 164, 133);
     border-radius: 50px;
 }
+
+#reset {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border-radius: 2rem;
+
+}
+ .reset{
+    
+    background-color: rgb(218, 112, 13);
+ }
+ .reset:hover{
+
+    background-color: rgb(218, 112, 13);
+ }

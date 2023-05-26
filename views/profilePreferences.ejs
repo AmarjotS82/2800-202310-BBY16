@@ -1,0 +1,33 @@
+<%- include("templates/header") %>
+
+
+
+
+<link rel="stylesheet" href="/css/profilePref.css">
+
+<div class="preferences-div">
+    <h1 style="text-align: center; font-weight: bold;">Set Your Dietary Preference</h1>
+</div>
+
+<div id="button-container">
+<form action="/updateDietaryProfile" method="POST" >
+    <input type="hidden" name="dietaryPreferences" id="dietaryPreferencesInput" />
+    <fieldset class="py-5">
+
+        <button type="button" data-item="Keto" class="dietary-button">Keto</button>
+        <button type="button" data-item="Gluten-free" class="dietary-button">Gluten-free</button>
+        <button type="button" data-item="Vegan" class="dietary-button">Vegan</button>
+        <button type="button" data-item="Vegetarian" class="dietary-button">Vegetarian</button>
+        <button type="button" data-item="Lactose-free" class="dietary-button">Lactose-free</button>
+        <button type="button" data-item="Pescatarian" class="dietary-button">Pescatarian</button>
+        <button type="button" data-item="Kosher" class="dietary-button">Kosher</button>
+        <button type="button" data-item="Low Carb" class="dietary-button">Low Carb</button>
+        <button type="button" class="dietary-button">None</button>
+    </fieldset>
+   <div class="div-submit"><button class="submit-btn" type="submit">Submit</button></div>
+</form>
+</div>
+
+<script src="/js/profilePref.js"></script>
+<%- include("templates/navbar") %>
+<%- include("templates/footer") %>
